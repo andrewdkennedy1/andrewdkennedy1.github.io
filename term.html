@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.terminal@1.25.0/css/jquery.terminal.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery.terminal@1.25.0/js/jquery.terminal.min.js"></script>
+  </head>
+  <body>
+    <div id="terminal-container"></div>
+    <script>
+      $(document).ready(function() {
+        $('#terminal-container').terminal(function(command, term) {
+          if (command === 'hello') {
+            term.echo('Hello, world!');
+          } else {
+            term.echo('Unknown command: ' + command);
+          }
+        }, {
+          prompt: '> ',
+          greetings: 'Welcome to the terminal emulator! Type "hello" to see a greeting.'
+        });
+      });
+    </script>
+  </body>
+</html>
