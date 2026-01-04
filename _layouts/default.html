@@ -7,6 +7,10 @@
     <title>{{ page.title | default: site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
     <!-- Theme CSS -->
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 
@@ -14,18 +18,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
 </head>
 
-<body>
-    <div class="wrapper">
-        <header>
-            <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
-            <p>{{ site.description }}</p>
+<body class="site">
+    <div class="page-shell">
+        <header class="site-header wrapper surface">
+            <div class="brand-block">
+                <p class="eyebrow">{{ site.title }}</p>
+                <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
+                <p class="tagline">{{ site.description }}</p>
+            </div>
+            <nav class="nav-links">
+                <a href="{{ '/' | relative_url }}">Home</a>
+                <a href="{{ '/term.html' | relative_url }}">Terminal</a>
+            </nav>
         </header>
 
-        <section>
-            {{ content }}
-        </section>
+        <main class="site-main">
+            <section class="wrapper content-surface">
+                {{ content }}
+            </section>
+        </main>
 
-        <footer>
+        <footer class="site-footer wrapper">
             <p><small>{{ site.title }} &copy; {{ 'now' | date: '%Y' }}</small></p>
         </footer>
     </div>
