@@ -14,12 +14,18 @@ layout: default
   <div class="post-content e-content" itemprop="articleBody">
     {{ content }}
   </div>
+
+  <div class="post-footer">
+    <a href="{{ '/' | relative_url }}" class="btn-return">
+      <i class="fas fa-arrow-left"></i> RETURN_TO_GRID
+    </a>
+  </div>
 </article>
 
 <!-- Mermaid.js for flowcharts -->
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ 
+  mermaid.initialize({
     startOnLoad: true,
     theme: 'dark',
     themeVariables: {
@@ -46,6 +52,7 @@ layout: default
     text-align: center;
     margin: 2rem 0;
   }
+
   .mermaid svg {
     max-width: 100%;
   }

@@ -4,35 +4,43 @@ layout: default
 
 <div class="terminal-header">
 <pre class="ascii-art">
-    ___    _   ______  ____  _______       __
-   /   |  / | / / __ \/ __ \/ ____/ |     / /
-  / /| | /  |/ / / / / /_/ / __/  | | /| / / 
- / ___ |/ /|  / /_/ / _, _/ /___  | |/ |/ /  
+   ___    _   ______  ____  _______       __
+  /   |  / | / / __ \/ __ \/ ____/ |     / /
+ / /| | /  |/ / / / / /_/ / __/  | | /| / / 
 /_/  |_/_/ |_/_____/_/ |_/_____/  |__/|__/   
 </pre>
 </div>
 
-<div class="intro-blurb">
-<span class="prompt">&gt;</span> <span class="typing">Welcome, fellow traveler.</span>
+<div class="intro-blurb glass-panel">
+    <div>
+        <span class="prompt">&gt;</span> <span class="typing">Welcome, Traveler.</span>
+    </div>
+    
+    <p class="bio">
+        Accessing secure archives... <br>
+        <span class="highlight">Encryption:</span> DISABLED. <span class="highlight">Protocol:</span> OPEN.
+    </p>
 
-<p class="bio">
-Some things are better <span class="highlight">discovered</span> than explained.
-</p>
-
-<p class="status">
-<span class="blink">▮</span> <em>Status: Online</em> | <em>Location: The Grid</em>
-</p>
+    <div class="status-bar">
+        <span><span class="blink">▮</span> ONLINE</span>
+        <span>LOC: GRID_NODE_7</span>
+        <span>UPTIME: 99.9%</span>
+    </div>
 </div>
 
 <hr class="neon-divider">
 
-# > ACCESSING_ARCHIVES...
+<h2 class="glitch-hover">> RECENT_TRANSMISSIONS</h2>
 
-<ul class="posts">
+<div class="post-grid">
   {% for post in site.posts %}
-    <li>
-      <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span> &raquo; 
-      <a href="{{ post.url }}">{{ post.title }}</a>
-    </li>
+    <article class="post-card">
+      <div class="meta">{{ post.date | date: "%Y.%m.%d" }} // LOG_ENTRY</div>
+      <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+      <div class="excerpt">
+        {{ post.excerpt | strip_html | truncatewords: 20 }}
+      </div>
+      <a href="{{ post.url }}" class="read-link">READ_FULL_LOG >></a>
+    </article>
   {% endfor %}
-</ul>
+</div>
