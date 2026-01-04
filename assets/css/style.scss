@@ -93,3 +93,135 @@ footer {
     background: var(--neon-green);
     border-radius: 10px;
 }
+
+/* ASCII Art Banner */
+.terminal-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.ascii-art {
+    color: var(--neon-green);
+    font-size: 0.6rem;
+    line-height: 1.2;
+    text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+    animation: flicker 3s infinite;
+}
+
+@keyframes flicker {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    92% {
+        opacity: 1;
+    }
+
+    93% {
+        opacity: 0.8;
+    }
+
+    94% {
+        opacity: 1;
+    }
+
+    95% {
+        opacity: 0.9;
+    }
+
+    96% {
+        opacity: 1;
+    }
+}
+
+/* Intro Blurb */
+.intro-blurb {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--neon-green);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+}
+
+.intro-blurb .prompt {
+    color: var(--neon-green);
+    font-weight: bold;
+}
+
+.intro-blurb .typing {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.intro-blurb .bio {
+    margin-top: 1rem;
+    line-height: 1.8;
+    color: #aaa;
+}
+
+.intro-blurb .highlight {
+    color: var(--neon-green);
+    font-weight: bold;
+    text-shadow: 0 0 8px var(--neon-green);
+}
+
+.intro-blurb .status {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Blinking Cursor */
+.blink {
+    animation: blink-cursor 1s step-end infinite;
+    color: var(--neon-green);
+}
+
+@keyframes blink-cursor {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Neon Divider */
+.neon-divider {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+    margin: 2rem 0;
+    box-shadow: 0 0 10px var(--neon-green);
+}
+
+/* Posts List Enhancement */
+.posts {
+    list-style: none;
+    padding: 0;
+}
+
+.posts li {
+    padding: 0.5rem 0;
+    border-left: 2px solid transparent;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+}
+
+.posts li:hover {
+    border-left-color: var(--neon-green);
+    background: rgba(57, 255, 20, 0.05);
+}
+
+.post-date {
+    color: #666;
+    font-size: 0.9rem;
+}
