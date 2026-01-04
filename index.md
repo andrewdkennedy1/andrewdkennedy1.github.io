@@ -2,7 +2,16 @@
 layout: default
 ---
 
-## Recent Posts
+<div class="hero">
+  <p class="eyebrow">Fresh notes and learnings</p>
+  <h2>Thoughtful write-ups, experiments, and things I'm building.</h2>
+  <p>Browse the latest posts below or jump back into a recent deep dive. Everything is spaced out and easy to read on any device.</p>
+</div>
+
+<div class="section-heading">
+  <h2>Recent Posts</h2>
+  <p class="meta-note">A curated stream of the newest entries</p>
+</div>
 
 <div class="post-grid">
   {% for post in site.posts %}
