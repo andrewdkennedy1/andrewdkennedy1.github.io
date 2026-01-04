@@ -1,29 +1,48 @@
-<!doctype html>
-<html>
-  <head>
-    <script
-  src="https://code.jquery.com/jquery-3.6.3.min.js"
-  integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
-  crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery.terminal/js/jquery.terminal.min.js"></script>
+---
+layout: default
+title: "Terminal"
+description: "A small terminal playground for quick interactions."
+head: |
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.terminal/css/jquery.terminal.min.css">
+---
 
-<link href="https://cdn.jsdelivr.net/npm/jquery.terminal/css/jquery.terminal.min.css" rel="stylesheet"/>
-  </head>
-  <body>
-    <div id="terminal-container"></div>
-    <script>
-      $(document).ready(function() {
-        $('#terminal-container').terminal(function(command, term) {
-          if (command === 'hello') {
-            term.echo('Hello, world!');
-          } else {
-            term.echo('Unknown command: ' + command);
-          }
-        }, {
-          prompt: '> ',
-          greetings: 'Welcome to the terminal emulator! Type "hello" to see a greeting.'
-        });
-      });
-    </script>
-  </body>
-</html>
+<section class="hero">
+  <p class="eyebrow">Interactive corner</p>
+  <h2>Terminal playground</h2>
+  <p>Type a command and explore. The goal is light, fast experiments with a terminal feel.</p>
+</section>
+
+<section class="terminal-shell" aria-live="polite">
+  <div id="terminal-container"></div>
+  <noscript>Enable JavaScript to use the terminal.</noscript>
+</section>
+
+<script defer src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/jquery.terminal/js/jquery.terminal.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!window.jQuery || !jQuery.fn.terminal) return;
+
+    jQuery('#terminal-container').terminal(function(command, term) {
+      const input = command.trim();
+      if (!input) return;
+
+      if (input === 'hello') {
+        term.echo('Hello, world!');
+      } else if (input === 'help') {
+        term.echo('Try: hello, about, links');
+      } else if (input === 'about') {
+        term.echo('A tiny terminal for playful commands and quick notes.');
+      } else if (input === 'links') {
+        term.echo('Home: /');
+        term.echo('Archive: /archive.html');
+      } else {
+        term.echo('Unknown command: ' + input);
+      }
+    }, {
+      prompt: '> ',
+      greetings: 'Welcome. Type "help" for commands.'
+    });
+  });
+</script>

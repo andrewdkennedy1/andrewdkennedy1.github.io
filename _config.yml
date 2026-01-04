@@ -1,2 +1,9 @@
 title: "Andrew Kennedy"
-description: "Software engineer and writer"
+description: "Software engineer, writer, and builder of calm, useful software."
+lang: en
+url: "https://andrewdkennedy1.github.io"
+author:
+  name: "Andrew Kennedy"
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap

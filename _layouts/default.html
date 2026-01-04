@@ -1,95 +1,99 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ page.title | default: site.title }}</title>
-  <meta name="description" content="{{ page.description | default: site.description }}">
+<!doctype html>
+<html lang="{{ page.lang | default: site.lang | default: 'en' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#efe7da">
+    <title>{{ page.title | default: site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    {% seo %}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-</head>
-<body class="site">
-  <div class="page-shell">
-    <header class="site-header wrapper">
-      <div class="brand-block">
-        <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-        <p class="tagline">{{ site.description }}</p>
-      </div>
-      <nav class="nav-links">
-        <a href="{{ '/' | relative_url }}">Home</a>
-        <a href="{{ '/term.html' | relative_url }}">Terminal</a>
-      </nav>
-    </header>
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    {% if page.head %}
+      {{ page.head }}
+    {% endif %}
+  </head>
+  <body class="site">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="page-shell">
+      <header class="site-header wrapper">
+        <div class="brand-block">
+          <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+          <p class="tagline">{{ site.description }}</p>
+        </div>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="{{ '/' | relative_url }}">Home</a>
+          <a href="{{ '/archive.html' | relative_url }}">Archive</a>
+          <a href="{{ '/term.html' | relative_url }}">Terminal</a>
+        </nav>
+      </header>
 
-    <main class="site-main wrapper">
-      {{ content }}
-    </main>
+      <main id="main" class="site-main wrapper" role="main">
+        {{ content }}
+      </main>
 
-    <footer class="site-footer wrapper">
-      <p>{{ site.title }} · {{ 'now' | date: '%Y' }}</p>
-    </footer>
-  </div>
+      <footer class="site-footer wrapper">
+        <div class="footer-grid">
+          <p>{{ site.title }} · {{ 'now' | date: '%Y' }}</p>
+          <p>Thoughtful software, written in public.</p>
+        </div>
+      </footer>
+    </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
 
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'neutral'
-    });
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'neutral'
+      });
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      function getMermaidContent(el) {
-        const txt = el.textContent || el.innerText;
-        const textarea = document.createElement('textarea');
-        textarea.innerHTML = txt;
-        return textarea.value;
-      }
+      document.addEventListener('DOMContentLoaded', async () => {
+        const selectors = [
+          'pre > code.language-mermaid',
+          '.language-mermaid pre > code',
+          '.mermaid'
+        ];
+        const nodes = document.querySelectorAll(selectors.join(', '));
+        if (!nodes.length) return;
 
-      const selectors = [
-        'pre > code.language-mermaid',
-        '.language-mermaid pre > code',
-        '.mermaid'
-      ];
-
-      const nodes = document.querySelectorAll(selectors.join(', '));
-
-      for (const node of nodes) {
-        if (node.tagName === 'DIV' && node.classList.contains('mermaid')) continue;
-        if (node.getAttribute('data-processed')) continue;
-
-        const graphDefinition = getMermaidContent(node);
-
-        const div = document.createElement('div');
-        div.className = 'mermaid';
-        div.textContent = graphDefinition;
-
-        let targetToReplace = node;
-        if (node.tagName === 'CODE' && node.parentElement.tagName === 'PRE') {
-          targetToReplace = node.parentElement;
-          if (targetToReplace.parentElement.classList.contains('highlight') ||
-              targetToReplace.parentElement.className.includes('language-mermaid')) {
-            targetToReplace = targetToReplace.parentElement;
-            if (targetToReplace.parentElement.className.includes('highlighter-rouge')) {
-              targetToReplace = targetToReplace.parentElement;
-            }
-          }
+        function getMermaidContent(el) {
+          const txt = el.textContent || el.innerText;
+          const textarea = document.createElement('textarea');
+          textarea.innerHTML = txt;
+          return textarea.value;
         }
 
-        targetToReplace.replaceWith(div);
-      }
+        for (const node of nodes) {
+          if (node.tagName === 'DIV' && node.classList.contains('mermaid')) continue;
+          if (node.getAttribute('data-processed')) continue;
 
-      await mermaid.run({
-        querySelector: '.mermaid'
+          const graphDefinition = getMermaidContent(node);
+          const div = document.createElement('div');
+          div.className = 'mermaid';
+          div.textContent = graphDefinition;
+
+          let targetToReplace = node;
+          if (node.tagName === 'CODE' && node.parentElement.tagName === 'PRE') {
+            targetToReplace = node.parentElement;
+            if (targetToReplace.parentElement.classList.contains('highlight') ||
+                targetToReplace.parentElement.className.includes('language-mermaid')) {
+              targetToReplace = targetToReplace.parentElement;
+              if (targetToReplace.parentElement.className.includes('highlighter-rouge')) {
+                targetToReplace = targetToReplace.parentElement;
+              }
+            }
+          }
+
+          targetToReplace.replaceWith(div);
+        }
+
+        await mermaid.run({ querySelector: '.mermaid' });
       });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
