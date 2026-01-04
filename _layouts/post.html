@@ -3,27 +3,16 @@ layout: default
 ---
 <article class="post">
   <header class="post-header">
-<<<<<<< HEAD
-    <h1 class="post-title">{{ page.title }}</h1>
-    <p class="post-meta">{{ page.date | date: "%B %-d, %Y" }}</p>
-=======
     <a class="back-link" href="{{ '/' | relative_url }}">← Back</a>
     <p class="post-meta">{{ page.date | date: "%B %-d, %Y" }}</p>
     <h1 class="post-title">{{ page.title | escape }}</h1>
->>>>>>> 4cac90cca233145b8dec0747014ccf06289af5ea
   </header>
 
   <div class="post-content">
     {{ content }}
   </div>
 
-<<<<<<< HEAD
-  <div class="post-footer">
-    <a href="{{ '/' | relative_url }}" class="btn-return">← Back to posts</a>
-  </div>
-=======
   <footer class="post-footer">
     <a class="back-link" href="{{ '/' | relative_url }}">Return to the index</a>
   </footer>
->>>>>>> 4cac90cca233145b8dec0747014ccf06289af5ea
 </article>
