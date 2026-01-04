@@ -6,7 +6,7 @@ layout: default
     <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
     <p class="post-meta">
       <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
-        {{ page.date | date: "%b %-d, %Y" }}
+        {{ page.date | date: "%B %-d, %Y" }}
       </time>
     </p>
   </header>
@@ -16,44 +16,6 @@ layout: default
   </div>
 
   <div class="post-footer">
-    <a href="{{ '/' | relative_url }}" class="btn-return">
-      <i class="fas fa-arrow-left"></i> RETURN_TO_GRID
-    </a>
+    <a href="{{ '/' | relative_url }}" class="btn-return">← Back to all posts</a>
   </div>
 </article>
-
-<!-- Mermaid.js for flowcharts -->
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'dark',
-    themeVariables: {
-      primaryColor: '#39ff14',
-      primaryTextColor: '#0d0d0d',
-      primaryBorderColor: '#39ff14',
-      lineColor: '#39ff14',
-      secondaryColor: '#1a1a1a',
-      tertiaryColor: '#0d0d0d',
-      background: '#0d0d0d',
-      mainBkg: '#1a1a1a',
-      nodeBorder: '#39ff14',
-      clusterBkg: '#1a1a1a',
-      clusterBorder: '#39ff14',
-      titleColor: '#39ff14',
-      edgeLabelBackground: '#0d0d0d'
-    }
-  });
-</script>
-
-<style>
-  .mermaid {
-    background: transparent !important;
-    text-align: center;
-    margin: 2rem 0;
-  }
-
-  .mermaid svg {
-    max-width: 100%;
-  }
-</style>

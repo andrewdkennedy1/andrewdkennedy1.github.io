@@ -11,21 +11,10 @@
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 
     <!-- Prism.js - Syntax Highlighting -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.min.css">
-
-    <!-- Google Fonts - Cyberpunk/Tech Style -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
 </head>
 
 <body>
-    <!-- Particles Background -->
-    <div id="particles-js"></div>
-
     <div class="wrapper">
         <header>
             <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
@@ -42,129 +31,47 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
-    <!-- Initialize Particles.js -->
-    <script>
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 30, density: { enable: true, value_area: 800 } },
-                color: { value: '#39ff14' },
-                shape: { type: 'circle' },
-                opacity: { value: 0.1, random: true },
-                size: { value: 2, random: true },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: '#39ff14',
-                    opacity: 0.05,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 0.5,
-                    direction: 'none',
-                    random: true,
-                    out_mode: 'out'
-                }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: {
-                    onhover: { enable: true, mode: 'grab' },
-                    onclick: { enable: true, mode: 'push' }
-                },
-                modes: {
-                    grab: { distance: 140, line_linked: { opacity: 0.2 } },
-                    push: { particles_nb: 2 }
-                }
-            }
-        });
-    </script>
-
-    <!-- Initialize Typed.js on page title -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const typedElements = document.querySelectorAll('.typing');
-            typedElements.forEach(el => {
-                const text = el.textContent;
-                el.textContent = '';
-                new Typed(el, {
-                    strings: [text],
-                    typeSpeed: 40,
-                    showCursor: true,
-                    cursorChar: '▮',
-                    onComplete: (self) => { self.cursor.style.color = '#39ff14'; }
-                });
-            });
-        });
-    </script>
-
-    <!-- Mermaid.js for Diagrams -->
     <!-- Mermaid.js for Diagrams -->
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
 
         mermaid.initialize({
             startOnLoad: false,
-            theme: 'dark',
-            themeVariables: {
-                primaryColor: '#1a1a1a',
-                primaryTextColor: '#39ff14',
-                primaryBorderColor: '#39ff14',
-                lineColor: '#39ff14',
-                secondaryColor: '#1a1a1a',
-                tertiaryColor: '#0d0d0d',
-                background: '#0d0d0d',
-                mainBkg: '#1a1a1a',
-                nodeBorder: '#39ff14',
-                clusterBkg: '#1a1a1a',
-                clusterBorder: '#39ff14',
-                titleColor: '#39ff14',
-                edgeLabelBackground: '#0d0d0d',
-                textColor: '#39ff14'
-            }
+            theme: 'neutral'
         });
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Helper to get graph definition
             function getMermaidContent(el) {
-                // Decode HTML entities if needed (Jekyll might encode > as &gt;)
                 const txt = el.textContent || el.innerText;
                 const textarea = document.createElement('textarea');
                 textarea.innerHTML = txt;
                 return textarea.value;
             }
 
-            // Selectors for various Markdown renderer outputs
             const selectors = [
-                'pre > code.language-mermaid',       // Standard Markdown
-                '.language-mermaid pre > code',      // Jekyll/Rouge default
-                '.mermaid'                           // Direct class usage
+                'pre > code.language-mermaid',
+                '.language-mermaid pre > code',
+                '.mermaid'
             ];
 
             const nodes = document.querySelectorAll(selectors.join(', '));
 
             for (const node of nodes) {
-                // If it's already processed or is the mermaid div itself, skip
                 if (node.tagName === 'DIV' && node.classList.contains('mermaid')) continue;
                 if (node.getAttribute('data-processed')) continue;
 
                 const graphDefinition = getMermaidContent(node);
 
-                // create the container
                 const div = document.createElement('div');
                 div.className = 'mermaid';
                 div.textContent = graphDefinition;
 
-                // Find the closest wrapper to replace (usually <pre> or <div.highlighter>)
                 let targetToReplace = node;
                 if (node.tagName === 'CODE' && node.parentElement.tagName === 'PRE') {
                     targetToReplace = node.parentElement;
-                    // If the pre is wrapped in a highlighting div (Jekyll often does this), replace that too
                     if (targetToReplace.parentElement.classList.contains('highlight') ||
                         targetToReplace.parentElement.className.includes('language-mermaid')) {
                         targetToReplace = targetToReplace.parentElement;
@@ -177,25 +84,11 @@
                 targetToReplace.replaceWith(div);
             }
 
-            // Run mermaid on the newly created .mermaid divs
             await mermaid.run({
                 querySelector: '.mermaid'
             });
         });
     </script>
-
-    <style>
-        .mermaid {
-            background: transparent !important;
-            text-align: center;
-            margin: 2rem 0;
-            padding: 1rem;
-        }
-
-        .mermaid svg {
-            max-width: 100%;
-        }
-    </style>
 </body>
 
 </html>

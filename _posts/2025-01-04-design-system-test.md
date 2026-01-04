@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: "System Design Verification"
 description: "Verifying the new layout, typography, and flowcharts."
 ---
