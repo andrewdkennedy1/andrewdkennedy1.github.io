@@ -104,6 +104,7 @@
     </script>
 
     <!-- Mermaid.js for Diagrams -->
+    <!-- Mermaid.js for Diagrams -->
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
 
@@ -128,23 +129,59 @@
             }
         });
 
-        // Find all mermaid code blocks that Jekyll converted to pre>code
-        document.querySelectorAll('pre > code.language-mermaid, pre > code[class*="mermaid"]').forEach((codeBlock) => {
-            const pre = codeBlock.parentElement;
-            const div = document.createElement('div');
-            div.className = 'mermaid';
-            div.textContent = codeBlock.textContent;
-            pre.replaceWith(div);
-        });
-
-        // Also check for pre elements with just "mermaid" text class from different markdown processors
-        document.querySelectorAll('pre.mermaid, div.mermaid').forEach((el) => {
-            if (!el.hasAttribute('data-processed')) {
-                el.setAttribute('data-processed', 'true');
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Helper to get graph definition
+            function getMermaidContent(el) {
+                // Decode HTML entities if needed (Jekyll might encode > as &gt;)
+                const txt = el.textContent || el.innerText;
+                const textarea = document.createElement('textarea');
+                textarea.innerHTML = txt;
+                return textarea.value;
             }
-        });
 
-        await mermaid.run();
+            // Selectors for various Markdown renderer outputs
+            const selectors = [
+                'pre > code.language-mermaid',       // Standard Markdown
+                '.language-mermaid pre > code',      // Jekyll/Rouge default
+                '.mermaid'                           // Direct class usage
+            ];
+
+            const nodes = document.querySelectorAll(selectors.join(', '));
+
+            for (const node of nodes) {
+                // If it's already processed or is the mermaid div itself, skip
+                if (node.tagName === 'DIV' && node.classList.contains('mermaid')) continue;
+                if (node.getAttribute('data-processed')) continue;
+
+                const graphDefinition = getMermaidContent(node);
+
+                // create the container
+                const div = document.createElement('div');
+                div.className = 'mermaid';
+                div.textContent = graphDefinition;
+
+                // Find the closest wrapper to replace (usually <pre> or <div.highlighter>)
+                let targetToReplace = node;
+                if (node.tagName === 'CODE' && node.parentElement.tagName === 'PRE') {
+                    targetToReplace = node.parentElement;
+                    // If the pre is wrapped in a highlighting div (Jekyll often does this), replace that too
+                    if (targetToReplace.parentElement.classList.contains('highlight') ||
+                        targetToReplace.parentElement.className.includes('language-mermaid')) {
+                        targetToReplace = targetToReplace.parentElement;
+                        if (targetToReplace.parentElement.className.includes('highlighter-rouge')) {
+                            targetToReplace = targetToReplace.parentElement;
+                        }
+                    }
+                }
+
+                targetToReplace.replaceWith(div);
+            }
+
+            // Run mermaid on the newly created .mermaid divs
+            await mermaid.run({
+                querySelector: '.mermaid'
+            });
+        });
     </script>
 
     <style>
