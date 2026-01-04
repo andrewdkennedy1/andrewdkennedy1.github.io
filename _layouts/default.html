@@ -98,6 +98,63 @@
             });
         });
     </script>
+
+    <!-- Mermaid.js for Diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1a1a1a',
+                primaryTextColor: '#39ff14',
+                primaryBorderColor: '#39ff14',
+                lineColor: '#39ff14',
+                secondaryColor: '#1a1a1a',
+                tertiaryColor: '#0d0d0d',
+                background: '#0d0d0d',
+                mainBkg: '#1a1a1a',
+                nodeBorder: '#39ff14',
+                clusterBkg: '#1a1a1a',
+                clusterBorder: '#39ff14',
+                titleColor: '#39ff14',
+                edgeLabelBackground: '#0d0d0d',
+                textColor: '#39ff14'
+            }
+        });
+
+        // Find all mermaid code blocks that Jekyll converted to pre>code
+        document.querySelectorAll('pre > code.language-mermaid, pre > code[class*="mermaid"]').forEach((codeBlock) => {
+            const pre = codeBlock.parentElement;
+            const div = document.createElement('div');
+            div.className = 'mermaid';
+            div.textContent = codeBlock.textContent;
+            pre.replaceWith(div);
+        });
+
+        // Also check for pre elements with just "mermaid" text class from different markdown processors
+        document.querySelectorAll('pre.mermaid, div.mermaid').forEach((el) => {
+            if (!el.hasAttribute('data-processed')) {
+                el.setAttribute('data-processed', 'true');
+            }
+        });
+
+        await mermaid.run();
+    </script>
+
+    <style>
+        .mermaid {
+            background: transparent !important;
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+        }
+    </style>
 </body>
 
 </html>
