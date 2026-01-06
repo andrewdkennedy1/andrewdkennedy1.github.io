@@ -22,7 +22,7 @@ But we don't do "sensible" here. We live in the era of **Instant Apps**. If you 
 
 Why write a script when you can write a **dedicated, high-performance, memory-safe system utility in Rust**?
 
-So we built **RUpper**.
+So we built **[RUpper](https://github.com/andrewdkennedy1/rupper)**.
 
 It’s not just a script. It’s a *Service*.
 
