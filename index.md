@@ -1,13 +1,13 @@
 ---
 layout: default
 title: "Home"
-description: "Essays on software craft, AI tooling, and building with intention."
+description: "Random explorations into hardware, software, and everything in between."
 ---
 
 <section class="hero">
-  <p class="eyebrow">Notes on building in the agent era</p>
-  <h2>Quiet software, bold ideas.</h2>
-  <p>Short essays on making software that feels deliberate: clear prompts, sharp taste, and systems that age well.</p>
+  <p class="eyebrow">Random explorations into the niche and the notable</p>
+  <h2>Things I Find Interesting.</h2>
+  <p>Notes on hardware, software, and the systems that make them go. No schedule, just curiosity.</p>
 </section>
 
 <section class="recent">
