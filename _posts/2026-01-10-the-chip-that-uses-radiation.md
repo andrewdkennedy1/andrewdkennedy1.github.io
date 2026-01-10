@@ -2,7 +2,7 @@
 layout: post
 title: "The Chip That Actually Uses Radiation: Quantis and the Future of Entropy"
 subtitle: "Why 'Random' is harder than it looks, and why some chips use nuclear decay to solve it."
-date: 2026-01-08
+date: 2026-01-10
 description: "Exploring the world of Quantum Random Number Generators (QRNGs) and the specialized hardware that uses radioactive isotopes for true randomness."
 ---
 
@@ -54,6 +54,20 @@ If radioactive randomness is so good, why is your PC still using math?
 
 ---
 
+## The Quantum Leap: Smaller, Faster, and Everywhere
+
+While the idea of using quantum mechanics for randomness has been around for a while, the technology is no longer confined to specialized labs. Recent advancements have made QRNGs and HRNGs smaller, faster, and more accessible than ever before.
+
+### Miniaturization and Speed
+Researchers are now able to create chip-sized QRNGs that can be integrated directly into a variety of devices. These new chips are not only smaller, but also significantly faster, generating random numbers at gigabits per second. This opens the door for using true randomness in a much wider range of applications, from mobile phones to IoT devices.
+
+### Commercial Availability
+A growing number of companies now offer commercially available HRNGs that can be plugged into a computer via USB. These devices provide a high-quality source of entropy for security-conscious users, researchers, and developers who need a reliable source of true randomness. Products like TectroLabs' SwiftRNG and the OneRNG are examples of how this technology is becoming more mainstream.
+
+![Quantum Mechanics](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTdiY2Y5NGE1MjZlNjU4YjYyZjM3YmY5MjZlNjU4YjYyZjM3YmY5/d7vbmoGrHfmuc/giphy.gif)
+
+---
+
 ## Final Thoughts
 
 There is something deeply satisfying about the fact that to get truly unpredictable behavior out of our most precise machines, we have to look toward the chaotic, crumbling heart of an atom.
@@ -61,3 +75,11 @@ There is something deeply satisfying about the fact that to get truly unpredicta
 Randomness from decay isn't just a technical curiosity—it’s a reminder that at the very bottom of our deterministic digital world, the universe is still fundamentally weird.
 
 And that's pretty cool.
+
+---
+
+## References
+
+- [Wikipedia: Hardware random number generator](https://en.wikipedia.org/wiki/Hardware_random_number_generator)
+- [TectroLabs: True random number generators](https://tectrolabs.com/)
+- [OneRNG: Hardware Random Number Generator](https://onerng.info/)
