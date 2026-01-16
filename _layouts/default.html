@@ -93,6 +93,14 @@
         }
 
         await mermaid.run({ querySelector: '.mermaid' });
+
+        // Open external links in a new tab for a better UX.
+        document.querySelectorAll('.post-content a').forEach(link => {
+          if (link.hostname !== window.location.hostname) {
+            link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'noopener noreferrer');
+          }
+        });
       });
     </script>
   </body>
