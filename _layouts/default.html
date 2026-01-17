@@ -44,6 +44,8 @@
       </footer>
     </div>
 
+    <a id="back-to-top" href="#" class="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
 
@@ -101,6 +103,26 @@
             link.setAttribute('rel', 'noopener noreferrer');
           }
         });
+
+        // Back to top button logic
+        const backToTopButton = document.getElementById('back-to-top');
+        if (backToTopButton) {
+          window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+              backToTopButton.classList.add('visible');
+            } else {
+              backToTopButton.classList.remove('visible');
+            }
+          });
+
+          backToTopButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          });
+        }
       });
     </script>
   </body>
