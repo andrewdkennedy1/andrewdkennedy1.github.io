@@ -1,18 +1,18 @@
 ---
 layout: default
 title: "Archive"
-description: "Every published post, in one place."
+description: "All posts."
 ---
 
 <section class="hero">
-  <p class="eyebrow">The full set</p>
+  <p class="eyebrow">Everything</p>
   <h2>Archive</h2>
-  <p>Every post, ordered by date. No clutter, just the work.</p>
+  <p>All posts, by date.</p>
 </section>
 
 <section class="archive">
   <div class="section-heading">
-    <h3>All posts</h3>
+    <h3>Posts</h3>
     <p class="meta-note">{{ site.posts | size }} total</p>
   </div>
   <div class="archive-list">
