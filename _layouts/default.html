@@ -123,6 +123,41 @@
             });
           });
         }
+
+        // Add copy buttons to code blocks
+        document.querySelectorAll('.post-content pre').forEach(pre => {
+          if (pre.querySelector('code.language-mermaid')) return;
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'code-block-wrapper';
+          pre.parentNode.insertBefore(wrapper, pre);
+          wrapper.appendChild(pre);
+
+          const button = document.createElement('button');
+          button.className = 'copy-code-button';
+          button.textContent = 'Copy';
+          button.setAttribute('aria-label', 'Copy code to clipboard');
+          wrapper.appendChild(button);
+
+          button.addEventListener('click', async () => {
+            const code = pre.querySelector('code').innerText;
+            try {
+              await navigator.clipboard.writeText(code);
+              button.textContent = 'Copied!';
+              button.classList.add('copied');
+              setTimeout(() => {
+                button.textContent = 'Copy';
+                button.classList.remove('copied');
+              }, 2000);
+            } catch (err) {
+              console.error('Failed to copy text: ', err);
+              button.textContent = 'Error';
+              setTimeout(() => {
+                button.textContent = 'Copy';
+              }, 2000);
+            }
+          });
+        });
       });
     </script>
   </body>
