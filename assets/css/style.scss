@@ -518,3 +518,27 @@ pre code { background: transparent; padding: 0; }
   background: var(--accent-2);
   color: #fff;
 }
+
+/* Mermaid diagram enhancements */
+.mermaid-wrapper {
+  position: relative;
+}
+
+.mermaid-wrapper .copy-code-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(27, 26, 23, 0.1);
+  color: var(--ink);
+  border: 1px solid rgba(27, 26, 23, 0.2);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.mermaid-wrapper:hover .copy-code-button {
+  opacity: 1;
+}
+
+.mermaid-wrapper .copy-code-button:hover {
+  background: rgba(27, 26, 23, 0.2);
+}
