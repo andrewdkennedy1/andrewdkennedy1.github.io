@@ -12,6 +12,8 @@ Picture this: you look up at the sky, and floating serenely above the landscape 
 
 Sounds like science fiction, right? Well, a Beijing-based company just took a huge leap toward making it science fact.
 
+And if you're thinking it looks like one of the floating wind turbines from *Big Hero 6*, you're not alone. The resemblance to the iconic San Fransokyo skyline is uncanny. All it's missing is Baymax flying around it.
+
 For a long time, wind power has had a fundamental limitation: turbines are stuck on the ground. Down here, the wind can be gusty and unreliable. But go a few thousand feet up, and you're in a completely different world—a world of powerful, steady winds. The big question has always been: how do we tap into that?
 
 ## A Successful Maiden Flight
