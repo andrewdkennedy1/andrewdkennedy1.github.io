@@ -44,7 +44,7 @@
       </footer>
     </div>
 
-    <a id="back-to-top" href="#" class="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+    <button id="back-to-top" type="button" class="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
 
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
@@ -115,12 +115,8 @@
             }
           });
 
-          backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
+          backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           });
         }
 

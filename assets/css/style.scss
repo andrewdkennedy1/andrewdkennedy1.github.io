@@ -466,7 +466,9 @@ pre code { background: transparent; padding: 0; }
   box-shadow: var(--shadow);
   font-size: 1.5rem;
   font-weight: bold;
+  padding: 0;
   color: var(--accent);
+  cursor: pointer;
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
