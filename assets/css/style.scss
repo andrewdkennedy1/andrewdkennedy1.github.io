@@ -466,7 +466,9 @@ pre code { background: transparent; padding: 0; }
   box-shadow: var(--shadow);
   font-size: 1.5rem;
   font-weight: bold;
+  padding: 0;
   color: var(--accent);
+  cursor: pointer;
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
@@ -484,4 +486,61 @@ pre code { background: transparent; padding: 0; }
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
+}
+/* Code block enhancements */
+.code-block-wrapper {
+  position: relative;
+}
+
+.copy-code-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.code-block-wrapper:hover .copy-code-button {
+  opacity: 1;
+}
+
+.copy-code-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.copy-code-button.copied {
+  background: var(--accent-2);
+  color: #fff;
+}
+
+/* Mermaid diagram enhancements */
+.mermaid-wrapper {
+  position: relative;
+}
+
+.mermaid-wrapper .copy-code-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(27, 26, 23, 0.1);
+  color: var(--ink);
+  border: 1px solid rgba(27, 26, 23, 0.2);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.mermaid-wrapper:hover .copy-code-button {
+  opacity: 1;
+}
+
+.mermaid-wrapper .copy-code-button:hover {
+  background: rgba(27, 26, 23, 0.2);
 }

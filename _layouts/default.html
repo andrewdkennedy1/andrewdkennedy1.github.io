@@ -44,7 +44,7 @@
       </footer>
     </div>
 
-    <a id="back-to-top" href="#" class="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+    <button id="back-to-top" type="button" class="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
 
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
@@ -115,14 +115,78 @@
             }
           });
 
-          backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
+          backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           });
         }
+
+        // Add copy buttons to code blocks
+        document.querySelectorAll('.post-content pre').forEach(pre => {
+          if (pre.querySelector('code.language-mermaid')) return;
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'code-block-wrapper';
+          pre.parentNode.insertBefore(wrapper, pre);
+          wrapper.appendChild(pre);
+
+          const button = document.createElement('button');
+          button.className = 'copy-code-button';
+          button.textContent = 'Copy';
+          button.setAttribute('aria-label', 'Copy code to clipboard');
+          wrapper.appendChild(button);
+
+          button.addEventListener('click', async () => {
+            const code = pre.querySelector('code').innerText;
+            try {
+              await navigator.clipboard.writeText(code);
+              button.textContent = 'Copied!';
+              button.classList.add('copied');
+              setTimeout(() => {
+                button.textContent = 'Copy';
+                button.classList.remove('copied');
+              }, 2000);
+            } catch (err) {
+              console.error('Failed to copy text: ', err);
+              button.textContent = 'Error';
+              setTimeout(() => {
+                button.textContent = 'Copy';
+              }, 2000);
+            }
+          });
+        });
+
+        // Add copy buttons to mermaid diagrams
+        document.querySelectorAll('.post-content .mermaid').forEach(mermaidEl => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'mermaid-wrapper';
+          mermaidEl.parentNode.insertBefore(wrapper, mermaidEl);
+          wrapper.appendChild(mermaidEl);
+
+          const button = document.createElement('button');
+          button.className = 'copy-code-button';
+          button.textContent = 'Copy';
+          button.setAttribute('aria-label', 'Copy diagram source to clipboard');
+          wrapper.appendChild(button);
+
+          button.addEventListener('click', async () => {
+            const code = mermaidEl.textContent;
+            try {
+              await navigator.clipboard.writeText(code);
+              button.textContent = 'Copied!';
+              button.classList.add('copied');
+              setTimeout(() => {
+                button.textContent = 'Copy';
+                button.classList.remove('copied');
+              }, 2000);
+            } catch (err) {
+              console.error('Failed to copy text: ', err);
+              button.textContent = 'Error';
+              setTimeout(() => {
+                button.textContent = 'Copy';
+              }, 2000);
+            }
+          });
+        });
       });
     </script>
   </body>
