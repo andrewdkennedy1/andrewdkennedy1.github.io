@@ -20,7 +20,7 @@
   <body class="site">
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="page-shell">
-      <header class="site-header wrapper">
+    <header class="site-header wrapper">
         <div class="brand-block">
           <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
           <p class="tagline">{{ site.description }}</p>
@@ -29,6 +29,7 @@
           <a href="{{ '/' | relative_url }}">Home</a>
           <a href="{{ '/archive.html' | relative_url }}">Archive</a>
           <a href="{{ '/term.html' | relative_url }}">Terminal</a>
+          <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">🌓</button>
         </nav>
       </header>
 
@@ -95,6 +96,26 @@
         }
 
         await mermaid.run({ querySelector: '.mermaid' });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        
+        // Apply saved theme on load
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+          
+          // Update toggle icon
+          themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+        
+        // Set initial icon
+        themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
 
         // Open external links in a new tab for a better UX.
         document.querySelectorAll('.post-content a').forEach(link => {

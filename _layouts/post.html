@@ -19,7 +19,41 @@ layout: default
     {{ content }}
   </div>
 
+  <!-- Related posts section -->
+  <section class="related-posts">
+    <h3>Related Posts</h3>
+    <div class="post-list">
+      {% assign max_related = 3 %}
+      {% assign count = 0 %}
+      {% for post in site.posts %}
+        {% if post.url != page.url and count < max_related %}
+          <article class="post-card">
+            <p class="meta">{{ post.date | date: "%B %-d, %Y" }}</p>
+            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+            <p class="excerpt">{{ post.excerpt | strip_html | truncatewords: 20 }}</p>
+            <a href="{{ post.url | relative_url }}" class="read-link">Read</a>
+          </article>
+          {% assign count = count | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
   <footer class="post-footer">
-    <a class="back-link" href="{{ '/' | relative_url }}">Back</a>
+    <div class="post-navigation">
+      {% if page.previous.url %}
+        <a class="nav-link prev" href="{{ page.previous.url | relative_url }}">
+          ← {{ page.previous.title }}
+        </a>
+      {% endif %}
+      {% if page.next.url %}
+        <a class="nav-link next" href="{{ page.next.url | relative_url }}">
+          {{ page.next.title }} →
+        </a>
+      {% endif %}
+    </div>
+    <div class="back-section">
+      <a class="back-link" href="{{ '/' | relative_url }}">Back</a>
+    </div>
   </footer>
 </article>
