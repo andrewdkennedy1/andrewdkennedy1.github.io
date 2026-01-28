@@ -149,6 +149,13 @@ textarea:focus-visible {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
+  transform: scale(1.05);
+}
+
+.nav-links a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  transform: scale(1.05);
 }
 
 .site-main {
