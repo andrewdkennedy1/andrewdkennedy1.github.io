@@ -5,3 +5,7 @@
 ## 2026-01-28 - Micro-interactions for Navigation
 **Learning:** Adding a subtle `transform: scale()` to navigation links on hover and focus-visible states provides immediate, delightful feedback that goes beyond simple color changes. It makes the UI feel more "alive" and responsive. Additionally, increasing `outline-offset` on focus states ensures that the focus ring doesn't crowd the element, improving accessibility for keyboard users by making the focused state unmistakable.
 **Action:** Use scale transforms sparingly but effectively to enhance interactivity in high-value areas like navigation.
+
+## 2026-01-29 - Scroll Progress and Reading Context
+**Learning:** Providing context for long-form content is key to keeping users engaged. A scroll progress bar at the top of the page offers a subtle, non-intrusive way to communicate "how much is left," which is particularly useful for in-depth technical posts. Similarly, a "Reading Time" indicator helps users manage their expectations before they commit to a post. Both are examples of "empathetic design"—recognizing the user's time and attention as valuable resources.
+**Action:** Always include progress indicators or reading time for content exceeding 500 words.
