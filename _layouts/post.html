@@ -3,7 +3,7 @@ layout: default
 ---
 <article class="post">
   <header class="post-header">
-    <a class="back-link" href="{{ '/' | relative_url }}">← Back</a>
+    <a class="back-link" href="{{ '/' | relative_url }}#daily">← Back to daily feed</a>
     <p class="post-meta">
       <time datetime="{{ page.date | date_to_xmlschema }}">
         {{ page.date | date: "%B %-d, %Y" }}
@@ -28,7 +28,6 @@ layout: default
     {{ content }}
   </div>
 
-  <!-- Related posts section -->
   <section class="related-posts">
     <h3>Related Posts</h3>
     <div class="post-list">
@@ -62,7 +61,7 @@ layout: default
       {% endif %}
     </div>
     <div class="back-section">
-      <a class="back-link" href="{{ '/' | relative_url }}">Back</a>
+      <a class="back-link" href="{{ '/' | relative_url }}#daily">Back to daily feed</a>
     </div>
   </footer>
 </article>

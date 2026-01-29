@@ -5,15 +5,17 @@ description: "All posts."
 ---
 
 <section class="hero">
-  <p class="eyebrow">Everything</p>
-  <h2>Archive</h2>
-  <p>All posts, by date.</p>
+  <div>
+    <p class="eyebrow">Everything in one place</p>
+    <h2>The archive</h2>
+    <p>Search every entry, from the newest dispatch to the earliest notes.</p>
+  </div>
 </section>
 
 <section class="archive">
   <div class="section-heading">
-    <h3>Posts</h3>
-    <p class="meta-note">{{ site.posts | size }} total</p>
+    <h3>All posts</h3>
+    <p class="meta-note">{{ site.posts | size }} entries</p>
   </div>
   <div class="archive-list">
     {% for post in site.posts %}

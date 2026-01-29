@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#efe7da">
+    <meta name="theme-color" content="#0d0f14">
     <title>{{ page.title | default: site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
     {% seo %}
@@ -28,9 +28,10 @@
         </div>
         <nav class="nav-links" aria-label="Primary">
           <a href="{{ '/' | relative_url }}">Home</a>
+          <a href="{{ '/' | relative_url }}#daily">Daily</a>
           <a href="{{ '/archive.html' | relative_url }}">Archive</a>
           <a href="{{ '/term.html' | relative_url }}">Terminal</a>
-          <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">🌓</button>
+          <button id="theme-toggle" class="nav-cta" aria-label="Toggle theme" title="Toggle theme">Theme</button>
         </nav>
       </header>
 
@@ -100,23 +101,23 @@
 
         // Theme toggle functionality
         const themeToggle = document.getElementById('theme-toggle');
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+
         // Apply saved theme on load
         document.documentElement.setAttribute('data-theme', currentTheme);
-        
+
         themeToggle.addEventListener('click', () => {
           const currentTheme = document.documentElement.getAttribute('data-theme');
           const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
           document.documentElement.setAttribute('data-theme', newTheme);
           localStorage.setItem('theme', newTheme);
-          
-          // Update toggle icon
-          themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+
+          // Update toggle label
+          themeToggle.textContent = newTheme === 'dark' ? 'Light mode' : 'Dark mode';
         });
-        
-        // Set initial icon
-        themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+        // Set initial label
+        themeToggle.textContent = currentTheme === 'dark' ? 'Light mode' : 'Dark mode';
 
         // Open external links in a new tab for a better UX.
         document.querySelectorAll('.post-content a').forEach(link => {
@@ -124,6 +125,17 @@
             link.setAttribute('target', '_blank');
             link.setAttribute('rel', 'noopener noreferrer');
           }
+        });
+
+        // Replace broken images with a fallback.
+        const fallbackSrc = '{{ '/assets/images/fallback.svg' | relative_url }}';
+        document.querySelectorAll('img').forEach(img => {
+          img.addEventListener('error', () => {
+            if (img.dataset.fallbackApplied) return;
+            img.dataset.fallbackApplied = 'true';
+            img.src = fallbackSrc;
+            img.alt = img.alt || 'Image unavailable';
+          });
         });
 
         // Scroll progress bar logic
