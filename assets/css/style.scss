@@ -796,3 +796,15 @@ pre code { background: transparent; padding: 0; }
 .mermaid-wrapper .copy-code-button:hover {
   background: rgba(27, 26, 23, 0.2);
 }
+
+/* Scroll progress bar */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: var(--accent);
+  z-index: 1100;
+  transition: width 0.1s ease-out;
+}

@@ -18,6 +18,7 @@
     {% endif %}
   </head>
   <body class="site">
+    <div id="scroll-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="page-shell">
     <header class="site-header wrapper">
@@ -124,6 +125,17 @@
             link.setAttribute('rel', 'noopener noreferrer');
           }
         });
+
+        // Scroll progress bar logic
+        const scrollProgress = document.getElementById('scroll-progress');
+        if (scrollProgress) {
+          window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            scrollProgress.style.width = scrolled + "%";
+          });
+        }
 
         // Back to top button logic
         const backToTopButton = document.getElementById('back-to-top');

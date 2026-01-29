@@ -8,6 +8,15 @@ layout: default
       <time datetime="{{ page.date | date_to_xmlschema }}">
         {{ page.date | date: "%B %-d, %Y" }}
       </time>
+      {% assign words = content | number_of_words %}
+      {% if words > 0 %}
+        ·
+        {% if words < 360 %}
+          1 min read
+        {% else %}
+          {{ words | divided_by: 180 }} min read
+        {% endif %}
+      {% endif %}
     </p>
     <h1 class="post-title">{{ page.title | escape }}</h1>
     {% if page.subtitle %}
