@@ -3,59 +3,22 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0d0f14">
     <title>{{ page.title | default: site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
     {% seo %}
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
     {% if page.head %}
       {{ page.head }}
     {% endif %}
   </head>
-  <body class="site">
-    <div id="scroll-progress" aria-hidden="true"></div>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <div class="page-shell">
-      <header class="site-header wrapper">
-        <div class="brand-block">
-          <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-          <p class="tagline">{{ site.description }}</p>
-        </div>
-        <div class="nav-block">
-          <nav class="nav-links" aria-label="Primary">
-            <a class="nav-link" href="{{ '/archive.html' | relative_url }}">Archive</a>
-            <a class="nav-link" href="#notes">Notebook</a>
-          </nav>
-          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">🌓</button>
-        </div>
-      </header>
-
-      <main id="main" class="site-main wrapper" role="main">
-        {{ content }}
-      </main>
-
-      <footer class="site-footer wrapper">
-        <div class="footer-grid">
-          <p>{{ site.title }} · {{ 'now' | date: '%Y' }}</p>
-          <p>Writing in public.</p>
-        </div>
-      </footer>
-    </div>
-
-    <button id="back-to-top" type="button" class="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
-
+  <body>
+    <main class="page" role="main">
+      {{ content }}
+    </main>
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
 
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: 'neutral'
-      });
+      mermaid.initialize({ startOnLoad: false });
 
       document.addEventListener('DOMContentLoaded', async () => {
         const selectors = [
@@ -66,29 +29,26 @@
         const nodes = document.querySelectorAll(selectors.join(', '));
         if (!nodes.length) return;
 
-        function getMermaidContent(el) {
-          const txt = el.textContent || el.innerText;
-          const textarea = document.createElement('textarea');
-          textarea.innerHTML = txt;
-          return textarea.value;
-        }
-
         for (const node of nodes) {
           if (node.tagName === 'DIV' && node.classList.contains('mermaid')) continue;
           if (node.getAttribute('data-processed')) continue;
 
-          const graphDefinition = getMermaidContent(node);
+          const txt = node.textContent || node.innerText || '';
+          const textarea = document.createElement('textarea');
+          textarea.innerHTML = txt;
+          const graphDefinition = textarea.value;
+
           const div = document.createElement('div');
           div.className = 'mermaid';
           div.textContent = graphDefinition;
 
           let targetToReplace = node;
-          if (node.tagName === 'CODE' && node.parentElement.tagName === 'PRE') {
+          if (node.tagName === 'CODE' && node.parentElement?.tagName === 'PRE') {
             targetToReplace = node.parentElement;
-            if (targetToReplace.parentElement.classList.contains('highlight') ||
-                targetToReplace.parentElement.className.includes('language-mermaid')) {
+            if (targetToReplace.parentElement?.classList.contains('highlight') ||
+                targetToReplace.parentElement?.className.includes('language-mermaid')) {
               targetToReplace = targetToReplace.parentElement;
-              if (targetToReplace.parentElement.className.includes('highlighter-rouge')) {
+              if (targetToReplace.parentElement?.className.includes('highlighter-rouge')) {
                 targetToReplace = targetToReplace.parentElement;
               }
             }
@@ -98,130 +58,6 @@
         }
 
         await mermaid.run({ querySelector: '.mermaid' });
-
-        const themeToggle = document.getElementById('theme-toggle');
-        const iconFor = theme => theme === 'dark' ? '☀️' : '🌙';
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        themeToggle.textContent = iconFor(currentTheme);
-        themeToggle.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'Light' : 'Dark'} mode`);
-
-        themeToggle.addEventListener('click', () => {
-          const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-          const nextTheme = theme === 'dark' ? 'light' : 'dark';
-          document.documentElement.setAttribute('data-theme', nextTheme);
-          localStorage.setItem('theme', nextTheme);
-          themeToggle.textContent = iconFor(nextTheme);
-          themeToggle.setAttribute('aria-label', `Switch to ${nextTheme === 'dark' ? 'Light' : 'Dark'} mode`);
-        });
-
-        document.querySelectorAll('.post-content a').forEach(link => {
-          if (link.hostname !== window.location.hostname) {
-            link.setAttribute('target', '_blank');
-            link.setAttribute('rel', 'noopener noreferrer');
-          }
-        });
-
-        const fallbackSrc = "{{ '/assets/images/fallback.svg' | relative_url }}";
-        document.querySelectorAll('img').forEach(img => {
-          img.addEventListener('error', () => {
-            if (img.dataset.fallbackApplied) return;
-            img.dataset.fallbackApplied = 'true';
-            img.src = fallbackSrc;
-            img.alt = img.alt || 'Image unavailable';
-          });
-        });
-
-        const scrollProgress = document.getElementById('scroll-progress');
-        if (scrollProgress) {
-          window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            scrollProgress.style.width = scrolled + '%';
-          });
-        }
-
-        const backToTopButton = document.getElementById('back-to-top');
-        if (backToTopButton) {
-          window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-              backToTopButton.classList.add('visible');
-            } else {
-              backToTopButton.classList.remove('visible');
-            }
-          });
-
-          backToTopButton.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
-        }
-
-        document.querySelectorAll('.post-content pre').forEach(pre => {
-          if (pre.querySelector('code.language-mermaid')) return;
-
-          const wrapper = document.createElement('div');
-          wrapper.className = 'code-block-wrapper';
-          pre.parentNode.insertBefore(wrapper, pre);
-          wrapper.appendChild(pre);
-
-          const button = document.createElement('button');
-          button.className = 'copy-code-button';
-          button.textContent = 'Copy';
-          button.setAttribute('aria-label', 'Copy code to clipboard');
-          wrapper.appendChild(button);
-
-          button.addEventListener('click', async () => {
-            const code = pre.querySelector('code').innerText;
-            try {
-              await navigator.clipboard.writeText(code);
-              button.textContent = 'Copied!';
-              button.classList.add('copied');
-              setTimeout(() => {
-                button.textContent = 'Copy';
-                button.classList.remove('copied');
-              }, 2000);
-            } catch (err) {
-              console.error('Failed to copy text: ', err);
-              button.textContent = 'Error';
-              setTimeout(() => {
-                button.textContent = 'Copy';
-              }, 2000);
-            }
-          });
-        });
-
-        document.querySelectorAll('.post-content .mermaid').forEach(mermaidEl => {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'mermaid-wrapper';
-          mermaidEl.parentNode.insertBefore(wrapper, mermaidEl);
-          wrapper.appendChild(mermaidEl);
-
-          const button = document.createElement('button');
-          button.className = 'copy-code-button';
-          button.textContent = 'Copy';
-          button.setAttribute('aria-label', 'Copy diagram source to clipboard');
-          wrapper.appendChild(button);
-
-          button.addEventListener('click', async () => {
-            const code = mermaidEl.textContent;
-            try {
-              await navigator.clipboard.writeText(code);
-              button.textContent = 'Copied!';
-              button.classList.add('copied');
-              setTimeout(() => {
-                button.textContent = 'Copy';
-                button.classList.remove('copied');
-              }, 2000);
-            } catch (err) {
-              console.error('Failed to copy text: ', err);
-              button.textContent = 'Error';
-              setTimeout(() => {
-                button.textContent = 'Copy';
-              }, 2000);
-            }
-          });
-        });
       });
     </script>
   </body>
