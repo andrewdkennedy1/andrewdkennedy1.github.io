@@ -21,18 +21,18 @@
     <div id="scroll-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="page-shell">
-    <header class="site-header wrapper">
+      <header class="site-header wrapper">
         <div class="brand-block">
           <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
           <p class="tagline">{{ site.description }}</p>
         </div>
-        <nav class="nav-links" aria-label="Primary">
-          <a href="{{ '/' | relative_url }}">Home</a>
-          <a href="{{ '/' | relative_url }}#daily">Daily</a>
-          <a href="{{ '/archive.html' | relative_url }}">Archive</a>
-          <a href="{{ '/term.html' | relative_url }}">Terminal</a>
-          <button id="theme-toggle" class="nav-cta" aria-label="Toggle theme" title="Toggle theme">Theme</button>
-        </nav>
+        <div class="nav-block">
+          <nav class="nav-links" aria-label="Primary">
+            <a class="nav-link" href="{{ '/archive.html' | relative_url }}">Archive</a>
+            <a class="nav-link" href="#notes">Notebook</a>
+          </nav>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">🌓</button>
+        </div>
       </header>
 
       <main id="main" class="site-main wrapper" role="main">
@@ -99,27 +99,22 @@
 
         await mermaid.run({ querySelector: '.mermaid' });
 
-        // Theme toggle functionality
         const themeToggle = document.getElementById('theme-toggle');
+        const iconFor = theme => theme === 'dark' ? '☀️' : '🌙';
         const currentTheme = localStorage.getItem('theme') || 'dark';
-
-        // Apply saved theme on load
         document.documentElement.setAttribute('data-theme', currentTheme);
+        themeToggle.textContent = iconFor(currentTheme);
+        themeToggle.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'Light' : 'Dark'} mode`);
 
         themeToggle.addEventListener('click', () => {
-          const currentTheme = document.documentElement.getAttribute('data-theme');
-          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-          document.documentElement.setAttribute('data-theme', newTheme);
-          localStorage.setItem('theme', newTheme);
-
-          // Update toggle label
-          themeToggle.textContent = newTheme === 'dark' ? 'Light mode' : 'Dark mode';
+          const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+          const nextTheme = theme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          localStorage.setItem('theme', nextTheme);
+          themeToggle.textContent = iconFor(nextTheme);
+          themeToggle.setAttribute('aria-label', `Switch to ${nextTheme === 'dark' ? 'Light' : 'Dark'} mode`);
         });
 
-        // Set initial label
-        themeToggle.textContent = currentTheme === 'dark' ? 'Light mode' : 'Dark mode';
-
-        // Open external links in a new tab for a better UX.
         document.querySelectorAll('.post-content a').forEach(link => {
           if (link.hostname !== window.location.hostname) {
             link.setAttribute('target', '_blank');
@@ -127,8 +122,7 @@
           }
         });
 
-        // Replace broken images with a fallback.
-        const fallbackSrc = '{{ '/assets/images/fallback.svg' | relative_url }}';
+        const fallbackSrc = "{{ '/assets/images/fallback.svg' | relative_url }}";
         document.querySelectorAll('img').forEach(img => {
           img.addEventListener('error', () => {
             if (img.dataset.fallbackApplied) return;
@@ -138,18 +132,16 @@
           });
         });
 
-        // Scroll progress bar logic
         const scrollProgress = document.getElementById('scroll-progress');
         if (scrollProgress) {
           window.addEventListener('scroll', () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
-            scrollProgress.style.width = scrolled + "%";
+            scrollProgress.style.width = scrolled + '%';
           });
         }
 
-        // Back to top button logic
         const backToTopButton = document.getElementById('back-to-top');
         if (backToTopButton) {
           window.addEventListener('scroll', () => {
@@ -165,7 +157,6 @@
           });
         }
 
-        // Add copy buttons to code blocks
         document.querySelectorAll('.post-content pre').forEach(pre => {
           if (pre.querySelector('code.language-mermaid')) return;
 
@@ -200,7 +191,6 @@
           });
         });
 
-        // Add copy buttons to mermaid diagrams
         document.querySelectorAll('.post-content .mermaid').forEach(mermaidEl => {
           const wrapper = document.createElement('div');
           wrapper.className = 'mermaid-wrapper';
