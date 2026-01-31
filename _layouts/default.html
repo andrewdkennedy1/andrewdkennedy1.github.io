@@ -60,5 +60,32 @@
         await mermaid.run({ querySelector: '.mermaid' });
       });
     </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre').forEach((pre) => {
+          const code = pre.querySelector('code');
+          if (!code || pre.classList.contains('mermaid')) return;
+
+          const button = document.createElement('button');
+          button.className = 'copy-button';
+          button.type = 'button';
+          button.innerText = 'Copy';
+
+          pre.style.position = 'relative';
+          pre.appendChild(button);
+
+          button.addEventListener('click', () => {
+            navigator.clipboard.writeText(code.innerText).then(() => {
+              button.innerText = 'Copied!';
+              button.classList.add('copied');
+              setTimeout(() => {
+                button.innerText = 'Copy';
+                button.classList.remove('copied');
+              }, 2000);
+            });
+          });
+        });
+      });
+    </script>
   </body>
 </html>

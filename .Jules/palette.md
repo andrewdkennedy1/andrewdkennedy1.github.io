@@ -9,3 +9,7 @@
 ## 2026-01-29 - Scroll Progress and Reading Context
 **Learning:** Providing context for long-form content is key to keeping users engaged. A scroll progress bar at the top of the page offers a subtle, non-intrusive way to communicate "how much is left," which is particularly useful for in-depth technical posts. Similarly, a "Reading Time" indicator helps users manage their expectations before they commit to a post. Both are examples of "empathetic design"—recognizing the user's time and attention as valuable resources.
 **Action:** Always include progress indicators or reading time for content exceeding 500 words.
+
+## 2026-01-31 - Code Block Interactivity
+**Learning:** For technical blogs, code blocks are primary interaction points. Adding a "Copy" button directly to the `<pre>` tag significantly reduces friction for users who want to try out examples. Using `position: absolute` and `opacity: 0` (revealed on hover) keeps the UI clean until the user shows intent. Crucially, providing immediate visual feedback (changing text to "Copied!") is essential to confirm the action was successful, especially since clipboard operations are otherwise invisible.
+**Action:** Always provide "Copied!" feedback and handle `pre` blocks with `overflow-x: auto` by ensuring the button remains pinned to the visible area (or parent container).
