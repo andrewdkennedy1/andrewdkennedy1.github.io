@@ -182,3 +182,36 @@ a:focus-visible {
     padding: 32px 16px 56px;
   }
 }
+
+.copy-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+pre:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:hover,
+.copy-button:focus-visible {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.copy-button.copied {
+  background: #10b981;
+  border-color: #10b981;
+}
