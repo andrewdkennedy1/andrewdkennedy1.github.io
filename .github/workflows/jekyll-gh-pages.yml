@@ -35,6 +35,10 @@ jobs:
         with:
           source: ./
           destination: ./_site
+      - name: Check links in built site
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: "--config .lychee.toml ./_site"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 

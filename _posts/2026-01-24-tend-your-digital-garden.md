@@ -85,4 +85,4 @@ Go plant something.
 - [Maggie Appleton: A History of Digital Gardening](https://maggieappleton.com/garden-history)
 - [Mike Caulfield: The Garden and the Stream](https://hapgood.us/2015/10/17/the-garden-and-the-stream/)
 - [Obsidian.md](https://obsidian.md/)
-- [Digital Gardeners Discord/Community](https://discord.gg/digitalgarden)
+- [Digital Gardening Community (Discord inside)](https://dg-docs.ole.dev/)

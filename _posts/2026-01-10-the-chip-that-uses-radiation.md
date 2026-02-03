@@ -64,7 +64,7 @@ Researchers are now able to create chip-sized QRNGs that can be integrated direc
 ### Commercial Availability
 A growing number of companies now offer commercially available HRNGs that can be plugged into a computer via USB. These devices provide a high-quality source of entropy for security-conscious users, researchers, and developers who need a reliable source of true randomness. Products like TectroLabs' SwiftRNG and the OneRNG are examples of how this technology is becoming more mainstream.
 
-![Quantum Mechanics](https://i.giphy.com/yQltwC4N8nzOE1WdDW.gif)
+![Quantum Mechanics](/assets/images/quantum.svg)
 
 ---
 

@@ -8,7 +8,7 @@ description: "Meet the S2000 SAWES, a megawatt-class airborne wind energy system
 
 Picture this: you look up at the sky, and floating serenely above the landscape isn't a bird or a plane, but a massive, futuristic airship. It's not there for a parade, though. It's quietly generating enough electricity to power a small town.
 
-![S2000 Airship](https://cms.interestingengineering.com/wp-content/uploads/2026/01/IE-Photo.jpg)
+![S2000 Airship](/assets/images/airship.svg)
 
 Sounds like science fiction, right? Well, a Beijing-based company just took a huge leap toward making it science fact.
 

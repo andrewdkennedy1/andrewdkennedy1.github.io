@@ -32,5 +32,5 @@ Day 27 is here now, the missing beam in the January span. The terminal page is g
 
 ## References
 
-- [Calm Technology](https://mitpress.mit.edu/9780262134729/calm-technology/)—Amber Case's work on how technology can honor human attention.
+- [Calm Technology](https://calmtech.com/book)—Amber Case's work on how technology can honor human attention.
 - [The Humane Interface](https://archive.org/details/HumaneInterface) by Jef Raskin, for reminding me why restraint matters.

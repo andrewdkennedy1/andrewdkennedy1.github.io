@@ -1,0 +1,16 @@
+# Link checker configuration
+verbose = true
+no_progress = true
+max_retries = 2
+retry_wait_time = 2
+timeout = 20
+insecure = false
+exclude_mail = true
+accept = [200, 201, 202, 204, 206, 301, 302, 303, 307, 308]
+
+# Skip local anchors that Jekyll doesn't render as files
+exclude = [
+  "^mailto:",
+  "^tel:",
+  "^#"
+]

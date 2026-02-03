@@ -33,6 +33,12 @@ img {
   display: block;
 }
 
+img.image-fallback {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #f3f4f6;
+}
+
 a {
   color: var(--link);
   text-decoration: none;

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Airship in the Sky</title>
+  <desc id="desc">Stylized illustration of a high-altitude airship floating above clouds.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="100%" stop-color="#bae6fd" />
+    </linearGradient>
+    <linearGradient id="ship" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e40af" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#sky)" />
+  <g opacity="0.6" fill="#ffffff">
+    <ellipse cx="280" cy="420" rx="240" ry="70" />
+    <ellipse cx="520" cy="460" rx="260" ry="90" />
+    <ellipse cx="860" cy="410" rx="220" ry="65" />
+  </g>
+  <g>
+    <ellipse cx="600" cy="300" rx="300" ry="90" fill="url(#ship)" />
+    <rect x="520" y="300" width="160" height="40" rx="18" fill="#111827" />
+    <circle cx="520" cy="320" r="6" fill="#38bdf8" />
+    <circle cx="560" cy="320" r="6" fill="#38bdf8" />
+    <circle cx="600" cy="320" r="6" fill="#38bdf8" />
+    <circle cx="640" cy="320" r="6" fill="#38bdf8" />
+    <circle cx="680" cy="320" r="6" fill="#38bdf8" />
+  </g>
+  <text x="80" y="120" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="44" fill="#0f172a" font-weight="700">
+    Airship in the Sky
+  </text>
+  <text x="80" y="170" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="22" fill="#334155">
+    High-altitude wind energy, visualized
+  </text>
+</svg>
