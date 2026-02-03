@@ -20,26 +20,41 @@ layout: default
     </p>
     <div class="share-bar" data-share-container>
       <span class="share-label">Share</span>
-      <button
-        class="share-button"
-        type="button"
-        data-share-action="native"
-        data-share-title="{{ page.title | escape }}"
-        data-share-text="{{ page.description | default: site.description | escape }}"
-        data-share-url="{{ page.url | absolute_url }}"
-      >
-        Share
-      </button>
-      <button
-        class="share-button secondary"
-        type="button"
-        data-share-action="copy"
-        data-share-title="{{ page.title | escape }}"
-        data-share-text="{{ page.description | default: site.description | escape }}"
-        data-share-url="{{ page.url | absolute_url }}"
-      >
-        Copy link
-      </button>
+      <div class="share-menu" data-share-menu>
+        <button class="share-icon-button" type="button" aria-label="Share options">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a3 3 0 1 0-2.83-4H15a3 3 0 0 0 .17 1.01L8.91 9.09a3.01 3.01 0 0 0-1.82-.59 3 3 0 1 0 2.66 4.4l6.35 3.17A3 3 0 1 0 18 14a3 3 0 0 0-1.83.6l-6.35-3.17A3.01 3.01 0 0 0 10 10c0-.35-.06-.69-.17-1.01l6.26-3.07A3 3 0 0 0 18 8Z"/>
+          </svg>
+        </button>
+        <div class="share-menu-panel" role="menu">
+          <button
+            class="share-menu-item"
+            type="button"
+            role="menuitem"
+            data-share-action="native"
+            data-confirm-label="Shared"
+            data-share-title="{{ page.title | escape }}"
+            data-share-text="{{ page.description | default: site.description | escape }}"
+            data-share-url="{{ page.url | absolute_url }}"
+          >
+            <span class="menu-label">Share</span>
+            <span class="menu-status" aria-live="polite">Shared</span>
+          </button>
+          <button
+            class="share-menu-item"
+            type="button"
+            role="menuitem"
+            data-share-action="copy"
+            data-confirm-label="Copied"
+            data-share-title="{{ page.title | escape }}"
+            data-share-text="{{ page.description | default: site.description | escape }}"
+            data-share-url="{{ page.url | absolute_url }}"
+          >
+            <span class="menu-label">Copy link</span>
+            <span class="menu-status" aria-live="polite">Copied</span>
+          </button>
+        </div>
+      </div>
       <span class="share-status" aria-live="polite"></span>
     </div>
   </header>

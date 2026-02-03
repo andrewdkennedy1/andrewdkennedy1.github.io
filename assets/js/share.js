@@ -33,6 +33,18 @@
     }
   };
 
+  const setMenuStatus = (button) => {
+    if (!button || !button.classList.contains('share-menu-item')) return;
+    const label = button.dataset.confirmLabel;
+    const status = button.querySelector('.menu-status');
+    if (label && status) status.textContent = label;
+    button.classList.add('is-confirmed');
+    clearTimeout(button._confirmTimer);
+    button._confirmTimer = setTimeout(() => {
+      button.classList.remove('is-confirmed');
+    }, 2000);
+  };
+
   const getSharePayload = (button) => {
     const title = button.dataset.shareTitle || document.title || '';
     const url = button.dataset.shareUrl || window.location.href;
@@ -72,6 +84,7 @@
               await navigator.share(payload);
               setStatus(container, 'Shared!');
               trackEvent('share_completed', { method: 'native', url: payload.url });
+              setMenuStatus(button);
             } catch (err) {
               setStatus(container, 'Share canceled.', true);
             }
@@ -80,10 +93,13 @@
               await copyToClipboard(payload.url);
               setStatus(container, 'Link copied.');
               trackEvent('share_completed', { method: 'copy', url: payload.url });
+              setMenuStatus(button);
             } catch (err) {
               setStatus(container, 'Copy failed.', true);
             }
           }
+          const menu = button.closest('[data-share-menu]');
+          if (menu) menu.classList.remove('is-open');
           return;
         }
 
@@ -93,11 +109,154 @@
             await copyToClipboard(payload.url);
             setStatus(container, 'Link copied.');
             trackEvent('share_completed', { method: 'copy', url: payload.url });
+            setMenuStatus(button);
           } catch (err) {
             setStatus(container, 'Copy failed.', true);
           }
+          const menu = button.closest('[data-share-menu]');
+          if (menu) menu.classList.remove('is-open');
         }
       });
+    });
+
+    const shareMenus = document.querySelectorAll('[data-share-menu]');
+    shareMenus.forEach((menu) => {
+      const toggle = menu.querySelector('.share-icon-button');
+      if (!toggle) return;
+
+      toggle.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = menu.classList.contains('is-open');
+        shareMenus.forEach((other) => other.classList.remove('is-open'));
+        if (!isOpen) {
+          menu.classList.add('is-open');
+        }
+      });
+    });
+
+    document.addEventListener('click', () => {
+      shareMenus.forEach((menu) => menu.classList.remove('is-open'));
+    });
+
+    document.addEventListener('keyup', (event) => {
+      if (event.key === 'Escape') {
+        shareMenus.forEach((menu) => menu.classList.remove('is-open'));
+      }
+    });
+
+    const selectionButton = document.createElement('button');
+    selectionButton.type = 'button';
+    selectionButton.className = 'quote-share-button';
+    selectionButton.innerText = 'Copy quote link';
+    selectionButton.hidden = true;
+
+    const selectionStatus = document.createElement('span');
+    selectionStatus.className = 'quote-share-status';
+    selectionStatus.setAttribute('aria-live', 'polite');
+
+    const selectionWrapper = document.createElement('div');
+    selectionWrapper.className = 'quote-share-widget';
+    selectionWrapper.hidden = true;
+    selectionWrapper.appendChild(selectionButton);
+    selectionWrapper.appendChild(selectionStatus);
+
+    document.body.appendChild(selectionWrapper);
+
+    let currentQuote = '';
+    let currentUrl = '';
+
+    const hideSelectionWidget = () => {
+      selectionWrapper.hidden = true;
+      selectionButton.hidden = true;
+      selectionStatus.textContent = '';
+      selectionStatus.dataset.state = '';
+    };
+
+    const showSelectionWidget = (rect) => {
+      const top = window.scrollY + rect.top - 42;
+      const left = window.scrollX + rect.left;
+      selectionWrapper.style.top = `${Math.max(top, 8)}px`;
+      selectionWrapper.style.left = `${Math.max(left, 8)}px`;
+      selectionWrapper.hidden = false;
+      selectionButton.hidden = false;
+    };
+
+    const normalizeQuote = (text) =>
+      text.replace(/\s+/g, ' ').trim().slice(0, 200);
+
+    const buildTextFragmentUrl = (url, quote) => {
+      const base = url.split('#')[0];
+      return `${base}#:~:text=${encodeURIComponent(quote)}`;
+    };
+
+    const updateSelection = () => {
+      const postContent = document.querySelector('.post-content');
+      if (!postContent) return;
+
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) {
+        hideSelectionWidget();
+        return;
+      }
+
+      const range = selection.rangeCount ? selection.getRangeAt(0) : null;
+      if (!range) {
+        hideSelectionWidget();
+        return;
+      }
+
+      if (!postContent.contains(range.commonAncestorContainer)) {
+        hideSelectionWidget();
+        return;
+      }
+
+      const quote = normalizeQuote(selection.toString());
+      if (quote.length < 24) {
+        hideSelectionWidget();
+        return;
+      }
+
+      currentQuote = quote;
+      currentUrl = buildTextFragmentUrl(window.location.href, quote);
+
+      const rect = range.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) {
+        hideSelectionWidget();
+        return;
+      }
+
+      showSelectionWidget(rect);
+    };
+
+    document.addEventListener('mouseup', () => {
+      setTimeout(updateSelection, 0);
+    });
+
+    document.addEventListener('keyup', (event) => {
+      if (event.key === 'Escape') {
+        hideSelectionWidget();
+        return;
+      }
+      setTimeout(updateSelection, 0);
+    });
+
+    selectionButton.addEventListener('click', async () => {
+      if (!currentQuote || !currentUrl) return;
+      trackEvent('quote_share_clicked', { url: currentUrl });
+      const shareText = `“${currentQuote}”\n${currentUrl}`;
+      try {
+        await copyToClipboard(shareText);
+        selectionStatus.textContent = 'Quote link copied.';
+        selectionStatus.dataset.state = 'success';
+        trackEvent('quote_share_copied', { url: currentUrl });
+      } catch (err) {
+        selectionStatus.textContent = 'Copy failed.';
+        selectionStatus.dataset.state = 'error';
+      }
+      setTimeout(() => {
+        selectionStatus.textContent = '';
+        selectionStatus.dataset.state = '';
+      }, 2200);
     });
   });
 })();

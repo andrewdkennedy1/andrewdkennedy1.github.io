@@ -203,29 +203,6 @@ a:focus-visible {
   text-transform: uppercase;
 }
 
-.share-button {
-  border: 1px solid var(--border);
-  background: #ffffff;
-  color: var(--text);
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.share-button.secondary {
-  color: var(--muted);
-}
-
-.share-button:hover,
-.share-button:focus-visible {
-  border-color: var(--link);
-  color: var(--link);
-  box-shadow: 0 6px 16px rgba(11, 95, 255, 0.12);
-}
-
 .share-status {
   font-size: 0.85rem;
   color: var(--muted);
@@ -238,6 +215,150 @@ a:focus-visible {
 
 .share-status[data-state='error'] {
   color: #dc2626;
+}
+
+.share-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.share-icon-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.share-icon-button svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.share-icon-button:hover,
+.share-icon-button:focus-visible {
+  border-color: var(--link);
+  color: var(--link);
+  box-shadow: 0 6px 16px rgba(11, 95, 255, 0.12);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.share-icon-button {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.share-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 160px;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 5;
+}
+
+.share-menu:hover .share-menu-panel,
+.share-menu:focus-within .share-menu-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.share-menu.is-open .share-menu-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.share-menu-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.share-menu-item .menu-label {
+  flex: 1;
+}
+
+.share-menu-item .menu-status {
+  font-size: 0.75rem;
+  color: #10b981;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.share-menu-item.is-confirmed .menu-status {
+  opacity: 1;
+}
+
+.share-menu-item:hover,
+.share-menu-item:focus-visible {
+  background: #f3f4f6;
+  color: var(--link);
+}
+
+.quote-share-widget {
+  position: absolute;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: #111827;
+  color: #f9fafb;
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.2);
+}
+
+.quote-share-button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.quote-share-button:hover,
+.quote-share-button:focus-visible {
+  text-decoration: underline;
+}
+
+.quote-share-status {
+  font-size: 0.75rem;
+  color: #e2e8f0;
+}
+
+.quote-share-status[data-state='success'] {
+  color: #34d399;
+}
+
+.quote-share-status[data-state='error'] {
+  color: #fca5a5;
 }
 
 @media (max-width: 600px) {
