@@ -18,6 +18,30 @@ layout: default
         {% endif %}
       {% endif %}
     </p>
+    <div class="share-bar" data-share-container>
+      <span class="share-label">Share</span>
+      <button
+        class="share-button"
+        type="button"
+        data-share-action="native"
+        data-share-title="{{ page.title | escape }}"
+        data-share-text="{{ page.description | default: site.description | escape }}"
+        data-share-url="{{ page.url | absolute_url }}"
+      >
+        Share
+      </button>
+      <button
+        class="share-button secondary"
+        type="button"
+        data-share-action="copy"
+        data-share-title="{{ page.title | escape }}"
+        data-share-text="{{ page.description | default: site.description | escape }}"
+        data-share-url="{{ page.url | absolute_url }}"
+      >
+        Copy link
+      </button>
+      <span class="share-status" aria-live="polite"></span>
+    </div>
   </header>
 
   <div class="post-content">

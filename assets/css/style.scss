@@ -177,6 +177,63 @@ a:focus-visible {
   margin: 28px 0;
 }
 
+.share-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #f9fafb;
+}
+
+.share-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.share-button {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.share-button.secondary {
+  color: var(--muted);
+}
+
+.share-button:hover,
+.share-button:focus-visible {
+  border-color: var(--link);
+  color: var(--link);
+  box-shadow: 0 6px 16px rgba(11, 95, 255, 0.12);
+}
+
+.share-status {
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-width: 120px;
+}
+
+.share-status[data-state='success'] {
+  color: #059669;
+}
+
+.share-status[data-state='error'] {
+  color: #dc2626;
+}
+
 @media (max-width: 600px) {
   .page {
     padding: 32px 16px 56px;
