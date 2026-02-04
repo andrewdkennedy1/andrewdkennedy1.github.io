@@ -183,30 +183,9 @@ a:focus-visible {
   margin: 28px 0;
 }
 
-.share-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-top: 16px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: #f9fafb;
-}
-
-.share-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
 .share-status {
   font-size: 0.85rem;
   color: var(--muted);
-  min-width: 120px;
 }
 
 .share-status[data-state='success'] {
@@ -224,34 +203,29 @@ a:focus-visible {
 }
 
 .share-icon-button {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: #ffffff;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--muted);
   cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .share-icon-button svg {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   fill: currentColor;
 }
 
 .share-icon-button:hover,
 .share-icon-button:focus-visible {
-  border-color: var(--link);
   color: var(--link);
-  box-shadow: 0 6px 16px rgba(11, 95, 255, 0.12);
-  transform: translateY(-1px) scale(1.02);
-}
-
-.share-icon-button {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  text-decoration: underline;
 }
 
 .share-menu-panel {
