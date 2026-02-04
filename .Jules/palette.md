@@ -13,3 +13,7 @@
 ## 2026-01-31 - Code Block Interactivity
 **Learning:** For technical blogs, code blocks are primary interaction points. Adding a "Copy" button directly to the `<pre>` tag significantly reduces friction for users who want to try out examples. Using `position: absolute` and `opacity: 0` (revealed on hover) keeps the UI clean until the user shows intent. Crucially, providing immediate visual feedback (changing text to "Copied!") is essential to confirm the action was successful, especially since clipboard operations are otherwise invisible.
 **Action:** Always provide "Copied!" feedback and handle `pre` blocks with `overflow-x: auto` by ensuring the button remains pinned to the visible area (or parent container).
+
+## 2026-02-01 - Subtle Information Hierarchies
+**Learning:** Secondary actions like "Share" don't always need their own prominent UI block (like a "Share Bar"). Integrating them into existing metadata lines (like the post date and reading time) creates a much more "elegant" and less cluttered experience. However, when nesting complex UI components (like a dropdown menu) into metadata lines, ensure the HTML structure remains valid (e.g., using a `<div>` instead of a `<p>` for metadata if it contains other block-level elements) to prevent the browser from breaking the DOM tree and subsequent JS logic.
+**Action:** Look for opportunities to merge secondary controls into existing metadata lines to reduce visual noise, while maintaining strict HTML semantics.
