@@ -109,6 +109,37 @@ a:focus-visible {
   display: block;
 }
 
+.post-nav {
+  margin-bottom: 32px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back-link svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  color: var(--link);
+  text-decoration: none;
+}
+
 .post-header {
   margin-bottom: 28px;
 }
@@ -205,15 +236,14 @@ a:focus-visible {
 .share-icon-button {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
   border: none;
   background: transparent;
-  padding: 0;
-  font-size: inherit;
-  font-family: inherit;
+  padding: 4px;
+  margin: -4px;
   color: var(--muted);
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  opacity: 0.7;
 }
 
 .share-icon-button svg {
@@ -225,7 +255,8 @@ a:focus-visible {
 .share-icon-button:hover,
 .share-icon-button:focus-visible {
   color: var(--link);
-  text-decoration: underline;
+  opacity: 1;
+  text-decoration: none;
 }
 
 .share-menu-panel {
