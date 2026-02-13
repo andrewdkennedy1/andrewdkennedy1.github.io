@@ -27,10 +27,6 @@
     <script src="{{ '/assets/js/image-fallback.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/share.js' | relative_url }}"></script>
     <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-
-      mermaid.initialize({ startOnLoad: false });
-
       document.addEventListener('DOMContentLoaded', async () => {
         const selectors = [
           'pre > code.language-mermaid',
@@ -39,6 +35,9 @@
         ];
         const nodes = document.querySelectorAll(selectors.join(', '));
         if (!nodes.length) return;
+
+        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
+        mermaid.initialize({ startOnLoad: false });
 
         for (const node of nodes) {
           if (node.tagName === 'DIV' && node.classList.contains('mermaid')) continue;

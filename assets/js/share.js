@@ -122,6 +122,7 @@
     const shareMenus = document.querySelectorAll('[data-share-menu]');
     shareMenus.forEach((menu) => {
       const toggle = menu.querySelector('.share-icon-button');
+      const panel = menu.querySelector('.share-menu-panel');
       if (!toggle) return;
 
       toggle.addEventListener('click', (event) => {
@@ -132,9 +133,16 @@
           menu.classList.add('is-open');
         }
       });
+
+      if (panel) {
+        panel.addEventListener('click', (event) => {
+          event.stopPropagation();
+        });
+      }
     });
 
-    document.addEventListener('click', () => {
+    document.addEventListener('click', (event) => {
+      if (event.target.closest('[data-share-menu]')) return;
       shareMenus.forEach((menu) => menu.classList.remove('is-open'));
     });
 

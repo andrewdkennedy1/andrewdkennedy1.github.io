@@ -49,6 +49,12 @@ a:focus-visible {
   text-decoration: underline;
 }
 
+.post-content a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
 .page {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -276,13 +282,7 @@ a:focus-visible {
   z-index: 5;
 }
 
-.share-menu:hover .share-menu-panel,
-.share-menu:focus-within .share-menu-panel {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
+.share-menu:focus-within .share-menu-panel,
 .share-menu.is-open .share-menu-panel {
   opacity: 1;
   pointer-events: auto;
@@ -372,6 +372,12 @@ a:focus-visible {
   }
 }
 
+@media (hover: none), (pointer: coarse) {
+  .copy-button {
+    opacity: 1;
+  }
+}
+
 .copy-button {
   position: absolute;
   top: 12px;
@@ -390,7 +396,8 @@ a:focus-visible {
   backdrop-filter: blur(4px);
 }
 
-pre:hover .copy-button {
+pre:hover .copy-button,
+pre:focus-within .copy-button {
   opacity: 1;
 }
 
@@ -408,8 +415,8 @@ pre:hover .copy-button {
 /* commit hash easter egg */
 .commit-egg {
   position: fixed;
-  left: 10px;
-  bottom: 10px;
+  left: max(10px, env(safe-area-inset-left));
+  bottom: max(10px, env(safe-area-inset-bottom));
   width: 10px;
   height: 10px;
   border-radius: 999px;
