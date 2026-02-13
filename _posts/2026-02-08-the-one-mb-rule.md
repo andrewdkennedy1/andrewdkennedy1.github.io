@@ -58,11 +58,4 @@ So, the next time you're building something, ask yourself: "Does this really nee
 
 Load fast. Stay lean.
 
----
-
-## Further Reading
-
 - [The Case for the Small Web]({% post_url 2026-01-21-small-web-big-heart %})
-- [Why Performance Matters for Accessibility](https://www.w3.org/WAI/test-evaluate/)
-- [The 1MB Club](https://1mb.club/)
-- [Microinteractions: UX Design Principles](https://www.nngroup.com/articles/microinteractions/)

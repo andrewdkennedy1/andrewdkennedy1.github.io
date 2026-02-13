@@ -61,10 +61,3 @@ You don't need a massive budget or a team of motion designers to add delight. St
 
 In the end, the architecture of delight isn't about complexity. It’s about empathy. It’s about remembering that on the other side of the screen is a human being who just wants to feel a little bit more connected to the tools they use every day.
 
----
-
-## Further Reading
-
--   *Microinteractions: Designing with Details* by Dan Saffer.
--   [The Role of Micro-interactions in UX Design](https://www.nngroup.com/articles/microinteractions/) - Nielsen Norman Group.
--   [Animation for Attention and Feedback](https://web.dev/articles/animations-guide) - web.dev.

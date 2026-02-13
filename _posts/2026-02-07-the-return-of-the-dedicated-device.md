@@ -74,11 +74,4 @@ One device for everything was a noble experiment. But in 2026, we’ve decided w
 
 Stay focused. Stay dedicated.
 
----
-
-## Further Reading
-
-- [The Psychology of Context Switching](https://archive.org/)
-- [Why High-End Audio is Making a Comeback](https://archive.org/)
-- [The Minimalist Tech Stack of 2026](https://archive.org/)
 - [Why we're bringing back the button]({% post_url 2026-02-04-the-tactile-manifesto %})

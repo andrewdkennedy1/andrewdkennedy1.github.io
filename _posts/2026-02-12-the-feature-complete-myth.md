@@ -72,11 +72,4 @@ The world is loud enough. Your tools should be quiet. They should be stable. The
 
 Stay stable. Stay finished.
 
----
-
-## Further Reading
-
-- [Dieter Rams’ Principles of Good Design](https://www.vitsoe.com/us/about/dieter-rams)
-- [Digital Minimalism (Cal Newport)](https://www.calnewport.com/books/digital-minimalism/)
-- [Microinteractions: UX Design Principles](https://www.nngroup.com/articles/microinteractions/)
 - [The Local-First Revolution]({% post_url 2026-02-10-the-local-first-revolution %})

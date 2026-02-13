@@ -75,11 +75,5 @@ The future isn't loud. The future is focused.
 
 Stay quiet. Stay intentional.
 
----
-
-## Further Reading
-
-- [The Case for Asynchronous Communication](https://doist.com/blog/asynchronous-communication/)
-- [Digital Minimalism by Cal Newport](https://www.calnewport.com/books/digital-minimalism/)
 - [The Small Web Movement]({% post_url 2026-01-21-small-web-big-heart %})
 - [Why we're bringing back the button]({% post_url 2026-02-04-the-tactile-manifesto %})

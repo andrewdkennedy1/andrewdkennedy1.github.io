@@ -67,10 +67,3 @@ So, the next time you find a website that makes you think, don't look for the "F
 
 Stay curious. Stay in control.
 
----
-
-## Further Reading
-
-- [RSS is Still the Best Way to Read the Web](https://archive.org/) (A classic)
-- [How to find RSS feeds for any site](https://www.lifewire.com/what-is-an-rss-feed-4684568)
-- [The Case for RSS](https://archive.org/)

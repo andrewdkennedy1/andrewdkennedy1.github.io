@@ -74,11 +74,4 @@ The "Sealed Era" was a fever dream of planned obsolescence. We’ve finally woke
 
 Stay curious. Stay repairable.
 
----
-
-## Further Reading
-
-- [The iFixit 2026 Repairability Index](https://www.ifixit.com/repairability)
-- [Framework: The future of modular computing](https://frame.work/)
-- [The Right to Repair: A Global Movement](https://repair.org/)
 - [Why we're bringing back the button]({% post_url 2026-02-04-the-tactile-manifesto %})

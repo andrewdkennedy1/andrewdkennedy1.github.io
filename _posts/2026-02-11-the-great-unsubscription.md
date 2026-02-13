@@ -79,11 +79,4 @@ The rent is too high, and the walls are too thin. It’s time to move out of the
 
 Stay sovereign. Stay permanent.
 
----
-
-## Further Reading
-
-- [The Local-First Vision (Ink & Switch)](https://www.inkandswitch.com/local-first/)
-- [Conflict-free Replicated Data Types (CRDTs)](https://crdt.tech/)
 - [Ownership vs. Access: A Philosophical Shift]({% post_url 2026-01-22-your-data-your-computer %})
-- [Digital Minimalism (Cal Newport)](https://www.calnewport.com/books/digital-minimalism/)
