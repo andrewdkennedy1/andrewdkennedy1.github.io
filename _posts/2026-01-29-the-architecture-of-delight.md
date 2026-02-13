@@ -12,7 +12,7 @@ In the digital world, we often lose that tactile connection. We click a button o
 
 This is where **micro-interactions** come in. They are the "small moments" of a product that perform a single task while providing feedback and delight. And in 2026, they are what separate "usable" software from "lovable" software.
 
-![Design and Detail](https://images.unsplash.com/photo-1586717791821-3f44a563cc4c?auto=format&fit=crop&q=80&w=1000)
+![Design and Detail](https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=1000)
 
 ## The Soul of the Machine
 

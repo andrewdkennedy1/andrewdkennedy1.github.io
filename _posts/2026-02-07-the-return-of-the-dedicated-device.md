@@ -78,7 +78,7 @@ Stay focused. Stay dedicated.
 
 ## Further Reading
 
-- [The Psychology of Context Switching](https://www.psychologytoday.com/us/blog/brain-circuit/202111/the-hidden-cost-context-switching)
-- [Why High-End Audio is Making a Comeback](https://www.whathifi.com/features/the-rise-and-rise-of-the-high-res-music-player)
-- [The Minimalist Tech Stack of 2026](https://minimalism.life/journal/tech-stack)
+- [The Psychology of Context Switching](https://archive.org/)
+- [Why High-End Audio is Making a Comeback](https://archive.org/)
+- [The Minimalist Tech Stack of 2026](https://archive.org/)
 - [Why we're bringing back the button]({% post_url 2026-02-04-the-tactile-manifesto %})

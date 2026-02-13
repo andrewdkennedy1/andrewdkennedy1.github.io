@@ -77,7 +77,7 @@ Stay curious. Stay resilient.
 ## Further Reading (Part I)
 
 - [The Internet Archive: Help us preserve the web](https://archive.org/about/)
-- [The Long Now Foundation: 10,000 Year Library](https://longnow.org/projects/manual-for-civilization/)
+- [The Long Now Foundation: 10,000 Year Library](https://archive.org/)
 - [Brewster Kahle: The Digital Librarian](https://brewster.kahle.org/)
 - [Why Local-First software is the future]({% post_url 2026-01-22-your-data-your-computer %})
 

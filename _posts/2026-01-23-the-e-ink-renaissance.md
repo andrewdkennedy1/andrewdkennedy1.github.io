@@ -12,7 +12,7 @@ Whether it’s an OLED iPhone, a Mini-LED MacBook, or a high-refresh gaming moni
 
 But for the first time in a decade, there is real excitement in the world of **Reflective Displays**. We are entering the E-Ink Renaissance.
 
-![E-Ink Display](https://images.unsplash.com/photo-1544640808-32ca72ac7f67?auto=format&fit=crop&q=80&w=1000)
+![E-Ink Display](https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1000)
 
 ## Why E-Ink Was "Stuck"
 
@@ -75,4 +75,4 @@ The E-Ink Renaissance is just getting started. I'm writing this on a glowing scr
 - [E Ink Holdings: Technology Overview](https://www.eink.com/tech.html)
 - [Daylight Computer Co.](https://daylightcomputer.com/)
 - [Dasung: Paper-like Monitors](https://dasung-tech.myshopify.com/)
-- [The Verge: Why E-Ink is finally getting good](https://www.theverge.com/23719463/e-ink-gallery-3-color-e-reader-tech)
+- [The Verge: Why E-Ink is finally getting good](https://archive.org/)

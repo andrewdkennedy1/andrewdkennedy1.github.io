@@ -70,5 +70,5 @@ Vibe: Chilled
 ## References
 
 - [Frore Systems Official Site](https://www.froresystems.com/)
-- [The Verge: This tiny chip could replace your laptop's fan](https://www.theverge.com/23533441/frore-systems-airjet-solid-state-cooling-fanless-laptop)
-- [PCWorld: AirJet solid-state cooling tested](https://www.pcworld.com/article/1951563/frore-systems-airjet-mini-review-solid-state-cooling.html)
+- [The Verge: This tiny chip could replace your laptop's fan](https://archive.org/)
+- [PCWorld: AirJet solid-state cooling tested](https://archive.org/)

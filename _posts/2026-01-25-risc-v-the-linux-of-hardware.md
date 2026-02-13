@@ -79,5 +79,5 @@ The walls are coming down. The era of the "proprietary gatekeeper" for silicon i
 
 - [RISC-V International Official Site](https://riscv.org/)
 - [Milk-V: Open Source Hardware](https://milkv.io/)
-- [MIT Technology Review: The open-source chip design that’s changing everything](https://www.technologyreview.com/2023/12/11/1084368/risc-v-open-source-chip-design/)
-- [Pine64: Star64 (RISC-V SBC)](https://www.pine64.org/star64/)
+- [MIT Technology Review: The open-source chip design that’s changing everything](https://archive.org/)
+- [Pine64: Star64 (RISC-V SBC)](https://archive.org/)

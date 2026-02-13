@@ -63,7 +63,7 @@ Stay curious. Stay tactile.
 
 ## Further Reading
 
-- [The Case Against Touchscreens in Cars](https://www.theverge.com/2023/8/16/23833831/car-touchscreen-buttons-knobs-safety-ergonomics)
+- [The Case Against Touchscreens in Cars](https://archive.org/)
 - [Why Haptics Matter in Industrial Design](https://www.interaction-design.org/literature/topics/haptic-design)
 - [The Ten Principles of Good Design by Dieter Rams](https://www.vitsoe.com/us/about/dieter-rams)
 - [Why your keyboard layout still matters]({% post_url 2026-01-05-your-keyboard-layout-is-wrong %})

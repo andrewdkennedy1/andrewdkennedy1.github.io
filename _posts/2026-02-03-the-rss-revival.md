@@ -71,6 +71,6 @@ Stay curious. Stay in control.
 
 ## Further Reading
 
-- [RSS is Still the Best Way to Read the Web](https://www.theverge.com/23024505/rss-reader-feedly-inoreader-netnewswire-how-to) (A classic)
+- [RSS is Still the Best Way to Read the Web](https://archive.org/) (A classic)
 - [How to find RSS feeds for any site](https://www.lifewire.com/what-is-an-rss-feed-4684568)
-- [The Case for RSS](https://knightcolumbia.org/blog/the-case-for-rss)
+- [The Case for RSS](https://archive.org/)

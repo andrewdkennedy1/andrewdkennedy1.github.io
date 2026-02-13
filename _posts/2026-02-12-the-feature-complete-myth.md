@@ -76,7 +76,7 @@ Stay stable. Stay finished.
 
 ## Further Reading
 
-- [The Philosophy of 'Enough' in Product Design](https://example.com/enough-design)
-- [Why I'm Moving Back to Simple Tools](https://example.com/simple-tools)
-- [The Rise of the 'Feature-Complete' Badge](https://example.com/feature-complete)
+- [Dieter Rams’ Principles of Good Design](https://www.vitsoe.com/us/about/dieter-rams)
+- [Digital Minimalism (Cal Newport)](https://www.calnewport.com/books/digital-minimalism/)
+- [Microinteractions: UX Design Principles](https://www.nngroup.com/articles/microinteractions/)
 - [The Local-First Revolution]({% post_url 2026-02-10-the-local-first-revolution %})

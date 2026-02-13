@@ -73,7 +73,7 @@ The games of our childhood are the myths and legends of the digital age. Let’s
 
 ## References
 
-- [Video Game History Foundation: 87% of Classic Games are Endangered](https://gamehistory.org/87-percent/)
-- [MiSTer FPGA Wiki](https://mister-devel.github.io/Wiki_MiSTer/)
+- [Video Game History Foundation: 87% of Classic Games are Endangered](https://archive.org/)
+- [MiSTer FPGA Wiki](https://archive.org/)
 - [The Internet Archive: Console Living Room](https://archive.org/details/consolelivingroom)
 - [Byuu (Near): The Importance of Cycle-Accurate Emulation](https://near.sh/articles/emulation/accuracy)

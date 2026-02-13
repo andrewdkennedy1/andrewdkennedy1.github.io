@@ -12,7 +12,7 @@ We were living in a world where we owned nothing and "rented" everything. We wer
 
 Well, it’s 2026, and the "Subscription Apocalypse" of last year finally broke the spell. Welcome to the era of the **Great Un-Subscription**.
 
-![A vintage 'Open' sign on a wooden door, representing the return to traditional ownership.](https://images.unsplash.com/photo-1521203380424-6404781434c4?auto=format&fit=crop&q=80&w=1000)
+![A vintage 'Open' sign on a wooden door, representing the return to traditional ownership.](https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1000)
 
 ## The Death of the "Recurring Revenue" Obsession
 
@@ -83,7 +83,7 @@ Stay sovereign. Stay permanent.
 
 ## Further Reading
 
-- [The Return of Perpetual Licenses in Tech](https://example.com/perpetual-licenses-2026)
-- [Why SaaS is failing small businesses](https://example.com/saas-failure)
+- [The Local-First Vision (Ink & Switch)](https://www.inkandswitch.com/local-first/)
+- [Conflict-free Replicated Data Types (CRDTs)](https://crdt.tech/)
 - [Ownership vs. Access: A Philosophical Shift]({% post_url 2026-01-22-your-data-your-computer %})
-- [The Local-First Manifesto](https://www.local-first-web.com/)
+- [Digital Minimalism (Cal Newport)](https://www.calnewport.com/books/digital-minimalism/)

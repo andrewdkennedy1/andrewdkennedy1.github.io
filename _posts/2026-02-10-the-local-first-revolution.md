@@ -79,7 +79,7 @@ Stay local. Stay resilient.
 
 ## Further Reading
 
-- [The Local-First Manifesto](https://www.local-first-web.com/)
+- [The Local-First Manifesto](https://www.inkandswitch.com/local-first/)
 - [Conflict-free Replicated Data Types (CRDTs) Explained](https://crdt.tech/)
 - [Ink & Switch: Local-first software](https://www.inkandswitch.com/local-first/)
 - [Digital Decay & Persona Portability]({% post_url 2026-02-05-digital-decay %})

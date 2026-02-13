@@ -12,7 +12,7 @@ And for a while, it was great. We got seamless sync and collaboration. But we al
 
 But a new movement is bubbling up: **Local-First Software**.
 
-![Local Data](https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=1000)
+![Local Data](https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=1000)
 
 ## What is Local-First?
 

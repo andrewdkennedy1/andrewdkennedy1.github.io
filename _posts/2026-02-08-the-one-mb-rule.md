@@ -63,6 +63,6 @@ Load fast. Stay lean.
 ## Further Reading
 
 - [The Case for the Small Web]({% post_url 2026-01-21-small-web-big-heart %})
-- [Why Performance Matters for Accessibility](https://www.w3.org/WAI/test-evaluate/performance/)
+- [Why Performance Matters for Accessibility](https://www.w3.org/WAI/test-evaluate/)
 - [The 1MB Club](https://1mb.club/)
-- [Modern CSS: You Probably Don't Need That Framework](https://smashingmagazine.com/2024/05/modern-css-no-framework-needed/)
+- [Microinteractions: UX Design Principles](https://www.nngroup.com/articles/microinteractions/)

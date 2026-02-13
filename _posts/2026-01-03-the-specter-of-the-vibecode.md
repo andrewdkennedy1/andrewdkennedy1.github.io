@@ -207,7 +207,7 @@ This is not the end of craftsmanship. It is craftsmanship unleashed.
 
 ## References
 
-[^vibe]: Andrej Karpathy popularized "vibe coding" as a term for this new creative approach to programming. [Learn more about vibe coding](https://www.cloudflare.com/learning/ai/ai-vibe-coding/)
+[^vibe]: Andrej Karpathy popularized "vibe coding" as a term for this new creative approach to programming. [Learn more about vibe coding](https://archive.org/)
 
 ---
 
