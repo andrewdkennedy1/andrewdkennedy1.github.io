@@ -404,3 +404,42 @@ pre:hover .copy-button {
   background: #10b981;
   border-color: #10b981;
 }
+
+/* commit hash easter egg */
+.commit-egg {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #111827;
+  opacity: 0.28;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 30;
+}
+
+.commit-egg:hover {
+  opacity: 0.9;
+  transform: scale(1.15);
+}
+
+.commit-egg:hover::after {
+  content: "build " attr(data-hash);
+  position: absolute;
+  left: 16px;
+  bottom: -4px;
+  white-space: nowrap;
+  background: #111827;
+  color: #f9fafb;
+  font-size: 0.7rem;
+  font-family: var(--mono);
+  padding: 4px 8px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.22);
+}
+
+/* ensure hidden widgets are truly hidden cross-browser */
+.quote-share-widget[hidden] {
+  display: none !important;
+}

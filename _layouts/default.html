@@ -15,6 +15,12 @@
     <main class="page" role="main">
       {{ content }}
     </main>
+    <div
+      class="commit-egg"
+      aria-hidden="true"
+      data-hash="{{ site.github.build_revision | default: 'local-dev' }}"
+      title="Build {{ site.github.build_revision | default: 'local-dev' }}"
+    ></div>
     <script>
       window.IMAGE_FALLBACK_SRC = "{{ '/assets/images/image-unavailable.svg' | relative_url }}";
     </script>
