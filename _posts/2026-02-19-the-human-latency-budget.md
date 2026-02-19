@@ -61,7 +61,7 @@ We now ship tools that depend on multiple remote services, model providers, and 
 
 That’s why the new craft is not just raw speed — it’s graceful degradation.
 
-[The Calibrated Internet]({% post_url 2026-02-20-the-calibrated-internet %}) touches this at the infrastructure layer. At the product layer, it means this:
+Tomorrow’s post, *The Calibrated Internet*, touches this at the infrastructure layer. At the product layer, it means this:
 
 - don’t block entire screens when one panel can stream,
 - don’t hide failures when you can narrate recovery,
@@ -93,4 +93,4 @@ That’s where product quality actually lives.
 
 - [The Latency of Thought]({% post_url 2026-02-15-the-latency-of-thought %})
 - [The Feature-Complete Myth]({% post_url 2026-02-12-the-feature-complete-myth %})
-- [The Calibrated Internet]({% post_url 2026-02-20-the-calibrated-internet %})
+- The Calibrated Internet (tomorrow’s post)
