@@ -6,7 +6,7 @@ Static GitHub Pages content, including the PS4 6.72 Linux host.
 
 Preferred hosted URL:
 
-- Cached/offline: `https://andrewdkennedy1.github.io/ps4-672-linux/`
+- Cached/offline: `https://andrewdkennedy1.github.io/672/`
 
 The host uses AppCache so the PS4 can keep using it offline after the first
 successful load. The visible PS4 page is intentionally one button: `Boot Linux`.
@@ -37,57 +37,49 @@ Optional custom port:
 The scripts print URLs like:
 
 ```text
-http://<your-pc-ip>:8765/ps4-672-linux/
+http://<your-pc-ip>:8765/672/
 ```
 
-On the PS4, open the printed `ps4-672-linux` URL and wait for the cache message
+On the PS4, open the printed `672` URL and wait for the cache message
 before using payload buttons.
 
-For the current Linux test, use the one-button GoldHEN helper path. It gives
-useful PC-side logs instead of leaving the PS4 browser as the only signal and
-loads GamerHack's GoldHEN v2.4b18.9 payload instead of the older bundled
-GoldHEN script.
+GoldHEN and Linux payload assets are loaded from the published GitHub Pages
+`/672/` path even when you temporarily self-host the page for testing.
+
+For the current Linux test, use the one-button hosted payload path. It does not
+require the local helper server.
 Reboot the PS4, keep the Linux USB inserted, then open:
 
 ```text
-http://<your-pc-ip>:8765/ps4-672-linux/?auto=goldhen-linux
+https://andrewdkennedy1.github.io/672/?auto=linux
 ```
 
-That URL auto-presses the page's only visible button. It queues the local helper
-to send `linux-1024mb.elf` to the PS4's GoldHEN BinLoader on port `9090`, then
-runs the exploit and loads GoldHEN v2.4b18.9. Watch the PC command window for
-`[goldhen-linux]` messages. If the PS4 says the page is not responding, do not
-press Stop, Back, or another payload button; that can crash the exploit while
-the browser thread is owned by the payload.
-
-If the helper logs that GoldHEN FTP is reachable on `2121` but port `9090`
-stays closed, open GoldHEN once and enable Payload Server. GoldHEN keeps that
-setting, so later one-button attempts can open the payload server automatically
-when GoldHEN loads.
-
-The helper auto-finds the ELF from the sibling `ps4linux` checkout. If needed,
-set `GOLDHEN_LINUX_PAYLOAD` to the full path of `linux-1024mb.elf` before
-starting the server.
+That URL auto-presses the page's visible `Boot Linux` button. It runs the
+exploit and loads the hosted PS4Boot PS4 Pro 1 GB Linux payload from `/672/`.
+If the PS4 says the page is not responding, do not press Stop, Back, or another
+payload button; that can crash the exploit while the browser thread is owned by
+the payload.
 
 The direct PS4Boot payload fallbacks are hidden from the PS4 page so normal
 testing stays one button. They remain callable by query string only when
 debugging. The direct Pro 1 GB fallback is:
 
 ```text
-http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux-pro
+http://<your-pc-ip>:8765/672/?auto=linux-pro
 ```
 
 Comparison and sanity-check auto URLs are also available:
 
 ```text
-http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux-pro-512
-http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux-browser
-http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux-arabpixel
-http://<your-pc-ip>:8765/ps4-672-linux/?auto=goldhen
+http://<your-pc-ip>:8765/672/?auto=linux-pro-512
+http://<your-pc-ip>:8765/672/?auto=linux-browser
+http://<your-pc-ip>:8765/672/?auto=linux-arabpixel
+http://<your-pc-ip>:8765/672/?auto=goldhen
 ```
 
-`?auto=linux` and `?auto=goldhen-linux` both use the one-button GoldHEN helper
-path. `?auto=linux-legacy` remains as an alias for `?auto=linux-browser`.
+`?auto=linux` and the old `?auto=goldhen-linux` alias both use the hosted
+PS4Boot PS4 Pro 1 GB Linux payload path. `?auto=linux-legacy` remains as an
+alias for `?auto=linux-browser`.
 
 The page also links comparison 6.72 hosts for stability testing:
 

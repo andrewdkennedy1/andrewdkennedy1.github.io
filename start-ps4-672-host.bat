@@ -19,7 +19,7 @@ if not defined PYTHON_CMD (
 echo Serving %CD%
 echo Bind address: 0.0.0.0:%PORT%
 echo.
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$port='%PORT%'; $ips=Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' -and $_.AddressState -eq 'Preferred' } | Select-Object -ExpandProperty IPAddress; if(-not $ips){$ips=@('<this-pc-ip>')}; foreach($ip in $ips){ 'PS4 cached/offline: http://' + $ip + ':' + $port + '/ps4-672-linux/'; '' }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$port='%PORT%'; $ips=Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' -and $_.AddressState -eq 'Preferred' } | Select-Object -ExpandProperty IPAddress; if(-not $ips){$ips=@('<this-pc-ip>')}; foreach($ip in $ips){ 'PS4 cached/offline: http://' + $ip + ':' + $port + '/672/'; '' }"
 echo Use the IP on the same LAN as the PS4. Ignore WSL, VPN, or virtual adapter IPs.
 echo If the PS4 cannot connect, allow Python through Windows Defender Firewall.
 echo GoldHEN auto-Linux helper: /__ps4linux/send-goldhen-linux sends linux-1024mb.elf to the PS4 on port 9090.
