@@ -56,12 +56,25 @@ body {
   font-size: 18px;
   font-weight: bold;
 }
+.panel-lede {
+  margin: -2px 0 14px;
+  color: #c8d4e5;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.steps {
+  margin: 0;
+  padding-left: 22px;
+  color: #d9e4f3;
+  font-size: 15px;
+  line-height: 1.55;
+}
 .primary-row,
 .button-grid,
 .tool-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
 }
 button,
 select {
@@ -74,6 +87,7 @@ select {
   font-weight: bold;
 }
 button {
+  width: 100%;
   padding: 0 16px;
   cursor: pointer;
 }
@@ -95,11 +109,17 @@ button:focus {
 .danger {
   background: #6d2c4d;
 }
-.wide {
-  flex: 1 1 280px;
+.action {
+  padding: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 8px;
 }
-.small {
-  flex: 1 1 155px;
+.action p {
+  margin: 8px 2px 0;
+  color: #c8d4e5;
+  font-size: 13px;
+  line-height: 1.35;
 }
 .fan {
   display: flex;
@@ -115,6 +135,10 @@ button:focus {
   color: #c8d4e5;
   font-size: 13px;
 }
+.good {
+  color: #83e6cf;
+  font-weight: bold;
+}
 </style>
 <script>
 function setStatus(message){window.msgs.innerHTML=message;}
@@ -129,58 +153,134 @@ function DisplayCacheProgress(){setTimeout(function(){setStatus("Cache Installed
   <div class="hero">
     <p class="eyebrow">PS4 6.72 Host</p>
     <h1 id="msgs">6.72 Exploit Menu</h1>
-    <p class="subline">Belize-ready Linux workflow, HEN, Mira, and maintenance payloads.</p>
+    <p class="subline">Belize-ready Linux workflow, HEN, Mira, and maintenance payloads. Start with Exploit + HEN for normal homebrew, or Linux when your PS4 Linux USB is inserted.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Start Here</h2>
+    <ol class="steps">
+      <li>Use this page only on firmware 6.72.</li>
+      <li>Wait for the offline cache message if this is the first visit.</li>
+      <li>For PS4 Linux, insert the prepared Linux USB, then press <span class="good">Linux</span>.</li>
+      <li>If a payload fails, close the browser, reopen this page, and try again.</li>
+    </ol>
   </div>
 
   <div class="panel">
     <h2>Jailbreak</h2>
+    <p class="panel-lede">These buttons run the browser/kernel exploit first, then optionally load a common payload. Use the combined buttons unless you already know the exploit is loaded.</p>
     <div class="primary-row">
-      <button class="go wide" onclick="load_exploit_HEN(); return false">Exploit + HEN</button>
-      <button class="wide" onclick="load_exploit_mira(); return false">Exploit + Mira</button>
-      <button class="wide" onclick="load_exploit_miraUnoff(); return false">Exploit + Mira Unofficial</button>
+      <div class="action">
+        <button class="go" onclick="load_exploit_HEN(); return false">Exploit + HEN</button>
+        <p>Best default for homebrew, package installs, and general use.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_exploit_mira(); return false">Exploit + Mira</button>
+        <p>Loads Mira after the exploit for users who specifically need Mira services.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_exploit_miraUnoff(); return false">Exploit + Mira Unofficial</button>
+        <p>Alternate Mira build. Try this only if the regular Mira option is not working for your setup.</p>
+      </div>
     </div>
     <br>
     <div class="tool-row">
-      <button class="small" onclick="load_exploit(); return false">Exploit Only</button>
-      <button class="small" onclick="load_HEN(); return false">HEN Only</button>
-      <button class="small" onclick="load_mira(); return false">Mira Only</button>
-      <button class="small" onclick="load_mira_unofficial(); return false">Mira Unofficial</button>
+      <div class="action">
+        <button onclick="load_exploit(); return false">Exploit Only</button>
+        <p>Runs only the jailbreak stage. Use this before loading a separate payload manually.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_HEN(); return false">HEN Only</button>
+        <p>Loads HEN after the exploit is already active.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_mira(); return false">Mira Only</button>
+        <p>Loads Mira after the exploit is already active.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_mira_unofficial(); return false">Mira Unofficial</button>
+        <p>Loads the alternate Mira payload after the exploit is already active.</p>
+      </div>
     </div>
   </div>
 
   <div class="panel">
     <h2>Linux & Payloads</h2>
+    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The rest are utility payloads for file transfer, debugging, and dumping.</p>
     <div class="button-grid">
-      <button class="linux wide" onclick="load_linux(); return false">Linux</button>
-      <button class="small" onclick="load_binloader(); return false">Bin Loader</button>
-      <button class="small" onclick="load_ftp(); return false">FTP</button>
-      <button class="small" onclick="load_dumper(); return false">Dumper</button>
-      <button class="small" onclick="load_app2usb(); return false">App2USB</button>
-      <button class="small" onclick="load_kerneldump(); return false">Kernel Dumper</button>
-      <button class="small" onclick="load_webrte(); return false">WebRTE</button>
-      <button class="small" onclick="load_ps4debug(); return false">PS4debug</button>
+      <div class="action">
+        <button class="linux" onclick="load_linux(); return false">Linux</button>
+        <p>Boots the PS4 Linux loader. Insert the Linux USB first, then choose this.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_binloader(); return false">Bin Loader</button>
+        <p>Listens for a payload sent from another device on port 9021.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_ftp(); return false">FTP</button>
+        <p>Starts FTP access so you can move files to and from the console.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_dumper(); return false">Dumper</button>
+        <p>Disc/app dumping payload for backing up installed content.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_app2usb(); return false">App2USB</button>
+        <p>Moves supported app content to USB storage for external loading.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_kerneldump(); return false">Kernel Dumper</button>
+        <p>Dumps kernel memory for low-level debugging and research.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_webrte(); return false">WebRTE</button>
+        <p>Runtime editing/debug tooling for compatible trainers and tools.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_ps4debug(); return false">PS4debug</button>
+        <p>Debug service used by external development and trainer tools.</p>
+      </div>
     </div>
   </div>
 
   <div class="panel">
     <h2>System Tools</h2>
+    <p class="panel-lede">Use these carefully. The update controls are useful for keeping the console on 6.72.</p>
     <div class="button-grid">
-      <button class="small" onclick="load_todex(); return false">ToDEX</button>
-      <button class="small" onclick="load_historyblock(); return false">History Blocker</button>
-      <button class="danger small" onclick="load_updatesdisable(); return false">Disable Updates</button>
-      <button class="small" onclick="load_updatesenable(); return false">Enable Updates</button>
-      <button class="small" onclick="load_dbBackup(); return false">DB Backup</button>
-      <button class="small" onclick="load_dbRestore(); return false">DB Restore</button>
+      <div class="action">
+        <button onclick="load_todex(); return false">ToDEX</button>
+        <p>Switches parts of the system behavior toward DEX-style features.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_historyblock(); return false">History Blocker</button>
+        <p>Reduces browser history entries from exploit host usage.</p>
+      </div>
+      <div class="action">
+        <button class="danger" onclick="load_updatesdisable(); return false">Disable Updates</button>
+        <p>Recommended after moving to 6.72 so the console avoids newer firmware.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_updatesenable(); return false">Enable Updates</button>
+        <p>Reverses the update blocker. Avoid this unless you intentionally need updates back.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_dbBackup(); return false">DB Backup</button>
+        <p>Backs up the PS4 database before risky content or storage changes.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_dbRestore(); return false">DB Restore</button>
+        <p>Restores a database backup created with DB Backup.</p>
+      </div>
     </div>
   </div>
 
   <div class="panel">
     <h2>Fan</h2>
     <div class="fan">
-      <button class="small" onclick="load_fanthresh(); return false">Set Fan Threshold</button>
+      <button onclick="load_fanthresh(); return false">Set Fan Threshold</button>
       <select id="tempC"></select>
       <span>&#176;C</span>
-      <span class="note">Default PS4 target is 79&#176;C.</span>
+      <span class="note">Sets the temperature target used by the fan payload. Default PS4 target is 79&#176;C; 60&#176;C is a common cooler test value.</span>
     </div>
   </div>
 </div>
