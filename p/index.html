@@ -456,7 +456,7 @@ function markPayloadExecuting(message){
   updateProgress((message || "Payload staged") + ". ROP chain is executing now; do not press another payload button.");
   appendLog("If the browser stops responding here, that usually means the payload pivot started.");
   if (activePayload === "Linux") {
-    appendLog("Linux handoff expects a clean boot path. If GoldHEN, HEN, or Mira was loaded earlier, reboot and use Exploit + Linux first.");
+    appendLog("Linux handoff expects a clean boot path. If GoldHEN, HEN, or Mira was loaded earlier, reboot and use Exploit + Linux Pro 1GB first.");
   }
 }
 function closeProgress(){
@@ -466,11 +466,11 @@ function closeProgress(){
 function blockLinuxLaunch(reason){
   startProgress("Linux Launch Blocked", reason);
   failProgress(reason);
-  appendLog("No payload was sent. Reboot the PS4, open this page fresh, then use Exploit + Linux before GoldHEN, HEN, Mira, or other payloads.");
+  appendLog("No payload was sent. Reboot the PS4, open this page fresh, then use Exploit + Linux Pro 1GB before GoldHEN, HEN, Mira, or other payloads.");
 }
 function guardFreshLinuxLaunch(){
   if (sawNonLinuxPayload()) {
-    blockLinuxLaunch("GoldHEN, HEN, Mira, or another payload already ran in this browser session. Do not launch Linux after another payload; reboot the PS4 and use Exploit + Linux first.");
+    blockLinuxLaunch("GoldHEN, HEN, Mira, or another payload already ran in this browser session. Do not launch Linux after another payload; reboot the PS4 and use Exploit + Linux Pro 1GB first.");
     return false;
   }
   if (sawExploitAttempt()) {
@@ -481,11 +481,11 @@ function guardFreshLinuxLaunch(){
 }
 function guardLinuxOnly(){
   if (sawNonLinuxPayload()) {
-    blockLinuxLaunch("GoldHEN, HEN, Mira, or another payload already ran in this browser session. Linux after another payload can crash or power off the PS4. Reboot and use Exploit + Linux first.");
+    blockLinuxLaunch("GoldHEN, HEN, Mira, or another payload already ran in this browser session. Linux after another payload can crash or power off the PS4. Reboot and use Exploit + Linux Pro 1GB first.");
     return false;
   }
   if (!sawExploitAttempt()) {
-    blockLinuxLaunch("Linux Only requires Exploit Only to already be loaded. From a fresh reboot, use Exploit + Linux instead.");
+    blockLinuxLaunch("Linux Only requires Exploit Only to already be loaded. From a fresh reboot, use Exploit + Linux Pro 1GB instead.");
     return false;
   }
   return true;
@@ -566,17 +566,29 @@ function runAutoMode(){
   var mode = (queryValue("auto") || queryValue("run") || "").toLowerCase();
   if (!mode) { return; }
   autoModeStarted = true;
-  if (mode === "linux" || mode === "boot-linux" || mode === "linux-legacy" || mode === "legacy-linux") {
-    startProgress("Auto Linux", "Auto URL requested the browser-native Linux payload. Fresh reboot and prepared USB are required.");
-    appendLog("Auto mode: Linux. Starting Exploit + Linux shortly.");
+  if (mode === "linux" || mode === "boot-linux" || mode === "linux-pro" || mode === "ps4boot-pro" || mode === "linux-ps4boot" || mode === "linux-1gb" || mode === "linux-pro-1gb") {
+    startProgress("Auto Linux Pro 1GB", "Auto URL requested the PS4Boot PS4 Pro 1GB Linux payload. Fresh reboot and prepared USB are required.");
+    appendLog("Auto mode: Linux Pro 1GB. Starting Exploit + Linux Pro 1GB shortly.");
     setTimeout(load_exploit_linux, 1200);
+  } else if (mode === "linux-pro-512" || mode === "linux-512" || mode === "ps4boot-pro-512") {
+    startProgress("Auto Linux Pro 512MB", "Auto URL requested the PS4Boot PS4 Pro 512 MB Linux payload. Use this as the first fallback after a fresh reboot.");
+    appendLog("Auto mode: Linux Pro 512MB. Starting Exploit + Linux Pro 512MB shortly.");
+    setTimeout(load_exploit_linux_ps4boot_pro_512mb, 1200);
+  } else if (mode === "linux-browser" || mode === "browser-linux" || mode === "linux-legacy" || mode === "legacy-linux") {
+    startProgress("Auto Legacy Browser Linux", "Auto URL requested the old browser-native Linux payload. Use this only as a comparison path after a fresh reboot.");
+    appendLog("Auto mode: Legacy Browser Linux. Starting Exploit + Legacy Browser Linux shortly.");
+    setTimeout(load_exploit_linux_browser, 1200);
   } else if (mode === "linux-arabpixel" || mode === "arabpixel-linux" || mode === "linux-v24b1") {
     startProgress("Auto Linux ArabPixel", "Auto URL requested the ArabPixel v24b.1 Linux wrapper. Use this only as a comparison path after a fresh reboot.");
     appendLog("Auto mode: Linux ArabPixel. Starting Exploit + Linux ArabPixel shortly.");
     setTimeout(load_exploit_linux_arabpixel, 1200);
-  } else if (mode === "goldhen") {
-    startProgress("Auto GoldHEN", "Auto URL requested GoldHEN. This is not the Linux boot path.");
+  } else if (mode === "goldhen" || mode === "goldhen-only") {
+    startProgress("Auto GoldHEN", "Auto URL requested GoldHEN. For Linux through GoldHEN, send the ELF from a PC to GoldHEN BinLoader after GoldHEN loads.");
     appendLog("Auto mode: GoldHEN. Starting Exploit + GoldHEN shortly.");
+    setTimeout(load_exploit_goldhen, 1200);
+  } else if (mode === "goldhen-linux") {
+    startProgress("Auto GoldHEN For Linux", "Starting GoldHEN. After it loads, send the Linux ELF from the PC to the PS4 GoldHEN BinLoader on port 9090.");
+    appendLog("Auto mode: GoldHEN Linux. Browser will load GoldHEN first; raw BinLoader send must happen from the PC helper script.");
     setTimeout(load_exploit_goldhen, 1200);
   } else {
     appendLog("Unknown auto mode ignored: " + mode);
@@ -618,18 +630,18 @@ if (window.applicationCache) {
 
   <div class="panel launch-panel">
     <h2>One-Click Boot Tests</h2>
-    <p class="panel-lede">For the Linux goal, use Boot Linux from USB after a fresh reboot with the prepared USB inserted. Reboot clears the jailbreak; this button re-runs the exploit, then sends Linux.</p>
+    <p class="panel-lede">For the Linux goal, use Boot Linux from USB after a fresh reboot with the prepared USB inserted. Reboot clears the jailbreak; this button re-runs the exploit, then sends the PS4Boot PS4 Pro 1 GB Linux payload.</p>
     <div class="launch-actions">
       <div class="action">
         <button class="launch-button linux" onclick="load_exploit_linux(); return false">Boot Linux from USB</button>
-        <p>Runs the 6.72 exploit, then the browser-native Linux payload for the prepared USB.</p>
+        <p>Runs the 6.72 exploit, then the PS4Boot PS4 Pro 1 GB Linux payload for the prepared USB.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
-        <p>Runs the 6.72 exploit, then GoldHEN. Reboot before switching back to Linux.</p>
+        <p>Runs the 6.72 exploit, then GoldHEN. For GoldHEN Linux, send the ELF from the PC helper to port 9090.</p>
       </div>
     </div>
-    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span>, <span class="good">?auto=linux-arabpixel</span>, or <span class="good">?auto=goldhen</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because Linux needs the clean jailbreak path.</p>
+    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=linux-arabpixel</span>, or <span class="good">?auto=goldhen</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because direct Linux needs the clean jailbreak path.</p>
   </div>
 
   <div class="panel">
@@ -638,7 +650,7 @@ if (window.applicationCache) {
       <li>Use this page only on firmware 6.72.</li>
       <li>Wait for the offline cache message if this is the first visit.</li>
       <li>For a quick jailbreak test, press <span class="good">Launch GoldHEN</span>.</li>
-      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Boot Linux from USB</span> or <span class="good">Exploit + Linux</span>. The button jailbreaks again before sending Linux.</li>
+      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Boot Linux from USB</span> or <span class="good">Exploit + Linux Pro 1GB</span>. The button jailbreaks again before sending Linux.</li>
       <li>If a payload fails, close the browser, reopen this page, and try again.</li>
     </ol>
   </div>
@@ -687,8 +699,16 @@ if (window.applicationCache) {
         <p>Older HEN payload from the 6.72 bundle. Reboot before switching from HEN to Linux.</p>
       </div>
       <div class="action">
-        <button class="linux" onclick="load_exploit_linux(); return false">Exploit + Linux</button>
-        <p>Best next default for PS4 Linux on this console. Uses the browser-native Linux payload, then boots from the prepared USB.</p>
+        <button class="linux" onclick="load_exploit_linux(); return false">Exploit + Linux Pro 1GB</button>
+        <p>Default PS4 Linux test for this PS4 Pro. Uses PS4Boot's PS4 Pro 1 GB payload, then boots from the prepared USB.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_exploit_linux_ps4boot_pro_512mb(); return false">Exploit + Linux Pro 512MB</button>
+        <p>First fallback if the 1 GB Pro payload powers off or hangs. Same PS4Boot Pro payload family with less VRAM.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_exploit_linux_browser(); return false">Exploit + Legacy Browser Linux</button>
+        <p>Old browser-native payload that currently powers off this console. Kept only for comparison after a fresh reboot.</p>
       </div>
       <div class="action">
         <button class="linux" onclick="load_exploit_linux_arabpixel(); return false">Exploit + Linux ArabPixel</button>
@@ -730,11 +750,19 @@ if (window.applicationCache) {
 
   <div class="panel">
     <h2>Linux & Payloads</h2>
-    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The default is the browser-native Linux payload; ArabPixel remains available for comparison.</p>
+    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The default is PS4Boot's PS4 Pro 1 GB payload; 512 MB, legacy browser-native, and ArabPixel paths remain available for comparison.</p>
     <div class="button-grid">
       <div class="action">
-        <button class="linux" onclick="load_linux(); return false">Linux</button>
-        <p>Loads the browser-native Linux payload after Exploit Only. Blocked after HEN to avoid a crash or power off.</p>
+        <button class="linux" onclick="load_linux(); return false">Linux Pro 1GB</button>
+        <p>Loads PS4Boot's PS4 Pro 1 GB Linux payload after Exploit Only. Blocked after HEN to avoid a crash or power off.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_linux_ps4boot_pro_512mb(); return false">Linux Pro 512MB</button>
+        <p>Loads PS4Boot's PS4 Pro 512 MB Linux payload after Exploit Only.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_linux_browser(); return false">Legacy Browser Linux</button>
+        <p>Loads the old browser-native Linux payload after Exploit Only. Use only as a comparison path.</p>
       </div>
       <div class="action">
         <button class="linux" onclick="load_linux_arabpixel(); return false">Linux ArabPixel</button>
@@ -852,18 +880,44 @@ setTimeout(jailbreak,500);
 }
 
 function load_exploit_linux(){
+return load_exploit_linux_ps4boot_pro_1gb();
+}
+
+function load_exploit_linux_ps4boot_pro_1gb(){
 if (!guardFreshLinuxLaunch()) { return; }
-if (!beginChain("Exploit + Linux")) { return; }
+if (!beginChain("Exploit + Linux Pro 1GB")) { return; }
 rememberExploit();
 rememberPayload("Linux");
-startProgress("Exploit + Linux", "Running the 6.72 exploit, then loading the browser-native Linux payload. Make sure the PS4 Linux USB is inserted.");
-statusTitle("Loading Exploit + Linux ...");
-LoadedMSG="Exploit + Linux Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux.js";
+startProgress("Exploit + Linux Pro 1GB", "Running the 6.72 exploit, then loading PS4Boot's PS4 Pro 1 GB Linux payload. Make sure the PS4 Linux USB is inserted.");
+statusTitle("Loading Exploit + Linux Pro 1GB ...");
+LoadedMSG="Exploit + Linux Pro 1GB Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux_ps4boot_pro_1gb.js";
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_linux_ps4boot_pro_512mb(){
+if (!guardFreshLinuxLaunch()) { return; }
+if (!beginChain("Exploit + Linux Pro 512MB")) { return; }
+rememberExploit();
+rememberPayload("Linux");
+startProgress("Exploit + Linux Pro 512MB", "Running the 6.72 exploit, then loading PS4Boot's PS4 Pro 512 MB Linux payload. Use this if the 1 GB payload fails.");
+statusTitle("Loading Exploit + Linux Pro 512MB ...");
+LoadedMSG="Exploit + Linux Pro 512MB Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux_ps4boot_pro_512mb.js";
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_linux_browser(){
+if (!guardFreshLinuxLaunch()) { return; }
+if (!beginChain("Exploit + Legacy Browser Linux")) { return; }
+rememberExploit();
+rememberPayload("Linux");
+startProgress("Exploit + Legacy Browser Linux", "Running the 6.72 exploit, then loading the old browser-native Linux payload. This path is kept only for comparison.");
+statusTitle("Loading Exploit + Legacy Browser Linux ...");
+LoadedMSG="Exploit + Legacy Browser Linux Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux.js";
 setTimeout(jailbreak,500);
 }
 
 function load_exploit_linux_legacy(){
-return load_exploit_linux();
+return load_exploit_linux_browser();
 }
 
 function load_exploit_linux_arabpixel(){
@@ -961,17 +1015,41 @@ stagePayloadAndLoader("pl_dumper.js", "Dumper payload");
 }
 
 function load_linux(){
+return load_linux_ps4boot_pro_1gb();
+}
+
+function load_linux_ps4boot_pro_1gb(){
 if (!guardLinuxOnly()) { return; }
-if (!beginChain("Linux Only")) { return; }
+if (!beginChain("Linux Pro 1GB")) { return; }
 rememberPayload("Linux");
-startProgress("Linux Only", "Loading the browser-native Linux payload after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.");
-statusTitle("Loading Linux ...");
-LoadedMSG="Linux Loaded";
-stagePayloadAndLoader("pl_linux.js", "Linux payload");
+startProgress("Linux Pro 1GB", "Loading PS4Boot's PS4 Pro 1 GB Linux payload after the exploit is already active. Prefer Exploit + Linux Pro 1GB from a fresh reboot.");
+statusTitle("Loading Linux Pro 1GB ...");
+LoadedMSG="Linux Pro 1GB Loaded";
+stagePayloadAndLoader("pl_linux_ps4boot_pro_1gb.js", "Linux payload (PS4Boot PS4 Pro 1 GB)");
+}
+
+function load_linux_ps4boot_pro_512mb(){
+if (!guardLinuxOnly()) { return; }
+if (!beginChain("Linux Pro 512MB")) { return; }
+rememberPayload("Linux");
+startProgress("Linux Pro 512MB", "Loading PS4Boot's PS4 Pro 512 MB Linux payload after the exploit is already active.");
+statusTitle("Loading Linux Pro 512MB ...");
+LoadedMSG="Linux Pro 512MB Loaded";
+stagePayloadAndLoader("pl_linux_ps4boot_pro_512mb.js", "Linux payload (PS4Boot PS4 Pro 512 MB)");
+}
+
+function load_linux_browser(){
+if (!guardLinuxOnly()) { return; }
+if (!beginChain("Legacy Browser Linux")) { return; }
+rememberPayload("Linux");
+startProgress("Legacy Browser Linux", "Loading the old browser-native Linux payload after the exploit is already active. Use only as a comparison path.");
+statusTitle("Loading Legacy Browser Linux ...");
+LoadedMSG="Legacy Browser Linux Loaded";
+stagePayloadAndLoader("pl_linux.js", "Linux payload (legacy browser-native)");
 }
 
 function load_linux_legacy(){
-return load_linux();
+return load_linux_browser();
 }
 
 function load_linux_arabpixel(){
