@@ -241,6 +241,28 @@ button:focus {
 <script>
 var progressTimer = null;
 var progressStartedAt = 0;
+var exploitAttempted = false;
+var activePayload = "";
+var nonLinuxPayloadStarted = false;
+function rememberPayload(name){
+  activePayload = name || "";
+  if (name && name !== "Linux") {
+    nonLinuxPayloadStarted = true;
+    try { sessionStorage.setItem("ps4host_non_linux_payload", name); } catch(e) {}
+  }
+}
+function rememberExploit(){
+  exploitAttempted = true;
+  try { sessionStorage.setItem("ps4host_exploit_attempted", "1"); } catch(e) {}
+}
+function sawNonLinuxPayload(){
+  if (nonLinuxPayloadStarted) { return true; }
+  try { return !!sessionStorage.getItem("ps4host_non_linux_payload"); } catch(e) { return false; }
+}
+function sawExploitAttempt(){
+  if (exploitAttempted) { return true; }
+  try { return sessionStorage.getItem("ps4host_exploit_attempted") === "1"; } catch(e) { return false; }
+}
 function setStatus(message){
   var el = document.getElementById("msgs");
   if (el) { el.innerHTML = message; }
@@ -309,17 +331,66 @@ function failProgress(message){
   setStatus(message || "Failed. Reboot the PS4 and try again.");
   if (progressTimer) { clearTimeout(progressTimer); progressTimer = null; }
 }
-function appendPayloadScript(src, label){
+function clearPayloadBlobs(){
+  appendLog("Clearing previous payload blob globals.");
+  try {
+    window.mira_blob = undefined;
+    window.mira_blob_2 = undefined;
+    window.mira_blob_len = 0;
+    window.mira_blob_2_len = 0;
+  } catch(e) {
+    appendLog("Payload global clear skipped: " + e.message);
+  }
+}
+function appendPayloadScript(src, label, onload){
   var script = document.createElement("script");
   appendLog("Injecting " + (label || src) + ": " + src);
   script.src = src;
-  script.onload = function(){ appendLog("Loaded script: " + src); };
+  script.async = false;
+  script.onload = function(){
+    appendLog("Loaded script: " + src);
+    if (onload) { onload(); }
+  };
   script.onerror = function(){ failProgress("Failed to load script: " + src); };
   document.getElementsByTagName("head")[0].appendChild(script);
+}
+function stagePayloadAndLoader(src, label){
+  clearPayloadBlobs();
+  appendPayloadScript(src, label || "payload", function(){
+    appendLog("Payload script is loaded. Now injecting ROP loader.");
+    appendPayloadScript("exp_loader.js", "payload loader");
+  });
 }
 function closeProgress(){
   var modal = document.getElementById("progressModal");
   if (modal) { modal.style.display = "none"; }
+}
+function blockLinuxLaunch(reason){
+  startProgress("Linux Launch Blocked", reason);
+  failProgress(reason);
+  appendLog("No payload was sent. Reboot the PS4, open this page fresh, then use Launch PS4 Linux before HEN or other payloads.");
+}
+function guardFreshLinuxLaunch(){
+  if (sawNonLinuxPayload()) {
+    blockLinuxLaunch("HEN or another payload already ran in this browser session. Do not launch Linux after HEN; reboot the PS4 and use Launch PS4 Linux first.");
+    return false;
+  }
+  if (sawExploitAttempt()) {
+    blockLinuxLaunch("The exploit was already attempted in this browser session. The combined Linux launcher is only for a fresh boot; reboot first, or use Linux Only only if you deliberately ran Exploit Only without HEN.");
+    return false;
+  }
+  return true;
+}
+function guardLinuxOnly(){
+  if (sawNonLinuxPayload()) {
+    blockLinuxLaunch("HEN or another payload already ran in this browser session. Linux after HEN can crash or power off the PS4. Reboot and use Launch PS4 Linux first.");
+    return false;
+  }
+  if (!sawExploitAttempt()) {
+    blockLinuxLaunch("Linux Only requires Exploit Only to already be loaded. From a fresh reboot, use Launch PS4 Linux instead.");
+    return false;
+  }
+  return true;
 }
 function reloadWithCacheBust(){
   var base = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -327,10 +398,20 @@ function reloadWithCacheBust(){
 }
 function forceLatestPage(){
   startProgress("Refreshing Host Cache", "Checking for the newest hosted files, then reloading this page with a fresh URL.");
+  var hadExploitAttempt = sawExploitAttempt();
+  var previousPayload = "";
+  try { previousPayload = sessionStorage.getItem("ps4host_non_linux_payload") || ""; } catch(e0) {}
   appendLog("Current page: " + window.location.href);
   appendLog("AppCache available: " + (window.applicationCache ? "yes" : "no"));
   try { localStorage.clear(); appendLog("Cleared localStorage."); } catch(e) { appendLog("localStorage clear skipped: " + e.message); }
   try { sessionStorage.clear(); appendLog("Cleared sessionStorage."); } catch(e2) { appendLog("sessionStorage clear skipped: " + e2.message); }
+  try {
+    if (hadExploitAttempt) { sessionStorage.setItem("ps4host_exploit_attempted", "1"); }
+    if (previousPayload) { sessionStorage.setItem("ps4host_non_linux_payload", previousPayload); }
+    if (hadExploitAttempt || previousPayload) { appendLog("Restored safety marker for this browser session after cache clear."); }
+  } catch(e5) {
+    appendLog("Safety marker restore skipped: " + e5.message);
+  }
   if (window.applicationCache) {
     try {
       window.applicationCache.onupdateready = function(){
@@ -397,7 +478,7 @@ if (window.applicationCache) {
 
   <div class="panel launch-panel">
     <h2>One-Click Linux Launch</h2>
-    <p class="panel-lede">Fresh reboot recommended. Insert the prepared PS4 Linux USB, open this page, then press this button. It runs the exploit and loads the Linux payload in one flow.</p>
+    <p class="panel-lede">Fresh reboot required. Insert the prepared PS4 Linux USB, open this page, then press this button before HEN or any other payload. Linux after HEN can crash or power off the PS4.</p>
     <button class="launch-button" onclick="load_exploit_linux(); return false">Launch PS4 Linux</button>
     <p class="vram-note">VRAM: this copied payload bundle currently exposes one Linux payload. Treat it as the default 1GB VRAM path. If we add separate 2GB/3GB payload files later, this page can show real selectable VRAM buttons.</p>
   </div>
@@ -418,7 +499,7 @@ if (window.applicationCache) {
     <div class="primary-row">
       <div class="action">
         <button class="go" onclick="load_exploit_HEN(); return false">Exploit + HEN</button>
-        <p>Best default for homebrew, package installs, and general use.</p>
+        <p>Best default for homebrew, package installs, and general use. Reboot before switching from HEN to Linux.</p>
       </div>
       <div class="action">
         <button class="linux" onclick="load_exploit_linux(); return false">Exploit + Linux</button>
@@ -460,7 +541,7 @@ if (window.applicationCache) {
     <div class="button-grid">
       <div class="action">
         <button class="linux" onclick="load_linux(); return false">Linux</button>
-        <p>Loads only the Linux payload after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.</p>
+        <p>Loads only the Linux payload after Exploit Only. Blocked after HEN to avoid a crash or power off.</p>
       </div>
       <div class="action">
         <button onclick="load_binloader(); return false">Bin Loader</button>
@@ -546,12 +627,15 @@ tempC.value=60;
 </script>
 <script>
 function load_exploit(){
+rememberExploit();
 startProgress("Exploit Only", "Running the 6.72 exploit. Use this before a payload-only button.");
 statusTitle("Loading Exploit ...");
 setTimeout(jailbreak,500);
 }
 
 function load_exploit_HEN(){
+rememberExploit();
+rememberPayload("HEN");
 startProgress("Exploit + HEN", "Running the 6.72 exploit, then loading HEN. The page may pause while memory is prepared.");
 statusTitle("Loading Exploit + HEN ...");
 LoadedMSG="Exploit + HEN Loaded";ExploitMira="HEN";MiraSRC="pl_HEN.js";
@@ -559,6 +643,9 @@ setTimeout(jailbreak,500);
 }
 
 function load_exploit_linux(){
+if (!guardFreshLinuxLaunch()) { return; }
+rememberExploit();
+rememberPayload("Linux");
 startProgress("Exploit + Linux", "Running the 6.72 exploit, then loading the Linux payload. Make sure the PS4 Linux USB is inserted.");
 statusTitle("Loading Exploit + Linux ...");
 LoadedMSG="Exploit + Linux Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux.js";
@@ -566,6 +653,8 @@ setTimeout(jailbreak,500);
 }
 
 function load_exploit_mira(){
+rememberExploit();
+rememberPayload("Mira");
 startProgress("Exploit + Mira", "Running the 6.72 exploit, then loading Mira.");
 statusTitle("Loading Exploit + Mira ...");
 LoadedMSG="Exploit + Mira Loaded";ExploitMira="yes";MiraSRC="pl_mira.js";
@@ -573,6 +662,8 @@ setTimeout(jailbreak,500);
 }
 
 function load_exploit_miraUnoff(){
+rememberExploit();
+rememberPayload("Mira");
 startProgress("Exploit + Mira Unofficial", "Running the 6.72 exploit, then loading the alternate Mira payload.");
 statusTitle("Loading Exploit + Mira (Unofficial) ...");
 LoadedMSG="Exploit + Mira Loaded";ExploitMira="yes";MiraSRC="pl_mira_unofficial.js";
@@ -580,146 +671,148 @@ setTimeout(jailbreak,500);
 }
 
 function load_binloader(){
+rememberPayload("Bin Loader");
 startProgress("Bin Loader", "Starting the payload listener on port 9021.");
 statusTitle("Loading Bin Loader ...");
 LoadedMSG="Send Payload To Port 9021";
-var script = document.createElement('script');script.src = "exp_BinLoader.js";document.getElementsByTagName('head')[0].appendChild(script);
+appendPayloadScript("exp_BinLoader.js", "Bin Loader");
 }
 
 function load_HEN(){
+rememberPayload("HEN");
 startProgress("HEN Only", "Loading HEN after the exploit is already active.");
 statusTitle("Loading HEN ...");
 LoadedMSG="HEN Loaded";
-var script = document.createElement('script');script.src = "pl_HEN.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_HEN.js", "HEN payload");
 }
 
 function load_mira(){
+rememberPayload("Mira");
 startProgress("Mira Only", "Loading Mira after the exploit is already active.");
 statusTitle("Loading Mira ...");
 LoadedMSG="Mira Loaded";
-var script = document.createElement('script');script.src = "pl_mira.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_mira.js", "Mira payload");
 }
 
 function load_mira_unofficial(){
+rememberPayload("Mira");
 startProgress("Mira Unofficial", "Loading alternate Mira after the exploit is already active.");
 statusTitle("Loading Mira ...");
 LoadedMSG="Mira Loaded";
-var script = document.createElement('script');script.src = "pl_mira_unofficial.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_mira_unofficial.js", "Mira unofficial payload");
 }
 
 function load_ftp(){
+rememberPayload("FTP");
 startProgress("FTP", "Starting FTP payload.");
 statusTitle("Loading FTP ...");
 LoadedMSG="FTP Loaded";
-var script = document.createElement('script');script.src = "pl_ftp.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_ftp.js", "FTP payload");
 }
 
 function load_dumper(){
+rememberPayload("Dumper");
 startProgress("Dumper", "Loading content dumper payload.");
 statusTitle("Loading Dumper ...");
 LoadedMSG="Dumper Loaded";
-var script = document.createElement('script');script.src = "pl_dumper.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_dumper.js", "Dumper payload");
 }
 
 function load_linux(){
+if (!guardLinuxOnly()) { return; }
+rememberPayload("Linux");
 startProgress("Linux Only", "Loading Linux payload after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.");
 statusTitle("Loading Linux ...");
 LoadedMSG="Linux Loaded";
-var script = document.createElement('script');script.src = "pl_linux.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_linux.js", "Linux payload");
 }
 
 function load_app2usb(){
+rememberPayload("App2USB");
 startProgress("App2USB", "Loading App2USB payload.");
 statusTitle("Loading AppToUSB ...");
 LoadedMSG="AppToUSB Loaded";
-var script = document.createElement('script');script.src = "pl_app2usb.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_app2usb.js", "App2USB payload");
 }
 
 function load_kerneldump(){
+rememberPayload("Kernel Dumper");
 startProgress("Kernel Dumper", "Loading kernel dumper payload.");
 statusTitle("Loading Kernel Dumper ...");
 LoadedMSG="Kernel Dumper Loaded";
-var script = document.createElement('script');script.src = "pl_kernelDumper.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_kernelDumper.js", "Kernel Dumper payload");
 }
 
 function load_webrte(){
+rememberPayload("WebRTE");
 startProgress("WebRTE", "Loading WebRTE payload.");
 statusTitle("Loading WebRTE ...");
 LoadedMSG="WebRTE Loaded";
-var script = document.createElement('script');script.src = "pl_WebRTE.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_WebRTE.js", "WebRTE payload");
 }
 
 function load_ps4debug(){
+rememberPayload("PS4debug");
 startProgress("PS4debug", "Loading PS4debug payload.");
 statusTitle("Loading PS4Debug ...");
 LoadedMSG="PS4Debug Loaded";
-var script = document.createElement('script');script.src = "pl_ps4debug.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_ps4debug.js", "PS4debug payload");
 }
 
 function load_todex(){
+rememberPayload("ToDEX");
 startProgress("ToDEX", "Loading ToDEX payload.");
 statusTitle("Loading ToDEX ...");
 LoadedMSG="ToDEX Loaded";
-var script = document.createElement('script');script.src = "pl_ToDEX.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_ToDEX.js", "ToDEX payload");
 }
 
 function load_historyblock(){
+rememberPayload("History Blocker");
 startProgress("History Blocker", "Loading History Blocker payload.");
 statusTitle("Loading History Blocker ...");
 LoadedMSG="History Blocker Loaded";
-var script = document.createElement('script');script.src = "pl_historyBlocker.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_historyBlocker.js", "History Blocker payload");
 }
 
 function load_updatesdisable(){
+rememberPayload("Disable Updates");
 startProgress("Disable Updates", "Loading update blocker payload.");
 statusTitle("Loading Disable Updates ...");
 LoadedMSG="Disable Updates Loaded";
-var script = document.createElement('script');script.src = "pl_updatesDisable.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_updatesDisable.js", "Disable Updates payload");
 }
 
 function load_updatesenable(){
+rememberPayload("Enable Updates");
 startProgress("Enable Updates", "Loading update enabler payload.");
 statusTitle("Loading Enable Updates ...");
 LoadedMSG="Enable Updates Loaded";
-var script = document.createElement('script');script.src = "pl_updatesEnable.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_updatesEnable.js", "Enable Updates payload");
 }
 
 function load_dbBackup(){
+rememberPayload("DB Backup");
 startProgress("DB Backup", "Loading database backup payload.");
 statusTitle("Loading DB Backup ...");
 LoadedMSG="DB Backup Loaded";
-var script = document.createElement('script');script.src = "pl_dbBackup.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_dbBackup.js", "DB Backup payload");
 }
 
 function load_dbRestore(){
+rememberPayload("DB Restore");
 startProgress("DB Restore", "Loading database restore payload.");
 statusTitle("Loading DB Restore ...");
 LoadedMSG="DB Restore Loaded";
-var script = document.createElement('script');script.src = "pl_dbRestore.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_dbRestore.js", "DB Restore payload");
 }
 
 function load_fanthresh(){
+rememberPayload("Fan Threshold");
 startProgress("Fan Threshold", "Loading fan threshold payload.");
 statusTitle("Loading Fan Threshold ...");
 LoadedMSG="Fan Threshold Loaded";fanTemp=tempC.value;//alert(fanTemp);
-var script = document.createElement('script');script.src = "pl_fanthresh.js";document.getElementsByTagName('head')[0].appendChild(script);
-var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+stagePayloadAndLoader("pl_fanthresh.js", "Fan Threshold payload");
 }
 </script>
 </body>

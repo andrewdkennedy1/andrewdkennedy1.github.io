@@ -26413,8 +26413,8 @@ if (ExploitMira != null){
 	else {
 	if(window.updateProgress){window.updateProgress("Exploit loaded. Now loading payload...");}else{window.msgs.innerHTML="<h1 style='font-size:25px;text-align:center;'>Exploit Loaded. Now Loading Payload ...</h1>";}}
     setTimeout(function(){
-    var script = document.createElement('script');script.src = MiraSRC;document.getElementsByTagName('head')[0].appendChild(script);
-    var script = document.createElement('script');script.src = "exp_loader.js";document.getElementsByTagName('head')[0].appendChild(script);
+    if(window.stagePayloadAndLoader){window.stagePayloadAndLoader(MiraSRC,"payload");}
+    else{var script = document.createElement('script');script.async=false;script.onload=function(){var loader=document.createElement('script');loader.src="exp_loader.js";document.getElementsByTagName('head')[0].appendChild(loader);};script.src = MiraSRC;document.getElementsByTagName('head')[0].appendChild(script);}
     },1000);
   }
   else { if(window.finishProgress){window.finishProgress("Exploit Loaded");} }
