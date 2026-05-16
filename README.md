@@ -55,6 +55,15 @@ then sends the Linux payload. The live page can auto-start that same path:
 http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux
 ```
 
+The page also links comparison 6.72 hosts for stability testing:
+
+- Chronoss Sleirsgoevy 6.72: `https://chronoss09.github.io/sleirsgoevy672/`
+- DarkModderVC PS4JB: `https://darkmoddervc.github.io/PS4JB/`
+- Chronoss GoldHEN 6.72: `https://chronoss09.github.io/GoldHen/6.72/index.html`
+
+Those external hosts are for jailbreak/GoldHEN/Mira comparison only; they do not
+use this page's ArabPixel Linux USB payload.
+
 If multiple IP addresses print, use the one on the same LAN as the PS4. Ignore
 WSL, VPN, or virtual adapter addresses. On this network the likely LAN address
 has been `10.101.69.2`; the exact value can change.
