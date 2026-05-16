@@ -42,6 +42,8 @@ for ip in $(list_ips); do
   echo "PS4 live/debug:     http://$ip:$PORT/ps4-672-linux-live/"
   echo
 done
+echo "Use the IP on the same LAN as the PS4. Ignore WSL, VPN, or virtual adapter IPs."
+echo "If the PS4 cannot connect, allow Python through the host firewall."
 echo "Keep this terminal open while the PS4 uses the host."
 echo "Press Ctrl+C to stop."
 echo

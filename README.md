@@ -47,4 +47,11 @@ On the PS4, open the printed `ps4-672-linux-live` URL while iterating because it
 avoids AppCache. Once it works, open `ps4-672-linux` and wait for the cache
 message if you want offline use.
 
+If multiple IP addresses print, use the one on the same LAN as the PS4. Ignore
+WSL, VPN, or virtual adapter addresses. On this network the likely LAN address
+has been `10.101.69.2`; the exact value can change.
+
+If the PS4 cannot connect but the server is running, allow Python through
+Windows Defender Firewall or the host firewall for the current private network.
+
 Keep the terminal or command prompt open. Press `Ctrl+C` to stop the server.
