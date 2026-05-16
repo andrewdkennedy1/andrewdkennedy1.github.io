@@ -47,6 +47,14 @@ On the PS4, open the printed `ps4-672-linux-live` URL while iterating because it
 avoids AppCache. Once it works, open `ps4-672-linux` and wait for the cache
 message if you want offline use.
 
+For the Linux test, reboot the PS4 first. Reboot clears the jailbreak; the
+`Boot Linux from USB` / `Exploit + Linux` button re-runs the 6.72 exploit and
+then sends the Linux payload. The live page can auto-start that same path:
+
+```text
+http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux
+```
+
 If multiple IP addresses print, use the one on the same LAN as the PS4. Ignore
 WSL, VPN, or virtual adapter addresses. On this network the likely LAN address
 has been `10.101.69.2`; the exact value can change.

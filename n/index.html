@@ -54,6 +54,11 @@ body {
   border-color: rgba(131,230,207,0.55);
   background: rgba(10, 30, 32, 0.78);
 }
+.launch-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
 .cache-refresh {
   margin-top: 14px;
   background: #31415c;
@@ -167,6 +172,16 @@ button:disabled {
   border-color: #ffe08a;
   color: #171000;
   font-size: 20px;
+}
+.launch-button.linux {
+  background: #f4b844;
+  border-color: #ffd981;
+  color: #1e1500;
+}
+.launch-button.goldhen {
+  background: #d9b64c;
+  border-color: #ffe08a;
+  color: #171000;
 }
 .vram-note {
   margin: 12px 0 0;
@@ -530,6 +545,44 @@ function DisplayCacheProgress(){
   setTimeout(function(){setStatus("Cache Installed Successfully");},1000);
   setTimeout(function(){setStatus("Now Close And Re-Open Your Browser");},3000);
 }
+var autoModeStarted = false;
+function queryValue(name){
+  var query = window.location.search ? window.location.search.substring(1) : "";
+  if (!query) { return ""; }
+  var pairs = query.split("&");
+  for (var i = 0; i < pairs.length; i++) {
+    var pair = pairs[i].split("=");
+    var key = "";
+    try { key = decodeURIComponent(pair[0]); } catch(e) { key = pair[0]; }
+    if (key === name) {
+      var value = pair.slice(1).join("=").replace(/\+/g, " ");
+      try { return decodeURIComponent(value); } catch(e2) { return value; }
+    }
+  }
+  return "";
+}
+function runAutoMode(){
+  if (autoModeStarted) { return; }
+  var mode = (queryValue("auto") || queryValue("run") || "").toLowerCase();
+  if (!mode) { return; }
+  autoModeStarted = true;
+  if (mode === "linux" || mode === "boot-linux") {
+    startProgress("Auto Linux", "Auto URL requested Linux. Fresh reboot and prepared USB are required.");
+    appendLog("Auto mode: Linux. Starting Exploit + Linux shortly.");
+    setTimeout(load_exploit_linux, 1200);
+  } else if (mode === "goldhen") {
+    startProgress("Auto GoldHEN", "Auto URL requested GoldHEN. This is not the Linux boot path.");
+    appendLog("Auto mode: GoldHEN. Starting Exploit + GoldHEN shortly.");
+    setTimeout(load_exploit_goldhen, 1200);
+  } else {
+    appendLog("Unknown auto mode ignored: " + mode);
+  }
+}
+if (window.addEventListener) {
+  window.addEventListener("load", function(){ setTimeout(runAutoMode, 800); }, false);
+} else {
+  setTimeout(runAutoMode, 1800);
+}
 if (window.applicationCache) {
   window.applicationCache.addEventListener("progress",DLProgress,false);
   window.applicationCache.oncached=function(e){DisplayCacheProgress();};
@@ -555,15 +608,24 @@ if (window.applicationCache) {
   <div class="hero">
     <p class="eyebrow">PS4 6.72 Linux / GoldHEN Live Host</p>
     <h1 id="msgs">6.72 Boot Menu</h1>
-    <p class="subline">Belize-ready GoldHEN, ArabPixel Linux, Mira, and maintenance payloads. The easy button tests GoldHEN; Linux uses a clean reboot path.</p>
+    <p class="subline">Belize-ready GoldHEN, ArabPixel Linux, Mira, and maintenance payloads. Linux is the primary clean reboot path; GoldHEN remains a sanity check.</p>
     <button class="cache-refresh" onclick="forceLatestPage(); return false">Force Reload Latest Page</button>
   </div>
 
   <div class="panel launch-panel">
-    <h2>One-Click GoldHEN Launch</h2>
-    <p class="panel-lede">Fresh reboot recommended. This runs the 6.72 jailbreak, then loads GoldHEN. Use this to confirm the exploit path is stable before testing the Linux kexec handoff.</p>
-    <button class="launch-button" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
-    <p class="vram-note">For Linux, reboot first and use <span class="good">Exploit + Linux</span>. It now uses ArabPixel v24b.1 1024 MB; Linux after GoldHEN, HEN, or Mira is intentionally blocked.</p>
+    <h2>One-Click Boot Tests</h2>
+    <p class="panel-lede">For the Linux goal, use Boot Linux from USB after a fresh reboot with the prepared USB inserted. Reboot clears the jailbreak; this button re-runs the exploit, then sends Linux.</p>
+    <div class="launch-actions">
+      <div class="action">
+        <button class="launch-button linux" onclick="load_exploit_linux(); return false">Boot Linux from USB</button>
+        <p>Runs the 6.72 exploit, then ArabPixel v24b.1 1024 MB Linux for the prepared USB.</p>
+      </div>
+      <div class="action">
+        <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
+        <p>Runs the 6.72 exploit, then GoldHEN. Reboot before switching back to Linux.</p>
+      </div>
+    </div>
+    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or <span class="good">?auto=goldhen</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because Linux needs the clean jailbreak path.</p>
   </div>
 
   <div class="panel">
@@ -572,7 +634,7 @@ if (window.applicationCache) {
       <li>Use this page only on firmware 6.72.</li>
       <li>Wait for the offline cache message if this is the first visit.</li>
       <li>For a quick jailbreak test, press <span class="good">Launch GoldHEN</span>.</li>
-      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Exploit + Linux</span> for the ArabPixel 1024 MB loader.</li>
+      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Boot Linux from USB</span> or <span class="good">Exploit + Linux</span>. The button jailbreaks again before sending Linux.</li>
       <li>If a payload fails, close the browser, reopen this page, and try again.</li>
     </ol>
   </div>
