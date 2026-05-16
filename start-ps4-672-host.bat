@@ -22,8 +22,10 @@ echo.
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$port='%PORT%'; $ips=Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' -and $_.AddressState -eq 'Preferred' } | Select-Object -ExpandProperty IPAddress; if(-not $ips){$ips=@('<this-pc-ip>')}; foreach($ip in $ips){ 'PS4 cached/offline: http://' + $ip + ':' + $port + '/ps4-672-linux/'; '' }"
 echo Use the IP on the same LAN as the PS4. Ignore WSL, VPN, or virtual adapter IPs.
 echo If the PS4 cannot connect, allow Python through Windows Defender Firewall.
+echo GoldHEN auto-Linux helper: /__ps4linux/send-goldhen-linux sends linux-1024mb.elf to the PS4 on port 9090.
+echo Set GOLDHEN_LINUX_PAYLOAD to override the ELF path.
 echo Keep this window open while the PS4 uses the host.
 echo Press Ctrl+C to stop.
 echo.
 
-%PYTHON_CMD% -m http.server %PORT% --bind 0.0.0.0
+%PYTHON_CMD% tools\ps4_672_host.py --port %PORT% --bind 0.0.0.0

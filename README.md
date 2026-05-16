@@ -43,10 +43,28 @@ http://<your-pc-ip>:8765/ps4-672-linux/
 On the PS4, open the printed `ps4-672-linux` URL and wait for the cache message
 before using payload buttons.
 
-For the Linux test, reboot the PS4 first. Reboot clears the jailbreak; the
-`Boot Linux from USB` / `Exploit + Linux` button re-runs the 6.72 exploit and
-then sends the browser-native Linux payload. The page can auto-start that
-same path:
+For the current Linux test, use the GoldHEN helper path first. It gives useful
+PC-side logs instead of leaving the PS4 browser as the only signal. Reboot the
+PS4, keep the Linux USB inserted, then open:
+
+```text
+http://<your-pc-ip>:8765/ps4-672-linux/?auto=goldhen-linux
+```
+
+This queues the local helper to send `linux-1024mb.elf` to the PS4's GoldHEN
+BinLoader on port `9090`, then runs the exploit and loads GoldHEN. Watch the
+PC command window for `[goldhen-linux]` messages. If the PS4 says the page is
+not responding, do not press Stop, Back, or another payload button; that can
+crash the exploit while the browser thread is owned by the payload.
+
+The helper auto-finds the ELF from the sibling `ps4linux` checkout. If needed,
+set `GOLDHEN_LINUX_PAYLOAD` to the full path of `linux-1024mb.elf` before
+starting the server.
+
+The direct Linux path is still available for comparison. Reboot clears the
+jailbreak; the `Boot Linux from USB` / `Exploit + Linux Pro 1GB` button re-runs
+the 6.72 exploit and then sends the cached PS4Boot PS4 Pro Linux payload. The
+page can auto-start that direct path:
 
 ```text
 http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux
@@ -55,11 +73,13 @@ http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux
 Comparison and sanity-check auto URLs are also available:
 
 ```text
+http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux-pro-512
+http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux-browser
 http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux-arabpixel
 http://<your-pc-ip>:8765/ps4-672-linux/?auto=goldhen
 ```
 
-`?auto=linux-legacy` remains as an alias for `?auto=linux`.
+`?auto=linux-legacy` remains as an alias for `?auto=linux-browser`.
 
 The page also links comparison 6.72 hosts for stability testing:
 
@@ -70,6 +90,8 @@ The page also links comparison 6.72 hosts for stability testing:
 - PS4Boot 6.72 GoldHEN-only: `https://ps4boot.github.io/672qh/index.html`
 - PS4 Playground 6.72: `https://ps4.editzz.com/6.72/index.html`
 - Chronoss GoldHEN 6.72: `https://chronoss09.github.io/GoldHen/6.72/index.html`
+- Karo 6.72: `https://islataz.github.io/672/index.html`
+- GamerHack 6.72: `https://gamerhack.github.io/672/index.html`
 
 Those external hosts are for jailbreak/GoldHEN/Mira comparison and alternate
 payload flows. They do not use this page's prepared USB files unless their

@@ -43,8 +43,10 @@ for ip in $(list_ips); do
 done
 echo "Use the IP on the same LAN as the PS4. Ignore WSL, VPN, or virtual adapter IPs."
 echo "If the PS4 cannot connect, allow Python through the host firewall."
+echo "GoldHEN auto-Linux helper: /__ps4linux/send-goldhen-linux sends linux-1024mb.elf to the PS4 on port 9090."
+echo "Set GOLDHEN_LINUX_PAYLOAD to override the ELF path."
 echo "Keep this terminal open while the PS4 uses the host."
 echo "Press Ctrl+C to stop."
 echo
 
-exec "$PYTHON" -m http.server "$PORT" --bind 0.0.0.0
+exec "$PYTHON" tools/ps4_672_host.py --port "$PORT" --bind 0.0.0.0
