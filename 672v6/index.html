@@ -109,6 +109,10 @@ button:focus {
   background: #2d5288;
   outline: none;
 }
+button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
 .go {
   background: #13a57d;
   border-color: #4de2bd;
@@ -244,6 +248,31 @@ var progressStartedAt = 0;
 var exploitAttempted = false;
 var activePayload = "";
 var nonLinuxPayloadStarted = false;
+var chainBusy = false;
+var chainBusyLabel = "";
+function setActionButtonsDisabled(disabled){
+  var buttons = document.getElementsByTagName("button");
+  for (var i = 0; i < buttons.length; i++) {
+    if (buttons[i].className.indexOf("muted-button") >= 0 || buttons[i].className.indexOf("cache-refresh") >= 0) { continue; }
+    buttons[i].disabled = disabled;
+  }
+}
+function beginChain(label){
+  if (chainBusy) {
+    updateProgress("Still working on: " + (chainBusyLabel || "current payload") + ". No new payload was sent.");
+    appendLog("Blocked second launch request while chain is busy.");
+    return false;
+  }
+  chainBusy = true;
+  chainBusyLabel = label || "payload";
+  setActionButtonsDisabled(true);
+  return true;
+}
+function releaseChain(){
+  chainBusy = false;
+  chainBusyLabel = "";
+  setActionButtonsDisabled(false);
+}
 function rememberPayload(name){
   activePayload = name || "";
   if (name && name !== "Linux") {
@@ -322,6 +351,7 @@ function finishProgress(message){
   if (loader) { loader.style.display = "none"; }
   updateProgress(message || "Done.");
   setStatus(message || "Done.");
+  releaseChain();
   if (progressTimer) { clearTimeout(progressTimer); progressTimer = null; }
 }
 function failProgress(message){
@@ -329,6 +359,7 @@ function failProgress(message){
   if (loader) { loader.style.display = "none"; }
   updateProgress(message || "Failed. Reboot the PS4 and try again.");
   setStatus(message || "Failed. Reboot the PS4 and try again.");
+  releaseChain();
   if (progressTimer) { clearTimeout(progressTimer); progressTimer = null; }
 }
 function clearPayloadBlobs(){
@@ -354,12 +385,40 @@ function appendPayloadScript(src, label, onload){
   script.onerror = function(){ failProgress("Failed to load script: " + src); };
   document.getElementsByTagName("head")[0].appendChild(script);
 }
+function payloadBlobState(){
+  var ptr = window.mira_blob_2 || window.mira_blob || 0;
+  var len = window.mira_blob_2_len || window.mira_blob_len || 0;
+  return { ptr: ptr, len: len };
+}
+function ptrLabel(ptr){
+  if (!ptr) { return "0"; }
+  try { return "0x" + ptr.toString(16); } catch(e) { return String(ptr); }
+}
 function stagePayloadAndLoader(src, label){
   clearPayloadBlobs();
   appendPayloadScript(src, label || "payload", function(){
-    appendLog("Payload script is loaded. Now injecting ROP loader.");
-    appendPayloadScript("exp_loader.js", "payload loader");
+    appendLog("Payload script is loaded. Verifying payload blob before loader injection.");
+    setTimeout(function(){
+      var state = payloadBlobState();
+      if (!state.ptr || !state.len) {
+        failProgress("Payload script loaded, but no payload blob was staged. Reopen the browser and try again.");
+        appendLog("Blocked ROP loader injection because payload pointer/length was empty.");
+        return;
+      }
+      appendLog("Payload blob ready. ptr=" + ptrLabel(state.ptr) + " len=" + state.len);
+      appendLog("Injecting ROP loader after verified payload stage.");
+      appendPayloadScript("exp_loader.js", "payload loader");
+    }, 150);
   });
+}
+function markPayloadExecuting(message){
+  var loader = document.getElementById("progressLoader");
+  if (loader) { loader.style.display = "block"; }
+  updateProgress((message || "Payload staged") + ". ROP chain is executing now; do not press another payload button.");
+  appendLog("If the browser stops responding here, that usually means the payload pivot started.");
+  if (activePayload === "Linux") {
+    appendLog("Linux handoff expects a clean boot path. If HEN was loaded earlier, reboot and use Launch PS4 Linux first.");
+  }
 }
 function closeProgress(){
   var modal = document.getElementById("progressModal");
@@ -627,6 +686,7 @@ tempC.value=60;
 </script>
 <script>
 function load_exploit(){
+if (!beginChain("Exploit Only")) { return; }
 rememberExploit();
 startProgress("Exploit Only", "Running the 6.72 exploit. Use this before a payload-only button.");
 statusTitle("Loading Exploit ...");
@@ -634,6 +694,7 @@ setTimeout(jailbreak,500);
 }
 
 function load_exploit_HEN(){
+if (!beginChain("Exploit + HEN")) { return; }
 rememberExploit();
 rememberPayload("HEN");
 startProgress("Exploit + HEN", "Running the 6.72 exploit, then loading HEN. The page may pause while memory is prepared.");
@@ -644,6 +705,7 @@ setTimeout(jailbreak,500);
 
 function load_exploit_linux(){
 if (!guardFreshLinuxLaunch()) { return; }
+if (!beginChain("Exploit + Linux")) { return; }
 rememberExploit();
 rememberPayload("Linux");
 startProgress("Exploit + Linux", "Running the 6.72 exploit, then loading the Linux payload. Make sure the PS4 Linux USB is inserted.");
@@ -653,6 +715,7 @@ setTimeout(jailbreak,500);
 }
 
 function load_exploit_mira(){
+if (!beginChain("Exploit + Mira")) { return; }
 rememberExploit();
 rememberPayload("Mira");
 startProgress("Exploit + Mira", "Running the 6.72 exploit, then loading Mira.");
@@ -662,6 +725,7 @@ setTimeout(jailbreak,500);
 }
 
 function load_exploit_miraUnoff(){
+if (!beginChain("Exploit + Mira Unofficial")) { return; }
 rememberExploit();
 rememberPayload("Mira");
 startProgress("Exploit + Mira Unofficial", "Running the 6.72 exploit, then loading the alternate Mira payload.");
@@ -671,6 +735,7 @@ setTimeout(jailbreak,500);
 }
 
 function load_binloader(){
+if (!beginChain("Bin Loader")) { return; }
 rememberPayload("Bin Loader");
 startProgress("Bin Loader", "Starting the payload listener on port 9021.");
 statusTitle("Loading Bin Loader ...");
@@ -679,6 +744,7 @@ appendPayloadScript("exp_BinLoader.js", "Bin Loader");
 }
 
 function load_HEN(){
+if (!beginChain("HEN Only")) { return; }
 rememberPayload("HEN");
 startProgress("HEN Only", "Loading HEN after the exploit is already active.");
 statusTitle("Loading HEN ...");
@@ -687,6 +753,7 @@ stagePayloadAndLoader("pl_HEN.js", "HEN payload");
 }
 
 function load_mira(){
+if (!beginChain("Mira Only")) { return; }
 rememberPayload("Mira");
 startProgress("Mira Only", "Loading Mira after the exploit is already active.");
 statusTitle("Loading Mira ...");
@@ -695,6 +762,7 @@ stagePayloadAndLoader("pl_mira.js", "Mira payload");
 }
 
 function load_mira_unofficial(){
+if (!beginChain("Mira Unofficial")) { return; }
 rememberPayload("Mira");
 startProgress("Mira Unofficial", "Loading alternate Mira after the exploit is already active.");
 statusTitle("Loading Mira ...");
@@ -703,6 +771,7 @@ stagePayloadAndLoader("pl_mira_unofficial.js", "Mira unofficial payload");
 }
 
 function load_ftp(){
+if (!beginChain("FTP")) { return; }
 rememberPayload("FTP");
 startProgress("FTP", "Starting FTP payload.");
 statusTitle("Loading FTP ...");
@@ -711,6 +780,7 @@ stagePayloadAndLoader("pl_ftp.js", "FTP payload");
 }
 
 function load_dumper(){
+if (!beginChain("Dumper")) { return; }
 rememberPayload("Dumper");
 startProgress("Dumper", "Loading content dumper payload.");
 statusTitle("Loading Dumper ...");
@@ -720,6 +790,7 @@ stagePayloadAndLoader("pl_dumper.js", "Dumper payload");
 
 function load_linux(){
 if (!guardLinuxOnly()) { return; }
+if (!beginChain("Linux Only")) { return; }
 rememberPayload("Linux");
 startProgress("Linux Only", "Loading Linux payload after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.");
 statusTitle("Loading Linux ...");
@@ -728,6 +799,7 @@ stagePayloadAndLoader("pl_linux.js", "Linux payload");
 }
 
 function load_app2usb(){
+if (!beginChain("App2USB")) { return; }
 rememberPayload("App2USB");
 startProgress("App2USB", "Loading App2USB payload.");
 statusTitle("Loading AppToUSB ...");
@@ -736,6 +808,7 @@ stagePayloadAndLoader("pl_app2usb.js", "App2USB payload");
 }
 
 function load_kerneldump(){
+if (!beginChain("Kernel Dumper")) { return; }
 rememberPayload("Kernel Dumper");
 startProgress("Kernel Dumper", "Loading kernel dumper payload.");
 statusTitle("Loading Kernel Dumper ...");
@@ -744,6 +817,7 @@ stagePayloadAndLoader("pl_kernelDumper.js", "Kernel Dumper payload");
 }
 
 function load_webrte(){
+if (!beginChain("WebRTE")) { return; }
 rememberPayload("WebRTE");
 startProgress("WebRTE", "Loading WebRTE payload.");
 statusTitle("Loading WebRTE ...");
@@ -752,6 +826,7 @@ stagePayloadAndLoader("pl_WebRTE.js", "WebRTE payload");
 }
 
 function load_ps4debug(){
+if (!beginChain("PS4debug")) { return; }
 rememberPayload("PS4debug");
 startProgress("PS4debug", "Loading PS4debug payload.");
 statusTitle("Loading PS4Debug ...");
@@ -760,6 +835,7 @@ stagePayloadAndLoader("pl_ps4debug.js", "PS4debug payload");
 }
 
 function load_todex(){
+if (!beginChain("ToDEX")) { return; }
 rememberPayload("ToDEX");
 startProgress("ToDEX", "Loading ToDEX payload.");
 statusTitle("Loading ToDEX ...");
@@ -768,6 +844,7 @@ stagePayloadAndLoader("pl_ToDEX.js", "ToDEX payload");
 }
 
 function load_historyblock(){
+if (!beginChain("History Blocker")) { return; }
 rememberPayload("History Blocker");
 startProgress("History Blocker", "Loading History Blocker payload.");
 statusTitle("Loading History Blocker ...");
@@ -776,6 +853,7 @@ stagePayloadAndLoader("pl_historyBlocker.js", "History Blocker payload");
 }
 
 function load_updatesdisable(){
+if (!beginChain("Disable Updates")) { return; }
 rememberPayload("Disable Updates");
 startProgress("Disable Updates", "Loading update blocker payload.");
 statusTitle("Loading Disable Updates ...");
@@ -784,6 +862,7 @@ stagePayloadAndLoader("pl_updatesDisable.js", "Disable Updates payload");
 }
 
 function load_updatesenable(){
+if (!beginChain("Enable Updates")) { return; }
 rememberPayload("Enable Updates");
 startProgress("Enable Updates", "Loading update enabler payload.");
 statusTitle("Loading Enable Updates ...");
@@ -792,6 +871,7 @@ stagePayloadAndLoader("pl_updatesEnable.js", "Enable Updates payload");
 }
 
 function load_dbBackup(){
+if (!beginChain("DB Backup")) { return; }
 rememberPayload("DB Backup");
 startProgress("DB Backup", "Loading database backup payload.");
 statusTitle("Loading DB Backup ...");
@@ -800,6 +880,7 @@ stagePayloadAndLoader("pl_dbBackup.js", "DB Backup payload");
 }
 
 function load_dbRestore(){
+if (!beginChain("DB Restore")) { return; }
 rememberPayload("DB Restore");
 startProgress("DB Restore", "Loading database restore payload.");
 statusTitle("Loading DB Restore ...");
@@ -808,6 +889,7 @@ stagePayloadAndLoader("pl_dbRestore.js", "DB Restore payload");
 }
 
 function load_fanthresh(){
+if (!beginChain("Fan Threshold")) { return; }
 rememberPayload("Fan Threshold");
 startProgress("Fan Threshold", "Loading fan threshold payload.");
 statusTitle("Loading Fan Threshold ...");
