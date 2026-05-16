@@ -1,0 +1,901 @@
+<html manifest="cache.manifest">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PS4 6.72 Fresh Host</title>
+<style>
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #101827;
+  color: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+}
+body {
+  background: linear-gradient(135deg, #101827 0%, #17385f 48%, #0b101a 100%);
+}
+.shell {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px 18px 36px;
+}
+.hero {
+  padding: 22px 0 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.16);
+}
+.eyebrow {
+  margin: 0 0 8px;
+  color: #83e6cf;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+#msgs {
+  margin: 0;
+  color: #ffffff;
+  font-size: 32px;
+  line-height: 1.15;
+}
+.subline {
+  margin: 9px 0 0;
+  color: #bcc9da;
+  font-size: 15px;
+}
+.panel {
+  margin-top: 22px;
+  padding: 18px;
+  background: rgba(8, 14, 24, 0.72);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 8px;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.28);
+}
+.launch-panel {
+  border-color: rgba(131,230,207,0.55);
+  background: rgba(10, 30, 32, 0.78);
+}
+.cache-refresh {
+  margin-top: 14px;
+  background: #31415c;
+  border-color: rgba(180,205,240,0.45);
+}
+.cache-refresh:hover,
+.cache-refresh:focus {
+  background: #3f5578;
+}
+.panel h2 {
+  margin: 0 0 12px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+}
+.panel-lede {
+  margin: -2px 0 14px;
+  color: #c8d4e5;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.steps {
+  margin: 0;
+  padding-left: 22px;
+  color: #d9e4f3;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.primary-row,
+.button-grid,
+.tool-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+button,
+select {
+  min-height: 42px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 7px;
+  background: #21385b;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+}
+button {
+  width: 100%;
+  padding: 0 16px;
+  cursor: pointer;
+}
+button:hover,
+button:focus {
+  background: #2d5288;
+  outline: none;
+}
+button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+.go {
+  background: #13a57d;
+  border-color: #4de2bd;
+  color: #06120f;
+}
+.linux {
+  background: #f4b844;
+  border-color: #ffd981;
+  color: #1e1500;
+}
+.danger {
+  background: #6d2c4d;
+}
+.action {
+  padding: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 8px;
+}
+.action p {
+  margin: 8px 2px 0;
+  color: #c8d4e5;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.fan {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.fan select {
+  width: 82px;
+  padding-left: 12px;
+}
+.note {
+  color: #c8d4e5;
+  font-size: 13px;
+}
+.good {
+  color: #83e6cf;
+  font-weight: bold;
+}
+.launch-button {
+  min-height: 58px;
+  background: #13a57d;
+  border-color: #83e6cf;
+  color: #031310;
+  font-size: 20px;
+}
+.vram-note {
+  margin: 12px 0 0;
+  color: #c8d4e5;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2, 6, 12, 0.72);
+}
+.modal-card {
+  width: 86%;
+  max-width: 520px;
+  padding: 22px;
+  background: #101827;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  box-shadow: 0 22px 64px rgba(0,0,0,0.45);
+}
+.modal-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 22px;
+}
+.modal-status {
+  margin: 10px 0 0;
+  color: #c8d4e5;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.progress-log {
+  height: 168px;
+  margin-top: 14px;
+  padding: 10px;
+  overflow-y: auto;
+  background: #050a12;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 6px;
+  color: #a8f5d6;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.progress-log div {
+  margin: 0 0 4px;
+}
+.loader {
+  width: 36px;
+  height: 36px;
+  margin: 18px auto 10px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: #83e6cf;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+.modal-actions button {
+  min-height: 38px;
+}
+.muted-button {
+  background: #263247;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+<script>
+var progressTimer = null;
+var progressStartedAt = 0;
+var exploitAttempted = false;
+var activePayload = "";
+var nonLinuxPayloadStarted = false;
+var chainBusy = false;
+var chainBusyLabel = "";
+function setActionButtonsDisabled(disabled){
+  var buttons = document.getElementsByTagName("button");
+  for (var i = 0; i < buttons.length; i++) {
+    if (buttons[i].className.indexOf("muted-button") >= 0 || buttons[i].className.indexOf("cache-refresh") >= 0) { continue; }
+    buttons[i].disabled = disabled;
+  }
+}
+function beginChain(label){
+  if (chainBusy) {
+    updateProgress("Still working on: " + (chainBusyLabel || "current payload") + ". No new payload was sent.");
+    appendLog("Blocked second launch request while chain is busy.");
+    return false;
+  }
+  chainBusy = true;
+  chainBusyLabel = label || "payload";
+  setActionButtonsDisabled(true);
+  return true;
+}
+function releaseChain(){
+  chainBusy = false;
+  chainBusyLabel = "";
+  setActionButtonsDisabled(false);
+}
+function rememberPayload(name){
+  activePayload = name || "";
+  if (name && name !== "Linux") {
+    nonLinuxPayloadStarted = true;
+    try { sessionStorage.setItem("ps4host_non_linux_payload", name); } catch(e) {}
+  }
+}
+function rememberExploit(){
+  exploitAttempted = true;
+  try { sessionStorage.setItem("ps4host_exploit_attempted", "1"); } catch(e) {}
+}
+function sawNonLinuxPayload(){
+  if (nonLinuxPayloadStarted) { return true; }
+  try { return !!sessionStorage.getItem("ps4host_non_linux_payload"); } catch(e) { return false; }
+}
+function sawExploitAttempt(){
+  if (exploitAttempted) { return true; }
+  try { return sessionStorage.getItem("ps4host_exploit_attempted") === "1"; } catch(e) { return false; }
+}
+function setStatus(message){
+  var el = document.getElementById("msgs");
+  if (el) { el.innerHTML = message; }
+}
+function logTime(){
+  var d = new Date();
+  var h = d.getHours();
+  var m = d.getMinutes();
+  var s = d.getSeconds();
+  if (h < 10) { h = "0" + h; }
+  if (m < 10) { m = "0" + m; }
+  if (s < 10) { s = "0" + s; }
+  return h + ":" + m + ":" + s;
+}
+function appendLog(message){
+  var log = document.getElementById("progressLog");
+  var row;
+  if (!log) { return; }
+  row = document.createElement("div");
+  row.innerHTML = "[" + logTime() + "] " + message;
+  log.appendChild(row);
+  log.scrollTop = log.scrollHeight;
+}
+function statusTitle(message){
+  setStatus("<span>" + message + "</span>");
+  updateProgress(message);
+  appendLog(message);
+}
+function startProgress(title, detail){
+  var modal = document.getElementById("progressModal");
+  var titleEl = document.getElementById("progressTitle");
+  var statusEl = document.getElementById("progressStatus");
+  var loader = document.getElementById("progressLoader");
+  var log = document.getElementById("progressLog");
+  if (!modal || !titleEl || !statusEl) { return; }
+  progressStartedAt = new Date().getTime();
+  titleEl.innerHTML = title;
+  statusEl.innerHTML = detail;
+  if (log) { log.innerHTML = ""; }
+  if (loader) { loader.style.display = "block"; }
+  modal.style.display = "flex";
+  appendLog("Selected: " + title);
+  appendLog(detail);
+  if (progressTimer) { clearTimeout(progressTimer); }
+  progressTimer = setTimeout(function(){
+    updateProgress("Still working. If this stays here for more than a minute, close and reopen the PS4 browser, then try again.");
+    appendLog("No completion signal yet. 6.72 exploit attempts can hang; relaunch browser if this does not move.");
+  }, 45000);
+}
+function updateProgress(message){
+  var statusEl = document.getElementById("progressStatus");
+  if (statusEl) { statusEl.innerHTML = message; }
+  appendLog(message);
+}
+function finishProgress(message){
+  var loader = document.getElementById("progressLoader");
+  if (loader) { loader.style.display = "none"; }
+  updateProgress(message || "Done.");
+  setStatus(message || "Done.");
+  releaseChain();
+  if (progressTimer) { clearTimeout(progressTimer); progressTimer = null; }
+}
+function failProgress(message){
+  var loader = document.getElementById("progressLoader");
+  if (loader) { loader.style.display = "none"; }
+  updateProgress(message || "Failed. Reboot the PS4 and try again.");
+  setStatus(message || "Failed. Reboot the PS4 and try again.");
+  releaseChain();
+  if (progressTimer) { clearTimeout(progressTimer); progressTimer = null; }
+}
+function clearPayloadBlobs(){
+  appendLog("Clearing previous payload blob globals.");
+  try {
+    window.mira_blob = undefined;
+    window.mira_blob_2 = undefined;
+    window.mira_blob_len = 0;
+    window.mira_blob_2_len = 0;
+  } catch(e) {
+    appendLog("Payload global clear skipped: " + e.message);
+  }
+}
+function appendPayloadScript(src, label, onload){
+  var script = document.createElement("script");
+  appendLog("Injecting " + (label || src) + ": " + src);
+  script.src = src;
+  script.async = false;
+  script.onload = function(){
+    appendLog("Loaded script: " + src);
+    if (onload) { onload(); }
+  };
+  script.onerror = function(){ failProgress("Failed to load script: " + src); };
+  document.getElementsByTagName("head")[0].appendChild(script);
+}
+function payloadBlobState(){
+  var ptr = window.mira_blob_2 || window.mira_blob || 0;
+  var len = window.mira_blob_2_len || window.mira_blob_len || 0;
+  return { ptr: ptr, len: len };
+}
+function ptrLabel(ptr){
+  if (!ptr) { return "0"; }
+  try { return "0x" + ptr.toString(16); } catch(e) { return String(ptr); }
+}
+function stagePayloadAndLoader(src, label){
+  clearPayloadBlobs();
+  appendPayloadScript(src, label || "payload", function(){
+    appendLog("Payload script is loaded. Verifying payload blob before loader injection.");
+    setTimeout(function(){
+      var state = payloadBlobState();
+      if (!state.ptr || !state.len) {
+        failProgress("Payload script loaded, but no payload blob was staged. Reopen the browser and try again.");
+        appendLog("Blocked ROP loader injection because payload pointer/length was empty.");
+        return;
+      }
+      appendLog("Payload blob ready. ptr=" + ptrLabel(state.ptr) + " len=" + state.len);
+      appendLog("Injecting ROP loader after verified payload stage.");
+      appendPayloadScript("exp_loader.js", "payload loader");
+    }, 150);
+  });
+}
+function markPayloadExecuting(message){
+  var loader = document.getElementById("progressLoader");
+  if (loader) { loader.style.display = "block"; }
+  updateProgress((message || "Payload staged") + ". ROP chain is executing now; do not press another payload button.");
+  appendLog("If the browser stops responding here, that usually means the payload pivot started.");
+  if (activePayload === "Linux") {
+    appendLog("Linux handoff expects a clean boot path. If HEN was loaded earlier, reboot and use Launch PS4 Linux first.");
+  }
+}
+function closeProgress(){
+  var modal = document.getElementById("progressModal");
+  if (modal) { modal.style.display = "none"; }
+}
+function blockLinuxLaunch(reason){
+  startProgress("Linux Launch Blocked", reason);
+  failProgress(reason);
+  appendLog("No payload was sent. Reboot the PS4, open this page fresh, then use Launch PS4 Linux before HEN or other payloads.");
+}
+function guardFreshLinuxLaunch(){
+  if (sawNonLinuxPayload()) {
+    blockLinuxLaunch("HEN or another payload already ran in this browser session. Do not launch Linux after HEN; reboot the PS4 and use Launch PS4 Linux first.");
+    return false;
+  }
+  if (sawExploitAttempt()) {
+    blockLinuxLaunch("The exploit was already attempted in this browser session. The combined Linux launcher is only for a fresh boot; reboot first, or use Linux Only only if you deliberately ran Exploit Only without HEN.");
+    return false;
+  }
+  return true;
+}
+function guardLinuxOnly(){
+  if (sawNonLinuxPayload()) {
+    blockLinuxLaunch("HEN or another payload already ran in this browser session. Linux after HEN can crash or power off the PS4. Reboot and use Launch PS4 Linux first.");
+    return false;
+  }
+  if (!sawExploitAttempt()) {
+    blockLinuxLaunch("Linux Only requires Exploit Only to already be loaded. From a fresh reboot, use Launch PS4 Linux instead.");
+    return false;
+  }
+  return true;
+}
+function reloadWithCacheBust(){
+  var base = window.location.protocol + "//" + window.location.host + window.location.pathname;
+  window.location.href = base + "?fresh=" + new Date().getTime();
+}
+function forceLatestPage(){
+  startProgress("Refreshing Host Cache", "Checking for the newest hosted files, then reloading this page with a fresh URL.");
+  var hadExploitAttempt = sawExploitAttempt();
+  var previousPayload = "";
+  try { previousPayload = sessionStorage.getItem("ps4host_non_linux_payload") || ""; } catch(e0) {}
+  appendLog("Current page: " + window.location.href);
+  appendLog("AppCache available: " + (window.applicationCache ? "yes" : "no"));
+  try { localStorage.clear(); appendLog("Cleared localStorage."); } catch(e) { appendLog("localStorage clear skipped: " + e.message); }
+  try { sessionStorage.clear(); appendLog("Cleared sessionStorage."); } catch(e2) { appendLog("sessionStorage clear skipped: " + e2.message); }
+  try {
+    if (hadExploitAttempt) { sessionStorage.setItem("ps4host_exploit_attempted", "1"); }
+    if (previousPayload) { sessionStorage.setItem("ps4host_non_linux_payload", previousPayload); }
+    if (hadExploitAttempt || previousPayload) { appendLog("Restored safety marker for this browser session after cache clear."); }
+  } catch(e5) {
+    appendLog("Safety marker restore skipped: " + e5.message);
+  }
+  if (window.applicationCache) {
+    try {
+      window.applicationCache.onupdateready = function(){
+        appendLog("AppCache update ready.");
+        try { window.applicationCache.swapCache(); appendLog("Swapped to newest AppCache."); } catch(e3) { appendLog("swapCache skipped: " + e3.message); }
+        appendLog("Reloading with cache-bust query.");
+        setTimeout(reloadWithCacheBust, 500);
+      };
+      window.applicationCache.onerror = function(){
+        appendLog("AppCache update did not complete. Reloading with cache-bust query anyway.");
+        setTimeout(reloadWithCacheBust, 500);
+      };
+      appendLog("Requesting AppCache update.");
+      window.applicationCache.update();
+      setTimeout(function(){
+        appendLog("Reloading after AppCache update wait.");
+        reloadWithCacheBust();
+      }, 5000);
+      return;
+    } catch(e4) {
+      appendLog("AppCache update skipped: " + e4.message);
+    }
+  }
+  appendLog("Reloading with cache-bust query.");
+  setTimeout(reloadWithCacheBust, 500);
+}
+function DLProgress(e){
+  if (!e.total) { return; }
+  var percent = Math.round(e.loaded / e.total * 100);
+  setStatus("Installing Offline Cache: " + percent + "%");
+}
+function DisplayCacheProgress(){
+  setTimeout(function(){setStatus("Cache Installed Successfully");},1000);
+  setTimeout(function(){setStatus("Now Close And Re-Open Your Browser");},3000);
+}
+if (window.applicationCache) {
+  window.applicationCache.addEventListener("progress",DLProgress,false);
+  window.applicationCache.oncached=function(e){DisplayCacheProgress();};
+  window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
+}
+</script>
+<script src="exp_common.js"></script>
+<script src="exp_jailbreak.js"></script>
+</head>
+<body>
+<div class="modal" id="progressModal">
+  <div class="modal-card">
+    <h2 class="modal-title" id="progressTitle">Loading</h2>
+    <div class="loader" id="progressLoader"></div>
+    <p class="modal-status" id="progressStatus">Starting...</p>
+    <div class="progress-log" id="progressLog"></div>
+    <div class="modal-actions">
+      <button class="muted-button" onclick="closeProgress(); return false">Hide</button>
+    </div>
+  </div>
+</div>
+<div class="shell">
+  <div class="hero">
+    <p class="eyebrow">PS4 6.72 Fresh Host</p>
+    <h1 id="msgs">6.72 Fresh Exploit Menu</h1>
+    <p class="subline">Belize-ready Linux workflow, HEN, Mira, and maintenance payloads. Start with Exploit + HEN for normal homebrew, or Linux when your PS4 Linux USB is inserted.</p>
+    <button class="cache-refresh" onclick="forceLatestPage(); return false">Force Reload Latest Page</button>
+  </div>
+
+  <div class="panel launch-panel">
+    <h2>One-Click Linux Launch</h2>
+    <p class="panel-lede">Fresh reboot required. Insert the prepared PS4 Linux USB, open this page, then press this button before HEN or any other payload. Linux after HEN can crash or power off the PS4.</p>
+    <button class="launch-button" onclick="load_exploit_linux(); return false">Launch PS4 Linux</button>
+    <p class="vram-note">VRAM: this copied payload bundle currently exposes one Linux payload. Treat it as the default 1GB VRAM path. If we add separate 2GB/3GB payload files later, this page can show real selectable VRAM buttons.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Start Here</h2>
+    <ol class="steps">
+      <li>Use this page only on firmware 6.72.</li>
+      <li>Wait for the offline cache message if this is the first visit.</li>
+      <li>For PS4 Linux, insert the prepared Linux USB, then press <span class="good">Exploit + Linux</span>.</li>
+      <li>If a payload fails, close the browser, reopen this page, and try again.</li>
+    </ol>
+  </div>
+
+  <div class="panel">
+    <h2>Jailbreak</h2>
+    <p class="panel-lede">These buttons run the browser/kernel exploit first, then optionally load a common payload. Use the combined buttons unless you already know the exploit is loaded.</p>
+    <div class="primary-row">
+      <div class="action">
+        <button class="go" onclick="load_exploit_HEN(); return false">Exploit + HEN</button>
+        <p>Best default for homebrew, package installs, and general use. Reboot before switching from HEN to Linux.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_exploit_linux(); return false">Exploit + Linux</button>
+        <p>Best default for PS4 Linux. Reboot first, insert the Linux USB, then use this.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_exploit_mira(); return false">Exploit + Mira</button>
+        <p>Loads Mira after the exploit for users who specifically need Mira services.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_exploit_miraUnoff(); return false">Exploit + Mira Unofficial</button>
+        <p>Alternate Mira build. Try this only if the regular Mira option is not working for your setup.</p>
+      </div>
+    </div>
+    <br>
+    <div class="tool-row">
+      <div class="action">
+        <button onclick="load_exploit(); return false">Exploit Only</button>
+        <p>Runs only the jailbreak stage. Use this before loading a separate payload manually.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_HEN(); return false">HEN Only</button>
+        <p>Loads HEN after the exploit is already active.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_mira(); return false">Mira Only</button>
+        <p>Loads Mira after the exploit is already active.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_mira_unofficial(); return false">Mira Unofficial</button>
+        <p>Loads the alternate Mira payload after the exploit is already active.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Linux & Payloads</h2>
+    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The rest are utility payloads for file transfer, debugging, and dumping.</p>
+    <div class="button-grid">
+      <div class="action">
+        <button class="linux" onclick="load_linux(); return false">Linux</button>
+        <p>Loads only the Linux payload after Exploit Only. Blocked after HEN to avoid a crash or power off.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_binloader(); return false">Bin Loader</button>
+        <p>Listens for a payload sent from another device on port 9021.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_ftp(); return false">FTP</button>
+        <p>Starts FTP access so you can move files to and from the console.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_dumper(); return false">Dumper</button>
+        <p>Disc/app dumping payload for backing up installed content.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_app2usb(); return false">App2USB</button>
+        <p>Moves supported app content to USB storage for external loading.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_kerneldump(); return false">Kernel Dumper</button>
+        <p>Dumps kernel memory for low-level debugging and research.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_webrte(); return false">WebRTE</button>
+        <p>Runtime editing/debug tooling for compatible trainers and tools.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_ps4debug(); return false">PS4debug</button>
+        <p>Debug service used by external development and trainer tools.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>System Tools</h2>
+    <p class="panel-lede">Use these carefully. The update controls are useful for keeping the console on 6.72.</p>
+    <div class="button-grid">
+      <div class="action">
+        <button onclick="load_todex(); return false">ToDEX</button>
+        <p>Switches parts of the system behavior toward DEX-style features.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_historyblock(); return false">History Blocker</button>
+        <p>Reduces browser history entries from exploit host usage.</p>
+      </div>
+      <div class="action">
+        <button class="danger" onclick="load_updatesdisable(); return false">Disable Updates</button>
+        <p>Recommended after moving to 6.72 so the console avoids newer firmware.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_updatesenable(); return false">Enable Updates</button>
+        <p>Reverses the update blocker. Avoid this unless you intentionally need updates back.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_dbBackup(); return false">DB Backup</button>
+        <p>Backs up the PS4 database before risky content or storage changes.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_dbRestore(); return false">DB Restore</button>
+        <p>Restores a database backup created with DB Backup.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Fan</h2>
+    <div class="fan">
+      <button onclick="load_fanthresh(); return false">Set Fan Threshold</button>
+      <select id="tempC"></select>
+      <span>&#176;C</span>
+      <span class="note">Sets the temperature target used by the fan payload. Default PS4 target is 79&#176;C; 60&#176;C is a common cooler test value.</span>
+    </div>
+  </div>
+</div>
+<script>
+for(var i=40; i<=79; i++){
+    var select = document.getElementById("tempC");
+    var option = document.createElement("OPTION");
+	select.options.add(option);
+	option.text = i;
+	option.value = i;
+}
+tempC.value=60;
+</script>
+<script>
+function load_exploit(){
+if (!beginChain("Exploit Only")) { return; }
+rememberExploit();
+startProgress("Exploit Only", "Running the 6.72 exploit. Use this before a payload-only button.");
+statusTitle("Loading Exploit ...");
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_HEN(){
+if (!beginChain("Exploit + HEN")) { return; }
+rememberExploit();
+rememberPayload("HEN");
+startProgress("Exploit + HEN", "Running the 6.72 exploit, then loading HEN. The page may pause while memory is prepared.");
+statusTitle("Loading Exploit + HEN ...");
+LoadedMSG="Exploit + HEN Loaded";ExploitMira="HEN";MiraSRC="pl_HEN.js";
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_linux(){
+if (!guardFreshLinuxLaunch()) { return; }
+if (!beginChain("Exploit + Linux")) { return; }
+rememberExploit();
+rememberPayload("Linux");
+startProgress("Exploit + Linux", "Running the 6.72 exploit, then loading the Linux payload. Make sure the PS4 Linux USB is inserted.");
+statusTitle("Loading Exploit + Linux ...");
+LoadedMSG="Exploit + Linux Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux.js";
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_mira(){
+if (!beginChain("Exploit + Mira")) { return; }
+rememberExploit();
+rememberPayload("Mira");
+startProgress("Exploit + Mira", "Running the 6.72 exploit, then loading Mira.");
+statusTitle("Loading Exploit + Mira ...");
+LoadedMSG="Exploit + Mira Loaded";ExploitMira="yes";MiraSRC="pl_mira.js";
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_miraUnoff(){
+if (!beginChain("Exploit + Mira Unofficial")) { return; }
+rememberExploit();
+rememberPayload("Mira");
+startProgress("Exploit + Mira Unofficial", "Running the 6.72 exploit, then loading the alternate Mira payload.");
+statusTitle("Loading Exploit + Mira (Unofficial) ...");
+LoadedMSG="Exploit + Mira Loaded";ExploitMira="yes";MiraSRC="pl_mira_unofficial.js";
+setTimeout(jailbreak,500);
+}
+
+function load_binloader(){
+if (!beginChain("Bin Loader")) { return; }
+rememberPayload("Bin Loader");
+startProgress("Bin Loader", "Starting the payload listener on port 9021.");
+statusTitle("Loading Bin Loader ...");
+LoadedMSG="Send Payload To Port 9021";
+appendPayloadScript("exp_BinLoader.js", "Bin Loader");
+}
+
+function load_HEN(){
+if (!beginChain("HEN Only")) { return; }
+rememberPayload("HEN");
+startProgress("HEN Only", "Loading HEN after the exploit is already active.");
+statusTitle("Loading HEN ...");
+LoadedMSG="HEN Loaded";
+stagePayloadAndLoader("pl_HEN.js", "HEN payload");
+}
+
+function load_mira(){
+if (!beginChain("Mira Only")) { return; }
+rememberPayload("Mira");
+startProgress("Mira Only", "Loading Mira after the exploit is already active.");
+statusTitle("Loading Mira ...");
+LoadedMSG="Mira Loaded";
+stagePayloadAndLoader("pl_mira.js", "Mira payload");
+}
+
+function load_mira_unofficial(){
+if (!beginChain("Mira Unofficial")) { return; }
+rememberPayload("Mira");
+startProgress("Mira Unofficial", "Loading alternate Mira after the exploit is already active.");
+statusTitle("Loading Mira ...");
+LoadedMSG="Mira Loaded";
+stagePayloadAndLoader("pl_mira_unofficial.js", "Mira unofficial payload");
+}
+
+function load_ftp(){
+if (!beginChain("FTP")) { return; }
+rememberPayload("FTP");
+startProgress("FTP", "Starting FTP payload.");
+statusTitle("Loading FTP ...");
+LoadedMSG="FTP Loaded";
+stagePayloadAndLoader("pl_ftp.js", "FTP payload");
+}
+
+function load_dumper(){
+if (!beginChain("Dumper")) { return; }
+rememberPayload("Dumper");
+startProgress("Dumper", "Loading content dumper payload.");
+statusTitle("Loading Dumper ...");
+LoadedMSG="Dumper Loaded";
+stagePayloadAndLoader("pl_dumper.js", "Dumper payload");
+}
+
+function load_linux(){
+if (!guardLinuxOnly()) { return; }
+if (!beginChain("Linux Only")) { return; }
+rememberPayload("Linux");
+startProgress("Linux Only", "Loading Linux payload after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.");
+statusTitle("Loading Linux ...");
+LoadedMSG="Linux Loaded";
+stagePayloadAndLoader("pl_linux.js", "Linux payload");
+}
+
+function load_app2usb(){
+if (!beginChain("App2USB")) { return; }
+rememberPayload("App2USB");
+startProgress("App2USB", "Loading App2USB payload.");
+statusTitle("Loading AppToUSB ...");
+LoadedMSG="AppToUSB Loaded";
+stagePayloadAndLoader("pl_app2usb.js", "App2USB payload");
+}
+
+function load_kerneldump(){
+if (!beginChain("Kernel Dumper")) { return; }
+rememberPayload("Kernel Dumper");
+startProgress("Kernel Dumper", "Loading kernel dumper payload.");
+statusTitle("Loading Kernel Dumper ...");
+LoadedMSG="Kernel Dumper Loaded";
+stagePayloadAndLoader("pl_kernelDumper.js", "Kernel Dumper payload");
+}
+
+function load_webrte(){
+if (!beginChain("WebRTE")) { return; }
+rememberPayload("WebRTE");
+startProgress("WebRTE", "Loading WebRTE payload.");
+statusTitle("Loading WebRTE ...");
+LoadedMSG="WebRTE Loaded";
+stagePayloadAndLoader("pl_WebRTE.js", "WebRTE payload");
+}
+
+function load_ps4debug(){
+if (!beginChain("PS4debug")) { return; }
+rememberPayload("PS4debug");
+startProgress("PS4debug", "Loading PS4debug payload.");
+statusTitle("Loading PS4Debug ...");
+LoadedMSG="PS4Debug Loaded";
+stagePayloadAndLoader("pl_ps4debug.js", "PS4debug payload");
+}
+
+function load_todex(){
+if (!beginChain("ToDEX")) { return; }
+rememberPayload("ToDEX");
+startProgress("ToDEX", "Loading ToDEX payload.");
+statusTitle("Loading ToDEX ...");
+LoadedMSG="ToDEX Loaded";
+stagePayloadAndLoader("pl_ToDEX.js", "ToDEX payload");
+}
+
+function load_historyblock(){
+if (!beginChain("History Blocker")) { return; }
+rememberPayload("History Blocker");
+startProgress("History Blocker", "Loading History Blocker payload.");
+statusTitle("Loading History Blocker ...");
+LoadedMSG="History Blocker Loaded";
+stagePayloadAndLoader("pl_historyBlocker.js", "History Blocker payload");
+}
+
+function load_updatesdisable(){
+if (!beginChain("Disable Updates")) { return; }
+rememberPayload("Disable Updates");
+startProgress("Disable Updates", "Loading update blocker payload.");
+statusTitle("Loading Disable Updates ...");
+LoadedMSG="Disable Updates Loaded";
+stagePayloadAndLoader("pl_updatesDisable.js", "Disable Updates payload");
+}
+
+function load_updatesenable(){
+if (!beginChain("Enable Updates")) { return; }
+rememberPayload("Enable Updates");
+startProgress("Enable Updates", "Loading update enabler payload.");
+statusTitle("Loading Enable Updates ...");
+LoadedMSG="Enable Updates Loaded";
+stagePayloadAndLoader("pl_updatesEnable.js", "Enable Updates payload");
+}
+
+function load_dbBackup(){
+if (!beginChain("DB Backup")) { return; }
+rememberPayload("DB Backup");
+startProgress("DB Backup", "Loading database backup payload.");
+statusTitle("Loading DB Backup ...");
+LoadedMSG="DB Backup Loaded";
+stagePayloadAndLoader("pl_dbBackup.js", "DB Backup payload");
+}
+
+function load_dbRestore(){
+if (!beginChain("DB Restore")) { return; }
+rememberPayload("DB Restore");
+startProgress("DB Restore", "Loading database restore payload.");
+statusTitle("Loading DB Restore ...");
+LoadedMSG="DB Restore Loaded";
+stagePayloadAndLoader("pl_dbRestore.js", "DB Restore payload");
+}
+
+function load_fanthresh(){
+if (!beginChain("Fan Threshold")) { return; }
+rememberPayload("Fan Threshold");
+startProgress("Fan Threshold", "Loading fan threshold payload.");
+statusTitle("Loading Fan Threshold ...");
+LoadedMSG="Fan Threshold Loaded";fanTemp=tempC.value;//alert(fanTemp);
+stagePayloadAndLoader("pl_fanthresh.js", "Fan Threshold payload");
+}
+</script>
+</body>
+</html>
