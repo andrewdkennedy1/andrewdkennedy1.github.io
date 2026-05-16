@@ -49,18 +49,21 @@ message if you want offline use.
 
 For the Linux test, reboot the PS4 first. Reboot clears the jailbreak; the
 `Boot Linux from USB` / `Exploit + Linux` button re-runs the 6.72 exploit and
-then sends the Linux payload. The live page can auto-start that same path:
+then sends the browser-native Linux payload. The live page can auto-start that
+same path:
 
 ```text
 http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux
 ```
 
-Fallback and sanity-check auto URLs are also available:
+Comparison and sanity-check auto URLs are also available:
 
 ```text
-http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux-legacy
+http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux-arabpixel
 http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=goldhen
 ```
+
+`?auto=linux-legacy` remains as an alias for `?auto=linux`.
 
 The page also links comparison 6.72 hosts for stability testing:
 
@@ -68,8 +71,9 @@ The page also links comparison 6.72 hosts for stability testing:
 - DarkModderVC PS4JB: `https://darkmoddervc.github.io/PS4JB/`
 - Chronoss GoldHEN 6.72: `https://chronoss09.github.io/GoldHen/6.72/index.html`
 
-Those external hosts are for jailbreak/GoldHEN/Mira comparison only; they do not
-use this page's ArabPixel Linux USB payload.
+Those external hosts are for jailbreak/GoldHEN/Mira comparison and alternate
+payload flows. They do not use this page's prepared USB files unless their
+selected payload is a Linux loader.
 
 If multiple IP addresses print, use the one on the same LAN as the PS4. Ignore
 WSL, VPN, or virtual adapter addresses. On this network the likely LAN address

@@ -566,14 +566,14 @@ function runAutoMode(){
   var mode = (queryValue("auto") || queryValue("run") || "").toLowerCase();
   if (!mode) { return; }
   autoModeStarted = true;
-  if (mode === "linux" || mode === "boot-linux") {
-    startProgress("Auto Linux", "Auto URL requested Linux. Fresh reboot and prepared USB are required.");
+  if (mode === "linux" || mode === "boot-linux" || mode === "linux-legacy" || mode === "legacy-linux") {
+    startProgress("Auto Linux", "Auto URL requested the browser-native Linux payload. Fresh reboot and prepared USB are required.");
     appendLog("Auto mode: Linux. Starting Exploit + Linux shortly.");
     setTimeout(load_exploit_linux, 1200);
-  } else if (mode === "linux-legacy" || mode === "legacy-linux") {
-    startProgress("Auto Linux Legacy", "Auto URL requested the older Leeful Linux payload. Fresh reboot and prepared USB are required.");
-    appendLog("Auto mode: Linux legacy. Starting Exploit + Linux Legacy shortly.");
-    setTimeout(load_exploit_linux_legacy, 1200);
+  } else if (mode === "linux-arabpixel" || mode === "arabpixel-linux" || mode === "linux-v24b1") {
+    startProgress("Auto Linux ArabPixel", "Auto URL requested the ArabPixel v24b.1 Linux wrapper. Use this only as a comparison path after a fresh reboot.");
+    appendLog("Auto mode: Linux ArabPixel. Starting Exploit + Linux ArabPixel shortly.");
+    setTimeout(load_exploit_linux_arabpixel, 1200);
   } else if (mode === "goldhen") {
     startProgress("Auto GoldHEN", "Auto URL requested GoldHEN. This is not the Linux boot path.");
     appendLog("Auto mode: GoldHEN. Starting Exploit + GoldHEN shortly.");
@@ -612,7 +612,7 @@ if (window.applicationCache) {
   <div class="hero">
     <p class="eyebrow">PS4 6.72 Linux / GoldHEN Host</p>
     <h1 id="msgs">6.72 Boot Menu</h1>
-    <p class="subline">Belize-ready GoldHEN, ArabPixel Linux, Mira, and maintenance payloads. Linux is the primary clean reboot path; GoldHEN remains a sanity check.</p>
+    <p class="subline">Belize-ready Linux, GoldHEN, Mira, and maintenance payloads. Linux is the primary clean reboot path; GoldHEN remains a sanity check.</p>
     <button class="cache-refresh" onclick="forceLatestPage(); return false">Force Reload Latest Page</button>
   </div>
 
@@ -622,14 +622,14 @@ if (window.applicationCache) {
     <div class="launch-actions">
       <div class="action">
         <button class="launch-button linux" onclick="load_exploit_linux(); return false">Boot Linux from USB</button>
-        <p>Runs the 6.72 exploit, then ArabPixel v24b.1 1024 MB Linux for the prepared USB.</p>
+        <p>Runs the 6.72 exploit, then the browser-native Linux payload for the prepared USB.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
         <p>Runs the 6.72 exploit, then GoldHEN. Reboot before switching back to Linux.</p>
       </div>
     </div>
-    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span>, <span class="good">?auto=linux-legacy</span>, or <span class="good">?auto=goldhen</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because Linux needs the clean jailbreak path.</p>
+    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span>, <span class="good">?auto=linux-arabpixel</span>, or <span class="good">?auto=goldhen</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because Linux needs the clean jailbreak path.</p>
   </div>
 
   <div class="panel">
@@ -645,7 +645,7 @@ if (window.applicationCache) {
 
   <div class="panel">
     <h2>Other 6.72 Hosts</h2>
-    <p class="panel-lede">These are comparison hosts for jailbreak stability only. They do not use this page's ArabPixel Linux USB payload path.</p>
+    <p class="panel-lede">These are comparison hosts for jailbreak stability and alternate 6.72 payload flows. They do not use this page's prepared USB files unless their selected payload is a Linux loader.</p>
     <div class="tool-row">
       <div class="action">
         <button onclick="location.href='https://chronoss09.github.io/sleirsgoevy672/'; return false">Chronoss Sleirsgoevy 6.72</button>
@@ -653,7 +653,7 @@ if (window.applicationCache) {
       </div>
       <div class="action">
         <button onclick="location.href='https://darkmoddervc.github.io/PS4JB/'; return false">DarkModderVC Offline 6.72</button>
-        <p>Offline-cache host that separates jailbreak first, then HEN or Mira after jailbreak completes.</p>
+        <p>Offline-cache host with old/new exploit choices plus GoldHEN, HEN, Mira, and Linux Loader options.</p>
       </div>
       <div class="action">
         <button onclick="location.href='https://chronoss09.github.io/GoldHen/6.72/index.html'; return false">Chronoss GoldHEN 6.72</button>
@@ -676,11 +676,11 @@ if (window.applicationCache) {
       </div>
       <div class="action">
         <button class="linux" onclick="load_exploit_linux(); return false">Exploit + Linux</button>
-        <p>Best default for PS4 Linux. Uses ArabPixel v24b.1 1024 MB, then boots from the prepared USB.</p>
+        <p>Best next default for PS4 Linux on this console. Uses the browser-native Linux payload, then boots from the prepared USB.</p>
       </div>
       <div class="action">
-        <button class="linux" onclick="load_exploit_linux_legacy(); return false">Exploit + Linux Legacy</button>
-        <p>Fallback to the older Leeful Linux payload if the ArabPixel loader fails on this console.</p>
+        <button class="linux" onclick="load_exploit_linux_arabpixel(); return false">Exploit + Linux ArabPixel</button>
+        <p>Comparison path using ArabPixel v24b.1 1024 MB. Use from a fresh reboot only if the default Linux button fails.</p>
       </div>
       <div class="action">
         <button onclick="load_exploit_mira(); return false">Exploit + Mira</button>
@@ -718,15 +718,15 @@ if (window.applicationCache) {
 
   <div class="panel">
     <h2>Linux & Payloads</h2>
-    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The default Linux payload is ArabPixel v24b.1 1024 MB; legacy remains available for comparison.</p>
+    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The default is the browser-native Linux payload; ArabPixel remains available for comparison.</p>
     <div class="button-grid">
       <div class="action">
         <button class="linux" onclick="load_linux(); return false">Linux</button>
-        <p>Loads the ArabPixel v24b.1 1024 MB Linux payload after Exploit Only. Blocked after HEN to avoid a crash or power off.</p>
+        <p>Loads the browser-native Linux payload after Exploit Only. Blocked after HEN to avoid a crash or power off.</p>
       </div>
       <div class="action">
-        <button class="linux" onclick="load_linux_legacy(); return false">Linux Legacy</button>
-        <p>Loads the older Leeful Linux payload after Exploit Only for fallback testing.</p>
+        <button class="linux" onclick="load_linux_arabpixel(); return false">Linux ArabPixel</button>
+        <p>Loads the ArabPixel v24b.1 1024 MB Linux wrapper after Exploit Only for comparison testing.</p>
       </div>
       <div class="action">
         <button onclick="load_binloader(); return false">Bin Loader</button>
@@ -844,20 +844,24 @@ if (!guardFreshLinuxLaunch()) { return; }
 if (!beginChain("Exploit + Linux")) { return; }
 rememberExploit();
 rememberPayload("Linux");
-startProgress("Exploit + Linux", "Running the 6.72 exploit, then loading ArabPixel v24b.1 1024 MB Linux. Make sure the PS4 Linux USB is inserted.");
+startProgress("Exploit + Linux", "Running the 6.72 exploit, then loading the browser-native Linux payload. Make sure the PS4 Linux USB is inserted.");
 statusTitle("Loading Exploit + Linux ...");
-LoadedMSG="Exploit + Linux Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux_arabpixel_1024mb.js";
+LoadedMSG="Exploit + Linux Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux.js";
 setTimeout(jailbreak,500);
 }
 
 function load_exploit_linux_legacy(){
+return load_exploit_linux();
+}
+
+function load_exploit_linux_arabpixel(){
 if (!guardFreshLinuxLaunch()) { return; }
-if (!beginChain("Exploit + Linux Legacy")) { return; }
+if (!beginChain("Exploit + Linux ArabPixel")) { return; }
 rememberExploit();
 rememberPayload("Linux");
-startProgress("Exploit + Linux Legacy", "Running the 6.72 exploit, then loading the older Leeful Linux payload.");
-statusTitle("Loading Exploit + Linux Legacy ...");
-LoadedMSG="Exploit + Linux Legacy Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux.js";
+startProgress("Exploit + Linux ArabPixel", "Running the 6.72 exploit, then loading ArabPixel v24b.1 1024 MB Linux. Use this only as a comparison path.");
+statusTitle("Loading Exploit + Linux ArabPixel ...");
+LoadedMSG="Exploit + Linux ArabPixel Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux_arabpixel_1024mb.js";
 setTimeout(jailbreak,500);
 }
 
@@ -948,20 +952,24 @@ function load_linux(){
 if (!guardLinuxOnly()) { return; }
 if (!beginChain("Linux Only")) { return; }
 rememberPayload("Linux");
-startProgress("Linux Only", "Loading ArabPixel v24b.1 1024 MB Linux after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.");
+startProgress("Linux Only", "Loading the browser-native Linux payload after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.");
 statusTitle("Loading Linux ...");
 LoadedMSG="Linux Loaded";
-stagePayloadAndLoader("pl_linux_arabpixel_1024mb.js", "Linux payload (ArabPixel v24b.1 1024 MB)");
+stagePayloadAndLoader("pl_linux.js", "Linux payload");
 }
 
 function load_linux_legacy(){
+return load_linux();
+}
+
+function load_linux_arabpixel(){
 if (!guardLinuxOnly()) { return; }
-if (!beginChain("Linux Legacy")) { return; }
+if (!beginChain("Linux ArabPixel")) { return; }
 rememberPayload("Linux");
-startProgress("Linux Legacy", "Loading the older Leeful Linux payload after the exploit is already active.");
-statusTitle("Loading Linux Legacy ...");
-LoadedMSG="Linux Legacy Loaded";
-stagePayloadAndLoader("pl_linux.js", "Linux legacy payload");
+startProgress("Linux ArabPixel", "Loading the ArabPixel v24b.1 1024 MB Linux wrapper after the exploit is already active.");
+statusTitle("Loading Linux ArabPixel ...");
+LoadedMSG="Linux ArabPixel Loaded";
+stagePayloadAndLoader("pl_linux_arabpixel_1024mb.js", "Linux payload (ArabPixel v24b.1 1024 MB)");
 }
 
 function load_app2usb(){
