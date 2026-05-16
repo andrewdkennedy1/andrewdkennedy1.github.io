@@ -4,14 +4,12 @@ Static GitHub Pages content, including the PS4 6.72 Linux host.
 
 ## PS4 6.72 Host
 
-Preferred hosted URLs:
+Preferred hosted URL:
 
 - Cached/offline: `https://andrewdkennedy1.github.io/ps4-672-linux/`
-- Live/debug: `https://andrewdkennedy1.github.io/ps4-672-linux-live/`
 
-The cached URL uses AppCache so the PS4 can keep using it offline after the
-first successful load. The live URL does not use AppCache, which makes it better
-for quick testing while scripts are changing.
+The host uses AppCache so the PS4 can keep using it offline after the first
+successful load. Use `Force Reload Latest Page` when iterating on local changes.
 
 ## Self-Host On Your LAN
 
@@ -40,27 +38,25 @@ The scripts print URLs like:
 
 ```text
 http://<your-pc-ip>:8765/ps4-672-linux/
-http://<your-pc-ip>:8765/ps4-672-linux-live/
 ```
 
-On the PS4, open the printed `ps4-672-linux-live` URL while iterating because it
-avoids AppCache. Once it works, open `ps4-672-linux` and wait for the cache
-message if you want offline use.
+On the PS4, open the printed `ps4-672-linux` URL and wait for the cache message
+before using payload buttons.
 
 For the Linux test, reboot the PS4 first. Reboot clears the jailbreak; the
 `Boot Linux from USB` / `Exploit + Linux` button re-runs the 6.72 exploit and
-then sends the browser-native Linux payload. The live page can auto-start that
+then sends the browser-native Linux payload. The page can auto-start that
 same path:
 
 ```text
-http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux
+http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux
 ```
 
 Comparison and sanity-check auto URLs are also available:
 
 ```text
-http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux-arabpixel
-http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=goldhen
+http://<your-pc-ip>:8765/ps4-672-linux/?auto=linux-arabpixel
+http://<your-pc-ip>:8765/ps4-672-linux/?auto=goldhen
 ```
 
 `?auto=linux-legacy` remains as an alias for `?auto=linux`.
@@ -68,7 +64,11 @@ http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=goldhen
 The page also links comparison 6.72 hosts for stability testing:
 
 - Chronoss Sleirsgoevy 6.72: `https://chronoss09.github.io/sleirsgoevy672/`
+- Leeful 6.72 v6: `https://leeful.github.io/672v6/index.html`
 - DarkModderVC PS4JB: `https://darkmoddervc.github.io/PS4JB/`
+- PS4Boot 6.72 Linux / GoldHEN: `https://ps4boot.github.io/672/index.html`
+- PS4Boot 6.72 GoldHEN-only: `https://ps4boot.github.io/672qh/index.html`
+- PS4 Playground 6.72: `https://ps4.editzz.com/6.72/index.html`
 - Chronoss GoldHEN 6.72: `https://chronoss09.github.io/GoldHen/6.72/index.html`
 
 Those external hosts are for jailbreak/GoldHEN/Mira comparison and alternate

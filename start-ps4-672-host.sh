@@ -39,7 +39,6 @@ for ip in $(list_ips); do
     ""|127.*|169.254.*) continue ;;
   esac
   echo "PS4 cached/offline: http://$ip:$PORT/ps4-672-linux/"
-  echo "PS4 live/debug:     http://$ip:$PORT/ps4-672-linux-live/"
   echo
 done
 echo "Use the IP on the same LAN as the PS4. Ignore WSL, VPN, or virtual adapter IPs."
