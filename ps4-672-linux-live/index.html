@@ -570,6 +570,10 @@ function runAutoMode(){
     startProgress("Auto Linux", "Auto URL requested Linux. Fresh reboot and prepared USB are required.");
     appendLog("Auto mode: Linux. Starting Exploit + Linux shortly.");
     setTimeout(load_exploit_linux, 1200);
+  } else if (mode === "linux-legacy" || mode === "legacy-linux") {
+    startProgress("Auto Linux Legacy", "Auto URL requested the older Leeful Linux payload. Fresh reboot and prepared USB are required.");
+    appendLog("Auto mode: Linux legacy. Starting Exploit + Linux Legacy shortly.");
+    setTimeout(load_exploit_linux_legacy, 1200);
   } else if (mode === "goldhen") {
     startProgress("Auto GoldHEN", "Auto URL requested GoldHEN. This is not the Linux boot path.");
     appendLog("Auto mode: GoldHEN. Starting Exploit + GoldHEN shortly.");
@@ -625,7 +629,7 @@ if (window.applicationCache) {
         <p>Runs the 6.72 exploit, then GoldHEN. Reboot before switching back to Linux.</p>
       </div>
     </div>
-    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or <span class="good">?auto=goldhen</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because Linux needs the clean jailbreak path.</p>
+    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span>, <span class="good">?auto=linux-legacy</span>, or <span class="good">?auto=goldhen</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because Linux needs the clean jailbreak path.</p>
   </div>
 
   <div class="panel">

@@ -55,6 +55,13 @@ then sends the Linux payload. The live page can auto-start that same path:
 http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux
 ```
 
+Fallback and sanity-check auto URLs are also available:
+
+```text
+http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=linux-legacy
+http://<your-pc-ip>:8765/ps4-672-linux-live/?auto=goldhen
+```
+
 The page also links comparison 6.72 hosts for stability testing:
 
 - Chronoss Sleirsgoevy 6.72: `https://chronoss09.github.io/sleirsgoevy672/`
