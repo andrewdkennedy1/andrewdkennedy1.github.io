@@ -2,7 +2,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PS4 6.72 Fresh Host</title>
+<title>PS4 6.72 Linux / GoldHEN Host</title>
 <style>
 html, body {
   margin: 0;
@@ -123,6 +123,11 @@ button:disabled {
   border-color: #ffd981;
   color: #1e1500;
 }
+.goldhen {
+  background: #d9b64c;
+  border-color: #ffe08a;
+  color: #171000;
+}
 .danger {
   background: #6d2c4d;
 }
@@ -158,9 +163,9 @@ button:disabled {
 }
 .launch-button {
   min-height: 58px;
-  background: #13a57d;
-  border-color: #83e6cf;
-  color: #031310;
+  background: #d9b64c;
+  border-color: #ffe08a;
+  color: #171000;
   font-size: 20px;
 }
 .vram-note {
@@ -411,13 +416,32 @@ function stagePayloadAndLoader(src, label){
     }, 150);
   });
 }
+function stageGoldHENPayload(src, label){
+  clearPayloadBlobs();
+  appendPayloadScript(src, label || "GoldHEN payload", function(){
+    appendLog("GoldHEN script is loaded. It uses its own loader, not exp_loader.js.");
+    setTimeout(function(){
+      if (typeof load_payload !== "function") {
+        failProgress("GoldHEN script loaded, but load_payload() was not available. Reopen the browser and try again.");
+        appendLog("Blocked GoldHEN handoff because load_payload() was missing.");
+        return;
+      }
+      markPayloadExecuting("GoldHEN payload staged");
+      try {
+        load_payload();
+      } catch(e) {
+        failProgress("GoldHEN loader threw an error: " + e.message);
+      }
+    }, 500);
+  });
+}
 function markPayloadExecuting(message){
   var loader = document.getElementById("progressLoader");
   if (loader) { loader.style.display = "block"; }
   updateProgress((message || "Payload staged") + ". ROP chain is executing now; do not press another payload button.");
   appendLog("If the browser stops responding here, that usually means the payload pivot started.");
   if (activePayload === "Linux") {
-    appendLog("Linux handoff expects a clean boot path. If HEN was loaded earlier, reboot and use Launch PS4 Linux first.");
+    appendLog("Linux handoff expects a clean boot path. If GoldHEN, HEN, or Mira was loaded earlier, reboot and use Exploit + Linux first.");
   }
 }
 function closeProgress(){
@@ -427,11 +451,11 @@ function closeProgress(){
 function blockLinuxLaunch(reason){
   startProgress("Linux Launch Blocked", reason);
   failProgress(reason);
-  appendLog("No payload was sent. Reboot the PS4, open this page fresh, then use Launch PS4 Linux before HEN or other payloads.");
+  appendLog("No payload was sent. Reboot the PS4, open this page fresh, then use Exploit + Linux before GoldHEN, HEN, Mira, or other payloads.");
 }
 function guardFreshLinuxLaunch(){
   if (sawNonLinuxPayload()) {
-    blockLinuxLaunch("HEN or another payload already ran in this browser session. Do not launch Linux after HEN; reboot the PS4 and use Launch PS4 Linux first.");
+    blockLinuxLaunch("GoldHEN, HEN, Mira, or another payload already ran in this browser session. Do not launch Linux after another payload; reboot the PS4 and use Exploit + Linux first.");
     return false;
   }
   if (sawExploitAttempt()) {
@@ -442,11 +466,11 @@ function guardFreshLinuxLaunch(){
 }
 function guardLinuxOnly(){
   if (sawNonLinuxPayload()) {
-    blockLinuxLaunch("HEN or another payload already ran in this browser session. Linux after HEN can crash or power off the PS4. Reboot and use Launch PS4 Linux first.");
+    blockLinuxLaunch("GoldHEN, HEN, Mira, or another payload already ran in this browser session. Linux after another payload can crash or power off the PS4. Reboot and use Exploit + Linux first.");
     return false;
   }
   if (!sawExploitAttempt()) {
-    blockLinuxLaunch("Linux Only requires Exploit Only to already be loaded. From a fresh reboot, use Launch PS4 Linux instead.");
+    blockLinuxLaunch("Linux Only requires Exploit Only to already be loaded. From a fresh reboot, use Exploit + Linux instead.");
     return false;
   }
   return true;
@@ -529,17 +553,17 @@ if (window.applicationCache) {
 </div>
 <div class="shell">
   <div class="hero">
-    <p class="eyebrow">PS4 6.72 Fresh Host</p>
-    <h1 id="msgs">6.72 Fresh Exploit Menu</h1>
-    <p class="subline">Belize-ready Linux workflow, HEN, Mira, and maintenance payloads. Start with Exploit + HEN for normal homebrew, or Linux when your PS4 Linux USB is inserted.</p>
+    <p class="eyebrow">PS4 6.72 Linux / GoldHEN Host</p>
+    <h1 id="msgs">6.72 Boot Menu</h1>
+    <p class="subline">Belize-ready GoldHEN, Linux, Mira, and maintenance payloads. The easy button now tests GoldHEN; Linux stays on a clean reboot path.</p>
     <button class="cache-refresh" onclick="forceLatestPage(); return false">Force Reload Latest Page</button>
   </div>
 
   <div class="panel launch-panel">
-    <h2>One-Click Linux Launch</h2>
-    <p class="panel-lede">Fresh reboot required. Insert the prepared PS4 Linux USB, open this page, then press this button before HEN or any other payload. Linux after HEN can crash or power off the PS4.</p>
-    <button class="launch-button" onclick="load_exploit_linux(); return false">Launch PS4 Linux</button>
-    <p class="vram-note">VRAM: this copied payload bundle currently exposes one Linux payload. Treat it as the default 1GB VRAM path. If we add separate 2GB/3GB payload files later, this page can show real selectable VRAM buttons.</p>
+    <h2>One-Click GoldHEN Launch</h2>
+    <p class="panel-lede">Fresh reboot recommended. This runs the 6.72 jailbreak, then loads GoldHEN. Use this to confirm the exploit path is stable before testing the Linux kexec handoff.</p>
+    <button class="launch-button" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
+    <p class="vram-note">For Linux, reboot first and use <span class="good">Exploit + Linux</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because it can crash or power off the PS4.</p>
   </div>
 
   <div class="panel">
@@ -547,7 +571,8 @@ if (window.applicationCache) {
     <ol class="steps">
       <li>Use this page only on firmware 6.72.</li>
       <li>Wait for the offline cache message if this is the first visit.</li>
-      <li>For PS4 Linux, insert the prepared Linux USB, then press <span class="good">Exploit + Linux</span>.</li>
+      <li>For a quick jailbreak test, press <span class="good">Launch GoldHEN</span>.</li>
+      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Exploit + Linux</span>.</li>
       <li>If a payload fails, close the browser, reopen this page, and try again.</li>
     </ol>
   </div>
@@ -557,8 +582,12 @@ if (window.applicationCache) {
     <p class="panel-lede">These buttons run the browser/kernel exploit first, then optionally load a common payload. Use the combined buttons unless you already know the exploit is loaded.</p>
     <div class="primary-row">
       <div class="action">
-        <button class="go" onclick="load_exploit_HEN(); return false">Exploit + HEN</button>
-        <p>Best default for homebrew, package installs, and general use. Reboot before switching from HEN to Linux.</p>
+        <button class="goldhen" onclick="load_exploit_goldhen(); return false">Exploit + GoldHEN</button>
+        <p>Best default for homebrew, package installs, and checking that the exploit path survives payload handoff.</p>
+      </div>
+      <div class="action">
+        <button class="go" onclick="load_exploit_HEN(); return false">Exploit + PS4HEN</button>
+        <p>Older HEN payload from the 6.72 bundle. Reboot before switching from HEN to Linux.</p>
       </div>
       <div class="action">
         <button class="linux" onclick="load_exploit_linux(); return false">Exploit + Linux</button>
@@ -580,8 +609,12 @@ if (window.applicationCache) {
         <p>Runs only the jailbreak stage. Use this before loading a separate payload manually.</p>
       </div>
       <div class="action">
-        <button onclick="load_HEN(); return false">HEN Only</button>
-        <p>Loads HEN after the exploit is already active.</p>
+        <button class="goldhen" onclick="load_goldhen(); return false">GoldHEN Only</button>
+        <p>Loads GoldHEN after the exploit is already active.</p>
+      </div>
+      <div class="action">
+        <button onclick="load_HEN(); return false">PS4HEN Only</button>
+        <p>Loads the older HEN payload after the exploit is already active.</p>
       </div>
       <div class="action">
         <button onclick="load_mira(); return false">Mira Only</button>
@@ -703,6 +736,16 @@ LoadedMSG="Exploit + HEN Loaded";ExploitMira="HEN";MiraSRC="pl_HEN.js";
 setTimeout(jailbreak,500);
 }
 
+function load_exploit_goldhen(){
+if (!beginChain("Exploit + GoldHEN")) { return; }
+rememberExploit();
+rememberPayload("GoldHEN");
+startProgress("Exploit + GoldHEN", "Running the 6.72 exploit, then loading GoldHEN. The page may pause while memory is prepared.");
+statusTitle("Loading Exploit + GoldHEN ...");
+LoadedMSG="GoldHEN Loaded - Press Circle To Exit";ExploitMira="GoldHEN";MiraSRC="pl_goldhen.js";
+setTimeout(jailbreak,500);
+}
+
 function load_exploit_linux(){
 if (!guardFreshLinuxLaunch()) { return; }
 if (!beginChain("Exploit + Linux")) { return; }
@@ -750,6 +793,15 @@ startProgress("HEN Only", "Loading HEN after the exploit is already active.");
 statusTitle("Loading HEN ...");
 LoadedMSG="HEN Loaded";
 stagePayloadAndLoader("pl_HEN.js", "HEN payload");
+}
+
+function load_goldhen(){
+if (!beginChain("GoldHEN Only")) { return; }
+rememberPayload("GoldHEN");
+startProgress("GoldHEN Only", "Loading GoldHEN after the exploit is already active.");
+statusTitle("Loading GoldHEN ...");
+LoadedMSG="GoldHEN Loaded - Press Circle To Exit";
+stageGoldHENPayload("pl_goldhen.js", "GoldHEN payload");
 }
 
 function load_mira(){
