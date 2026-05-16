@@ -54,6 +54,15 @@ body {
   border-color: rgba(131,230,207,0.55);
   background: rgba(10, 30, 32, 0.78);
 }
+.cache-refresh {
+  margin-top: 14px;
+  background: #31415c;
+  border-color: rgba(180,205,240,0.45);
+}
+.cache-refresh:hover,
+.cache-refresh:focus {
+  background: #3f5578;
+}
 .panel h2 {
   margin: 0 0 12px;
   color: #ffffff;
@@ -312,6 +321,42 @@ function closeProgress(){
   var modal = document.getElementById("progressModal");
   if (modal) { modal.style.display = "none"; }
 }
+function reloadWithCacheBust(){
+  var base = window.location.protocol + "//" + window.location.host + window.location.pathname;
+  window.location.href = base + "?fresh=" + new Date().getTime();
+}
+function forceLatestPage(){
+  startProgress("Refreshing Host Cache", "Checking for the newest hosted files, then reloading this page with a fresh URL.");
+  appendLog("Current page: " + window.location.href);
+  appendLog("AppCache available: " + (window.applicationCache ? "yes" : "no"));
+  try { localStorage.clear(); appendLog("Cleared localStorage."); } catch(e) { appendLog("localStorage clear skipped: " + e.message); }
+  try { sessionStorage.clear(); appendLog("Cleared sessionStorage."); } catch(e2) { appendLog("sessionStorage clear skipped: " + e2.message); }
+  if (window.applicationCache) {
+    try {
+      window.applicationCache.onupdateready = function(){
+        appendLog("AppCache update ready.");
+        try { window.applicationCache.swapCache(); appendLog("Swapped to newest AppCache."); } catch(e3) { appendLog("swapCache skipped: " + e3.message); }
+        appendLog("Reloading with cache-bust query.");
+        setTimeout(reloadWithCacheBust, 500);
+      };
+      window.applicationCache.onerror = function(){
+        appendLog("AppCache update did not complete. Reloading with cache-bust query anyway.");
+        setTimeout(reloadWithCacheBust, 500);
+      };
+      appendLog("Requesting AppCache update.");
+      window.applicationCache.update();
+      setTimeout(function(){
+        appendLog("Reloading after AppCache update wait.");
+        reloadWithCacheBust();
+      }, 5000);
+      return;
+    } catch(e4) {
+      appendLog("AppCache update skipped: " + e4.message);
+    }
+  }
+  appendLog("Reloading with cache-bust query.");
+  setTimeout(reloadWithCacheBust, 500);
+}
 function DLProgress(e){
   if (!e.total) { return; }
   var percent = Math.round(e.loaded / e.total * 100);
@@ -347,6 +392,7 @@ if (window.applicationCache) {
     <p class="eyebrow">PS4 6.72 Host</p>
     <h1 id="msgs">6.72 Exploit Menu</h1>
     <p class="subline">Belize-ready Linux workflow, HEN, Mira, and maintenance payloads. Start with Exploit + HEN for normal homebrew, or Linux when your PS4 Linux USB is inserted.</p>
+    <button class="cache-refresh" onclick="forceLatestPage(); return false">Force Reload Latest Page</button>
   </div>
 
   <div class="panel launch-panel">
