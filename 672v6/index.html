@@ -555,7 +555,7 @@ if (window.applicationCache) {
   <div class="hero">
     <p class="eyebrow">PS4 6.72 Linux / GoldHEN Host</p>
     <h1 id="msgs">6.72 Boot Menu</h1>
-    <p class="subline">Belize-ready GoldHEN, Linux, Mira, and maintenance payloads. The easy button now tests GoldHEN; Linux stays on a clean reboot path.</p>
+    <p class="subline">Belize-ready GoldHEN, ArabPixel Linux, Mira, and maintenance payloads. The easy button tests GoldHEN; Linux uses a clean reboot path.</p>
     <button class="cache-refresh" onclick="forceLatestPage(); return false">Force Reload Latest Page</button>
   </div>
 
@@ -563,7 +563,7 @@ if (window.applicationCache) {
     <h2>One-Click GoldHEN Launch</h2>
     <p class="panel-lede">Fresh reboot recommended. This runs the 6.72 jailbreak, then loads GoldHEN. Use this to confirm the exploit path is stable before testing the Linux kexec handoff.</p>
     <button class="launch-button" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
-    <p class="vram-note">For Linux, reboot first and use <span class="good">Exploit + Linux</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because it can crash or power off the PS4.</p>
+    <p class="vram-note">For Linux, reboot first and use <span class="good">Exploit + Linux</span>. It now uses ArabPixel v24b.1 1024 MB; Linux after GoldHEN, HEN, or Mira is intentionally blocked.</p>
   </div>
 
   <div class="panel">
@@ -572,7 +572,7 @@ if (window.applicationCache) {
       <li>Use this page only on firmware 6.72.</li>
       <li>Wait for the offline cache message if this is the first visit.</li>
       <li>For a quick jailbreak test, press <span class="good">Launch GoldHEN</span>.</li>
-      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Exploit + Linux</span>.</li>
+      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Exploit + Linux</span> for the ArabPixel 1024 MB loader.</li>
       <li>If a payload fails, close the browser, reopen this page, and try again.</li>
     </ol>
   </div>
@@ -591,7 +591,11 @@ if (window.applicationCache) {
       </div>
       <div class="action">
         <button class="linux" onclick="load_exploit_linux(); return false">Exploit + Linux</button>
-        <p>Best default for PS4 Linux. Reboot first, insert the Linux USB, then use this.</p>
+        <p>Best default for PS4 Linux. Uses ArabPixel v24b.1 1024 MB, then boots from the prepared USB.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_exploit_linux_legacy(); return false">Exploit + Linux Legacy</button>
+        <p>Fallback to the older Leeful Linux payload if the ArabPixel loader fails on this console.</p>
       </div>
       <div class="action">
         <button onclick="load_exploit_mira(); return false">Exploit + Mira</button>
@@ -629,11 +633,15 @@ if (window.applicationCache) {
 
   <div class="panel">
     <h2>Linux & Payloads</h2>
-    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The rest are utility payloads for file transfer, debugging, and dumping.</p>
+    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The default Linux payload is ArabPixel v24b.1 1024 MB; legacy remains available for comparison.</p>
     <div class="button-grid">
       <div class="action">
         <button class="linux" onclick="load_linux(); return false">Linux</button>
-        <p>Loads only the Linux payload after Exploit Only. Blocked after HEN to avoid a crash or power off.</p>
+        <p>Loads the ArabPixel v24b.1 1024 MB Linux payload after Exploit Only. Blocked after HEN to avoid a crash or power off.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_linux_legacy(); return false">Linux Legacy</button>
+        <p>Loads the older Leeful Linux payload after Exploit Only for fallback testing.</p>
       </div>
       <div class="action">
         <button onclick="load_binloader(); return false">Bin Loader</button>
@@ -751,9 +759,20 @@ if (!guardFreshLinuxLaunch()) { return; }
 if (!beginChain("Exploit + Linux")) { return; }
 rememberExploit();
 rememberPayload("Linux");
-startProgress("Exploit + Linux", "Running the 6.72 exploit, then loading the Linux payload. Make sure the PS4 Linux USB is inserted.");
+startProgress("Exploit + Linux", "Running the 6.72 exploit, then loading ArabPixel v24b.1 1024 MB Linux. Make sure the PS4 Linux USB is inserted.");
 statusTitle("Loading Exploit + Linux ...");
-LoadedMSG="Exploit + Linux Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux.js";
+LoadedMSG="Exploit + Linux Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux_arabpixel_1024mb.js";
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_linux_legacy(){
+if (!guardFreshLinuxLaunch()) { return; }
+if (!beginChain("Exploit + Linux Legacy")) { return; }
+rememberExploit();
+rememberPayload("Linux");
+startProgress("Exploit + Linux Legacy", "Running the 6.72 exploit, then loading the older Leeful Linux payload.");
+statusTitle("Loading Exploit + Linux Legacy ...");
+LoadedMSG="Exploit + Linux Legacy Payload Loaded";ExploitMira="Linux";MiraSRC="pl_linux.js";
 setTimeout(jailbreak,500);
 }
 
@@ -844,10 +863,20 @@ function load_linux(){
 if (!guardLinuxOnly()) { return; }
 if (!beginChain("Linux Only")) { return; }
 rememberPayload("Linux");
-startProgress("Linux Only", "Loading Linux payload after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.");
+startProgress("Linux Only", "Loading ArabPixel v24b.1 1024 MB Linux after the exploit is already active. Prefer Exploit + Linux from a fresh reboot.");
 statusTitle("Loading Linux ...");
 LoadedMSG="Linux Loaded";
-stagePayloadAndLoader("pl_linux.js", "Linux payload");
+stagePayloadAndLoader("pl_linux_arabpixel_1024mb.js", "Linux payload (ArabPixel v24b.1 1024 MB)");
+}
+
+function load_linux_legacy(){
+if (!guardLinuxOnly()) { return; }
+if (!beginChain("Linux Legacy")) { return; }
+rememberPayload("Linux");
+startProgress("Linux Legacy", "Loading the older Leeful Linux payload after the exploit is already active.");
+statusTitle("Loading Linux Legacy ...");
+LoadedMSG="Linux Legacy Loaded";
+stagePayloadAndLoader("pl_linux.js", "Linux legacy payload");
 }
 
 function load_app2usb(){

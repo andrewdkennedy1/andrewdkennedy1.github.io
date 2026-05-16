@@ -1,6 +1,6 @@
 CACHE MANIFEST 
-# ps4-672-linux-v2
-# 2026-05-16-goldhen-readable-urls
+# ps4-672-linux-v3
+# 2026-05-16-arabpixel-linux-1024mb
 
 index.html
 exp_common.js
@@ -16,6 +16,7 @@ pl_app2usb.js
 pl_dumper.js
 pl_ftp.js
 pl_linux.js
+pl_linux_arabpixel_1024mb.js
 pl_goldhen.js
 pl_dbBackup.js
 pl_dbRestore.js
