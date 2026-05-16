@@ -254,6 +254,25 @@ button:disabled {
 .modal-actions button {
   min-height: 38px;
 }
+.modal-actions,
+.cache-refresh,
+.vram-note,
+.launch-actions .action:not(:first-child),
+.panel:not(.launch-panel) {
+  display: none;
+}
+.launch-panel {
+  text-align: center;
+}
+.launch-actions {
+  grid-template-columns: minmax(0, 520px);
+  justify-content: center;
+}
+.launch-panel .action p {
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .muted-button {
   background: #263247;
 }
@@ -292,6 +311,17 @@ function releaseChain(){
   chainBusy = false;
   chainBusyLabel = "";
   setActionButtonsDisabled(false);
+}
+function clearSessionGuardsForGoldHENLinuxRetry(){
+  activePayload = "";
+  nonLinuxPayloadStarted = false;
+  exploitAttempted = false;
+  releaseChain();
+  try {
+    sessionStorage.removeItem("ps4host_non_linux_payload");
+    sessionStorage.removeItem("ps4host_exploit_attempted");
+  } catch(e) {}
+  appendLog("Cleared page retry guards for the one-button GoldHEN Linux path.");
 }
 function rememberPayload(name){
   activePayload = name || "";
@@ -389,6 +419,8 @@ function clearPayloadBlobs(){
     window.mira_blob_2 = undefined;
     window.mira_blob_len = 0;
     window.mira_blob_2_len = 0;
+    window.pl_blob = undefined;
+    window.pl_blob_len = 0;
   } catch(e) {
     appendLog("Payload global clear skipped: " + e.message);
   }
@@ -431,8 +463,26 @@ function stagePayloadAndLoader(src, label){
     }, 150);
   });
 }
+var GOLDHEN_LEGACY_SRC = "pl_goldhen.js";
+var GOLDHEN_BIN_SRC = "goldhen_2.4b18.9.bin";
+var GOLDHEN_BIN_LOADER_SRC = "pl_loader_goldhen_2_4b18_9.js";
 function stageGoldHENPayload(src, label){
   clearPayloadBlobs();
+  if (/\.bin(?:$|[?#])/i.test(src || "")) {
+    var runSrc = src + (src.indexOf("?") >= 0 ? "&" : "?") + "run=" + new Date().getTime();
+    window.PLfile = runSrc;
+    PLfile = runSrc;
+    window.msgs = document.getElementById("msgs") || window.msgs;
+    window.msgs2 = window.msgs2 || window.msgs;
+    window.msgs3 = window.msgs3 || window.msgs;
+    appendLog("GoldHEN binary payload selected: " + runSrc);
+    appendLog("Using matching GoldHEN binary loader: " + GOLDHEN_BIN_LOADER_SRC);
+    appendPayloadScript(GOLDHEN_BIN_LOADER_SRC, label || "GoldHEN binary loader", function(){
+      markPayloadExecuting("GoldHEN binary loader injected");
+      appendLog("GoldHEN loader is active. It fetches the .bin payload, stages it, then pivots.");
+    });
+    return;
+  }
   appendPayloadScript(src, label || "GoldHEN payload", function(){
     appendLog("GoldHEN script is loaded. It uses its own loader, not exp_loader.js.");
     setTimeout(function(){
@@ -450,9 +500,18 @@ function stageGoldHENPayload(src, label){
     }, 500);
   });
 }
-function queueGoldHENLinuxSend(){
-  var url = window.location.protocol + "//" + window.location.host + "/__ps4linux/send-goldhen-linux?delays=18,28,40,55&port=9090&ts=" + new Date().getTime();
-  appendLog("Requesting local host helper to send the Linux ELF to this PS4 after GoldHEN starts.");
+function stageBinLoaderPayload(src, label){
+  clearPayloadBlobs();
+  appendPayloadScript(src, label || "Bin Loader", function(){
+    markPayloadExecuting("Bin Loader injected");
+    appendLog("If this succeeds, Bin Loader should listen on port 9021 and the PC helper will send the Linux ELF.");
+  });
+}
+function queueLinuxPayloadSend(port, delays, label, endpointPath){
+  var helperLabel = label || "linux-payload";
+  var path = endpointPath || "/__ps4linux/send-linux-payload";
+  var url = window.location.protocol + "//" + window.location.host + path + "?delays=" + encodeURIComponent(delays) + "&port=" + encodeURIComponent(String(port)) + "&label=" + encodeURIComponent(helperLabel) + "&ts=" + new Date().getTime();
+  appendLog("Requesting local host helper to send the Linux ELF to this PS4 on port " + port + ".");
   appendLog("Helper endpoint: " + url);
   try {
     var xhr = new XMLHttpRequest();
@@ -460,28 +519,57 @@ function queueGoldHENLinuxSend(){
     xhr.onreadystatechange = function(){
       if (xhr.readyState !== 4) { return; }
       if (xhr.status >= 200 && xhr.status < 300) {
-        appendLog("GoldHEN Linux helper queued: " + xhr.responseText);
+        appendLog(helperLabel + " helper queued: " + xhr.responseText);
       } else if (xhr.status === 404) {
-        appendLog("GoldHEN Linux helper is not available on this server. Self-host with start-ps4-672-host.bat/.sh, or send the ELF manually from the PC.");
+        appendLog(helperLabel + " helper is not available on this server. Self-host with start-ps4-672-host.bat/.sh, or send the ELF manually from the PC.");
       } else {
-        appendLog("GoldHEN Linux helper returned HTTP " + xhr.status + ". Check the PC host console.");
+        appendLog(helperLabel + " helper returned HTTP " + xhr.status + ". Check the PC host console.");
       }
     };
     xhr.onerror = function(){
-      appendLog("GoldHEN Linux helper request failed. Check that the local host is running with the helper server.");
+      appendLog(helperLabel + " helper request failed. Check that the local host is running with the helper server.");
     };
     xhr.send(null);
   } catch(e) {
     appendLog("XHR helper request failed: " + e.message + ". Trying image fallback.");
     try {
       var img = new Image();
-      img.onload = function(){ appendLog("GoldHEN Linux helper image fallback queued."); };
-      img.onerror = function(){ appendLog("GoldHEN Linux helper image fallback did not return cleanly; check the PC host console."); };
+      img.onload = function(){ appendLog(helperLabel + " helper image fallback queued."); };
+      img.onerror = function(){ appendLog(helperLabel + " helper image fallback did not return cleanly; check the PC host console."); };
       img.src = url;
     } catch(e2) {
-      appendLog("GoldHEN Linux helper fallback failed: " + e2.message);
+      appendLog(helperLabel + " helper fallback failed: " + e2.message);
     }
   }
+}
+function queueGoldHENLinuxSend(){
+  var path = "/__ps4linux/send-goldhen-linux";
+  var url = window.location.protocol + "//" + window.location.host + path + "?timeout=180&interval=2&port=9090&label=goldhen-linux&ts=" + new Date().getTime();
+  appendLog("Requesting local host helper to wait for GoldHEN Payload Server on port 9090, then send the Linux ELF.");
+  appendLog("Helper endpoint: " + url);
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function(){
+      if (xhr.readyState !== 4) { return; }
+      if (xhr.status >= 200 && xhr.status < 300) {
+        appendLog("goldhen-linux helper queued: " + xhr.responseText);
+      } else if (xhr.status === 404) {
+        appendLog("goldhen-linux helper is not available on this server. Self-host with start-ps4-672-host.bat/.sh, or send the ELF manually from the PC.");
+      } else {
+        appendLog("goldhen-linux helper returned HTTP " + xhr.status + ". Check the PC host console.");
+      }
+    };
+    xhr.onerror = function(){
+      appendLog("goldhen-linux helper request failed. Check that the local host is running with the helper server.");
+    };
+    xhr.send(null);
+  } catch(e) {
+    appendLog("GoldHEN helper request failed: " + e.message);
+  }
+}
+function queueBinLoaderLinuxSend(){
+  return queueLinuxPayloadSend(9021, "6,10,15,22,32,45,65,90", "binloader-linux", "/__ps4linux/send-linux-payload");
 }
 function markPayloadExecuting(message){
   var loader = document.getElementById("progressLoader");
@@ -599,9 +687,21 @@ function runAutoMode(){
   var mode = (queryValue("auto") || queryValue("run") || "").toLowerCase();
   if (!mode) { return; }
   autoModeStarted = true;
-  if (mode === "linux" || mode === "boot-linux" || mode === "linux-pro" || mode === "ps4boot-pro" || mode === "linux-ps4boot" || mode === "linux-1gb" || mode === "linux-pro-1gb") {
-    startProgress("Auto Linux Pro 1GB", "Auto URL requested the PS4Boot PS4 Pro 1GB Linux payload. Fresh reboot and prepared USB are required.");
-    appendLog("Auto mode: Linux Pro 1GB. Starting Exploit + Linux Pro 1GB shortly.");
+  if (mode === "linux" || mode === "boot-linux" || mode === "boot" || mode === "oneclick" || mode === "goldhen-linux") {
+    startProgress("Auto Boot Linux", "Auto URL requested the verified one-button GoldHEN payload-server Linux flow. Self-hosting with the helper server is required.");
+    appendLog("Auto mode: Boot Linux. Queueing local helper for port 9090, then starting bundled GoldHEN shortly.");
+    setTimeout(load_boot_linux_oneclick, 1200);
+  } else if (mode === "binloader-linux" || mode === "linux-binloader" || mode === "netboot-linux") {
+    startProgress("Auto Bin Loader Linux", "Auto URL requested the direct Bin Loader Linux debug flow.");
+    appendLog("Auto mode: direct Bin Loader debug. Queueing local helper for port 9021, then starting Bin Loader shortly.");
+    setTimeout(load_exploit_binloader_linux, 1200);
+  } else if (mode === "goldhen-linux-249" || mode === "linux-249" || mode === "goldhen249-linux") {
+    startProgress("Auto Boot Linux 2.4b18.9", "Auto URL requested the GamerHack GoldHEN v2.4b18.9 helper debug flow.");
+    appendLog("Auto mode: GoldHEN v2.4b18.9 Linux debug. Queueing local helper, then starting shortly.");
+    setTimeout(load_exploit_goldhen_linux_249, 1200);
+  } else if (mode === "linux-pro" || mode === "ps4boot-pro" || mode === "linux-ps4boot" || mode === "linux-1gb" || mode === "linux-pro-1gb") {
+    startProgress("Auto Linux Pro 1GB", "Auto URL requested the hidden PS4Boot PS4 Pro 1GB fallback. Fresh reboot and prepared USB are required.");
+    appendLog("Auto mode: Linux Pro 1GB fallback. Starting Exploit + Linux Pro 1GB shortly.");
     setTimeout(load_exploit_linux, 1200);
   } else if (mode === "linux-pro-512" || mode === "linux-512" || mode === "ps4boot-pro-512") {
     startProgress("Auto Linux Pro 512MB", "Auto URL requested the PS4Boot PS4 Pro 512 MB Linux payload. Use this as the first fallback after a fresh reboot.");
@@ -619,10 +719,6 @@ function runAutoMode(){
     startProgress("Auto GoldHEN", "Auto URL requested GoldHEN. For Linux through GoldHEN, send the ELF from a PC to GoldHEN BinLoader after GoldHEN loads.");
     appendLog("Auto mode: GoldHEN. Starting Exploit + GoldHEN shortly.");
     setTimeout(load_exploit_goldhen, 1200);
-  } else if (mode === "goldhen-linux") {
-    startProgress("Auto GoldHEN Linux", "Auto URL requested GoldHEN plus local helper Linux ELF send. Self-hosting with the helper server is required.");
-    appendLog("Auto mode: GoldHEN Linux. Queueing local helper, then starting Exploit + GoldHEN Linux shortly.");
-    setTimeout(load_exploit_goldhen_linux, 1200);
   } else {
     appendLog("Unknown auto mode ignored: " + mode);
   }
@@ -655,30 +751,30 @@ if (window.applicationCache) {
 </div>
 <div class="shell">
   <div class="hero">
-    <p class="eyebrow">PS4 6.72 Linux / GoldHEN Host</p>
-    <h1 id="msgs">6.72 Boot Menu</h1>
-    <p class="subline">Belize-ready Linux, GoldHEN, Mira, and maintenance payloads. Linux is the primary clean reboot path; GoldHEN remains a sanity check.</p>
+    <p class="eyebrow">PS4 6.72 Linux</p>
+    <h1 id="msgs">Boot Linux</h1>
+    <p class="subline">Fresh reboot, Linux USB inserted, then press the button once. Watch the PC host console for GoldHEN payload-server logs.</p>
     <button class="cache-refresh" onclick="forceLatestPage(); return false">Force Reload Latest Page</button>
   </div>
 
   <div class="panel launch-panel">
-    <h2>One-Click Boot Tests</h2>
-    <p class="panel-lede">For the Linux goal, use Boot Linux from USB after a fresh reboot with the prepared USB inserted. Reboot clears the jailbreak; this button re-runs the exploit, then sends the PS4Boot PS4 Pro 1 GB Linux payload.</p>
+    <h2>One-Button Boot</h2>
+    <p class="panel-lede">This uses the verified local GoldHEN helper path: the PC waits for GoldHEN Payload Server on port 9090, then sends the Linux ELF. If the helper sees FTP but port 9090 stays closed, enable Payload Server once in GoldHEN. If the browser says the page is not responding, do not press Stop.</p>
     <div class="launch-actions">
       <div class="action">
-        <button class="launch-button linux" onclick="load_exploit_linux(); return false">Boot Linux from USB</button>
-        <p>Runs the 6.72 exploit, then the PS4Boot PS4 Pro 1 GB Linux payload for the prepared USB.</p>
+        <button class="launch-button linux" onclick="load_boot_linux_oneclick(); return false">Boot Linux</button>
+        <p>Self-host with <span class="good">start-ps4-672-host.bat</span> or <span class="good">start-ps4-672-host.sh</span>, keep this page open, and wait for the Linux rescue shell.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
-        <p>Runs the 6.72 exploit, then GoldHEN. For GoldHEN Linux, send the ELF from the PC helper to port 9090.</p>
+        <p>Runs the 6.72 exploit, then GoldHEN v2.4b18.9. For GoldHEN Linux, send the ELF from the PC helper to port 9090.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen_linux(); return false">GoldHEN + Linux ELF</button>
-        <p>Self-host only. Queues the PC helper to send the Linux ELF to GoldHEN BinLoader, then loads GoldHEN.</p>
+        <p>Self-host only. Queues the PC helper to wait for GoldHEN Payload Server on port 9090, then loads GoldHEN.</p>
       </div>
     </div>
-    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=goldhen-linux</span> for the local GoldHEN helper path, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=linux-arabpixel</span>, or <span class="good">?auto=goldhen</span>. Linux after GoldHEN, HEN, or Mira is intentionally blocked because direct Linux needs the clean jailbreak path.</p>
+    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or <span class="good">?auto=goldhen-linux</span> for the local GoldHEN helper path, <span class="good">?auto=goldhen-linux-249</span> for the GamerHack 2.4b18.9 debug path, <span class="good">?auto=linux-pro</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=linux-arabpixel</span>, or <span class="good">?auto=goldhen</span>.</p>
   </div>
 
   <div class="panel">
@@ -687,7 +783,7 @@ if (window.applicationCache) {
       <li>Use this page only on firmware 6.72.</li>
       <li>Wait for the offline cache message if this is the first visit.</li>
       <li>For a quick jailbreak test, press <span class="good">Launch GoldHEN</span>.</li>
-      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Boot Linux from USB</span> or <span class="good">Exploit + Linux Pro 1GB</span>. The button jailbreaks again before sending Linux.</li>
+      <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Boot Linux</span>. The button jailbreaks, loads GoldHEN, and the PC helper sends the Linux ELF. If this is the first GoldHEN boot, enable Payload Server once when the GoldHEN app appears.</li>
       <li>If a payload fails, close the browser, reopen this page, and try again.</li>
     </ol>
   </div>
@@ -741,7 +837,7 @@ if (window.applicationCache) {
       </div>
       <div class="action">
         <button class="goldhen" onclick="load_exploit_goldhen_linux(); return false">Exploit + GoldHEN Linux ELF</button>
-        <p>Self-hosted one-button GoldHEN test. The PC helper queues ArabPixel linux-1024mb.elf, then GoldHEN starts and opens BinLoader.</p>
+        <p>Self-hosted one-button GoldHEN test. The PC helper queues ArabPixel linux-1024mb.elf, then GoldHEN v2.4b18.9 starts and opens BinLoader.</p>
       </div>
       <div class="action">
         <button class="go" onclick="load_exploit_HEN(); return false">Exploit + PS4HEN</button>
@@ -924,19 +1020,54 @@ rememberExploit();
 rememberPayload("GoldHEN");
 startProgress("Exploit + GoldHEN", "Running the 6.72 exploit, then loading GoldHEN. The page may pause while memory is prepared.");
 statusTitle("Loading Exploit + GoldHEN ...");
-LoadedMSG="GoldHEN Loaded - Press Circle To Exit";ExploitMira="GoldHEN";MiraSRC="pl_goldhen.js";
+LoadedMSG="GoldHEN v2.4b18.9 Loaded - Press Circle To Exit";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_BIN_SRC;
 setTimeout(jailbreak,500);
 }
 
 function load_exploit_goldhen_linux(){
+if (chainBusy || sawNonLinuxPayload() || sawExploitAttempt()) {
+  clearSessionGuardsForGoldHENLinuxRetry();
+}
 if (!beginChain("Exploit + GoldHEN Linux")) { return; }
 rememberExploit();
 rememberPayload("GoldHEN");
-startProgress("Exploit + GoldHEN Linux", "Queueing the local PC helper to send the Linux ELF, then loading GoldHEN. Watch the PC host console; do not press Stop if the PS4 browser says the page is not responding.");
+startProgress("Exploit + GoldHEN Linux", "Queueing the local PC helper to send the Linux ELF, then loading the bundled GoldHEN script. Watch the PC host console; do not press Stop if the PS4 browser says the page is not responding.");
 queueGoldHENLinuxSend();
 statusTitle("Loading Exploit + GoldHEN Linux ...");
-LoadedMSG="GoldHEN Loaded - Linux ELF queued from local host";ExploitMira="GoldHEN";MiraSRC="pl_goldhen.js";
+LoadedMSG="GoldHEN Loaded - Linux ELF queued from local host";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_LEGACY_SRC;
 setTimeout(jailbreak,500);
+}
+
+function load_exploit_goldhen_linux_249(){
+if (chainBusy || sawNonLinuxPayload() || sawExploitAttempt()) {
+  clearSessionGuardsForGoldHENLinuxRetry();
+}
+if (!beginChain("Exploit + GoldHEN Linux 2.4b18.9")) { return; }
+rememberExploit();
+rememberPayload("GoldHEN");
+startProgress("Exploit + GoldHEN Linux 2.4b18.9", "Queueing the local PC helper to send the Linux ELF, then loading GamerHack GoldHEN v2.4b18.9. This path is for debugging because it staged correctly but did not open BinLoader in the latest test.");
+queueGoldHENLinuxSend();
+statusTitle("Loading Exploit + GoldHEN Linux 2.4b18.9 ...");
+LoadedMSG="GoldHEN v2.4b18.9 Loaded - Linux ELF queued from local host";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_BIN_SRC;
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_binloader_linux(){
+if (chainBusy || sawNonLinuxPayload() || sawExploitAttempt()) {
+  clearSessionGuardsForGoldHENLinuxRetry();
+}
+if (!beginChain("Exploit + Bin Loader Linux")) { return; }
+rememberExploit();
+rememberPayload("Linux");
+startProgress("Exploit + Bin Loader Linux", "Queueing the local PC helper to send the Linux ELF to Bin Loader on port 9021, then running the 6.72 exploit and starting Bin Loader. Watch the PC host console; do not press Stop if the browser says the page is not responding.");
+queueBinLoaderLinuxSend();
+statusTitle("Loading Exploit + Bin Loader Linux ...");
+LoadedMSG="Bin Loader ready on port 9021 - Linux ELF queued from local host";ExploitMira="BinLoader";MiraSRC="exp_BinLoader.js";
+setTimeout(jailbreak,500);
+}
+
+function load_boot_linux_oneclick(){
+return load_exploit_goldhen_linux();
 }
 
 function load_exploit_linux(){
@@ -1034,8 +1165,8 @@ if (!beginChain("GoldHEN Only")) { return; }
 rememberPayload("GoldHEN");
 startProgress("GoldHEN Only", "Loading GoldHEN after the exploit is already active.");
 statusTitle("Loading GoldHEN ...");
-LoadedMSG="GoldHEN Loaded - Press Circle To Exit";
-stageGoldHENPayload("pl_goldhen.js", "GoldHEN payload");
+LoadedMSG="GoldHEN v2.4b18.9 Loaded - Press Circle To Exit";
+stageGoldHENPayload(GOLDHEN_BIN_SRC, "GoldHEN v2.4b18.9 payload");
 }
 
 function load_mira(){
