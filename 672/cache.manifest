@@ -1,6 +1,6 @@
 CACHE MANIFEST 
 # ps4-672-v7
-# 2026-05-16-internal-userdata-linux-payload
+# 2026-05-16-shibe-linux-payload-fix
 
 index.html
 exp_common.js
@@ -19,7 +19,7 @@ pl_linux.js
 pl_linux_ps4boot_pro_1gb.js
 pl_linux_ps4boot_pro_512mb.js
 pl_linux_arabpixel_1024mb.js
-pl_linux_userdata_1024mb.js
+pl_linux_shibe_1024mb.js
 pl_usb_to_internal_hdd.js
 goldhen_2.4b18.9.bin
 pl_loader_goldhen_2_4b18_9.js

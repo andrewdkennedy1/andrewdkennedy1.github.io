@@ -481,7 +481,7 @@ var LINUX_PS4BOOT_PRO_1GB_SRC = HOSTED_672_BASE + "pl_linux_ps4boot_pro_1gb.js";
 var LINUX_PS4BOOT_PRO_512MB_SRC = HOSTED_672_BASE + "pl_linux_ps4boot_pro_512mb.js";
 var LINUX_BROWSER_SRC = HOSTED_672_BASE + "pl_linux.js";
 var LINUX_ARABPIXEL_1024MB_SRC = HOSTED_672_BASE + "pl_linux_arabpixel_1024mb.js";
-var LINUX_USERDATA_1024MB_SRC = HOSTED_672_BASE + "pl_linux_userdata_1024mb.js";
+var LINUX_SHIBE_1024MB_SRC = HOSTED_672_BASE + "pl_linux_shibe_1024mb.js";
 var USB_TO_INTERNAL_HDD_SRC = HOSTED_672_BASE + "pl_usb_to_internal_hdd.js";
 function stageGoldHENPayload(src, label){
   clearPayloadBlobs();
@@ -706,8 +706,8 @@ function runAutoMode(){
   autoModeStarted = true;
   if (mode === "linux" || mode === "boot-linux" || mode === "boot" || mode === "oneclick" || mode === "goldhen-linux") {
     startProgress("Auto Boot Linux", "Auto URL requested the hosted /672 Linux payload flow. No local helper server is required.");
-    appendLog("Auto mode: Boot Linux. Loading the internal /user/data 1024MB Linux payload from /672.");
-    setTimeout(load_exploit_linux_userdata, 1200);
+    appendLog("Auto mode: Boot Linux. Loading Shibe 1024MB from /672.");
+    setTimeout(load_exploit_linux_shibe, 1200);
   } else if (mode === "binloader-linux" || mode === "linux-binloader" || mode === "netboot-linux") {
     startProgress("Auto Bin Loader Linux", "Auto URL requested the direct Bin Loader Linux debug flow.");
     appendLog("Auto mode: direct Bin Loader debug. Queueing local helper for port 9021, then starting Bin Loader shortly.");
@@ -728,12 +728,12 @@ function runAutoMode(){
     startProgress("Auto Legacy Browser Linux", "Auto URL requested the old browser-native Linux payload. Use this only as a comparison path after a fresh reboot.");
     appendLog("Auto mode: Legacy Browser Linux. Starting Exploit + Legacy Browser Linux shortly.");
     setTimeout(load_exploit_linux_browser, 1200);
-  } else if (mode === "linux-userdata" || mode === "linux-internal" || mode === "internal-linux" || mode === "linux-usbless") {
-    startProgress("Auto Linux Internal", "Auto URL requested the 6.72 Linux wrapper that checks /data and /user/data internal boot files.");
-    appendLog("Auto mode: Linux Internal. Starting Exploit + Linux Internal shortly.");
-    setTimeout(load_exploit_linux_userdata, 1200);
+  } else if (mode === "linux-shibe" || mode === "shibe-linux" || mode === "shibe" || mode === "linux-userdata" || mode === "linux-internal" || mode === "internal-linux" || mode === "linux-usbless") {
+    startProgress("Auto Shibe Linux", "Auto URL requested the 6.72 Shibe Linux wrapper that checks /data and /user/data internal boot files.");
+    appendLog("Auto mode: Shibe Linux. Starting Exploit + Shibe Linux shortly.");
+    setTimeout(load_exploit_linux_shibe, 1200);
   } else if (mode === "linux-arabpixel" || mode === "arabpixel-linux" || mode === "linux-v24b1") {
-    startProgress("Auto Linux ArabPixel", "Auto URL requested the ArabPixel v24b.1 Linux wrapper. This is the default static GitHub handoff after a fresh reboot.");
+    startProgress("Auto Linux ArabPixel", "Auto URL requested the ArabPixel v24b.1 Linux wrapper. This is the USB-proven static fallback after a fresh reboot.");
     appendLog("Auto mode: Linux ArabPixel. Starting Exploit + Linux ArabPixel shortly.");
     setTimeout(load_exploit_linux_arabpixel, 1200);
   } else if (mode === "usb-to-internal" || mode === "move-usb" || mode === "internal-copy" || mode === "usb-internal") {
@@ -788,14 +788,14 @@ if (window.applicationCache) {
     <div class="launch-actions">
       <div class="action">
         <select class="handoff-select" id="linuxHandoffSelect">
-          <option value="linux-userdata" selected>Internal /user/data 1024MB</option>
+          <option value="linux-shibe" selected>Shibe 1024MB</option>
           <option value="linux-arabpixel">ArabPixel 1024MB</option>
           <option value="linux-pro">PS4Boot Pro 1GB</option>
           <option value="linux-pro-512">PS4Boot Pro 512MB</option>
           <option value="linux-browser">Legacy Browser Linux</option>
         </select>
         <button class="launch-button linux" onclick="load_boot_linux_oneclick(); return false">Boot Linux</button>
-        <p>Runs the exploit and loads the selected hosted Linux payload. Internal /user/data is the no-USB handoff; ArabPixel remains the USB-proven fallback.</p>
+        <p>Runs the exploit and loads the selected hosted Linux payload. Shibe is the no-USB handoff; ArabPixel remains the USB-proven fallback.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
@@ -951,8 +951,8 @@ if (window.applicationCache) {
         <p>Loads the old browser-native Linux payload after Exploit Only. Use only as a comparison path.</p>
       </div>
       <div class="action">
-        <button class="linux" onclick="load_linux_userdata(); return false">Linux Internal</button>
-        <p>Loads the internal /user/data 1024 MB Linux wrapper after Exploit Only.</p>
+        <button class="linux" onclick="load_linux_shibe(); return false">Linux Shibe</button>
+        <p>Loads Shibe after Exploit Only; it checks the internal Linux boot files.</p>
       </div>
       <div class="action">
         <button class="linux" onclick="load_linux_arabpixel(); return false">Linux ArabPixel</button>
@@ -1117,9 +1117,9 @@ setTimeout(jailbreak,500);
 
 function load_boot_linux_oneclick(){
 var select = document.getElementById("linuxHandoffSelect");
-var mode = select ? select.value : "linux-userdata";
+var mode = select ? select.value : "linux-shibe";
 if (mode === "linux-pro-512") { return load_exploit_linux_ps4boot_pro_512mb(); }
-if (mode === "linux-userdata") { return load_exploit_linux_userdata(); }
+if (mode === "linux-shibe" || mode === "linux-userdata") { return load_exploit_linux_shibe(); }
 if (mode === "linux-arabpixel") { return load_exploit_linux_arabpixel(); }
 if (mode === "linux-browser") { return load_exploit_linux_browser(); }
 return load_exploit_linux();
@@ -1166,15 +1166,19 @@ function load_exploit_linux_legacy(){
 return load_exploit_linux_browser();
 }
 
-function load_exploit_linux_userdata(){
+function load_exploit_linux_shibe(){
 if (!guardFreshLinuxLaunch()) { return; }
-if (!beginChain("Exploit + Linux Internal")) { return; }
+if (!beginChain("Exploit + Shibe Linux")) { return; }
 rememberExploit();
-setPayloadMode("Linux");
-startProgress("Exploit + Linux Internal", "Running the 6.72 exploit, then loading the 1024 MB Linux payload that checks /data/linux/boot and /user/data/linux/boot.");
-statusTitle("Loading Exploit + Linux Internal ...");
-LoadedMSG="Exploit + Linux Internal Payload Loaded";ExploitMira="Linux";MiraSRC=LINUX_USERDATA_1024MB_SRC;
+rememberPayload("Linux");
+startProgress("Exploit + Shibe Linux", "Running the 6.72 exploit, then loading Shibe 1024MB. It checks /data/linux/boot and /user/data/linux/boot.");
+statusTitle("Loading Exploit + Shibe Linux ...");
+LoadedMSG="Exploit + Shibe Linux Payload Loaded";ExploitMira="Linux";MiraSRC=LINUX_SHIBE_1024MB_SRC;
 setTimeout(jailbreak,500);
+}
+
+function load_exploit_linux_userdata(){
+return load_exploit_linux_shibe();
 }
 
 function load_exploit_linux_arabpixel(){
@@ -1319,14 +1323,18 @@ function load_linux_legacy(){
 return load_linux_browser();
 }
 
-function load_linux_userdata(){
+function load_linux_shibe(){
 if (!guardLinuxOnly()) { return; }
-if (!beginChain("Linux Internal")) { return; }
+if (!beginChain("Shibe Linux")) { return; }
 rememberPayload("Linux");
-startProgress("Linux Internal", "Loading the 1024 MB Linux payload that checks /data/linux/boot and /user/data/linux/boot after the exploit is already active.");
-statusTitle("Loading Linux Internal ...");
-LoadedMSG="Linux Internal Loaded";
-stagePayloadAndLoader(LINUX_USERDATA_1024MB_SRC, "Linux payload (internal /user/data 1024 MB)");
+startProgress("Shibe Linux", "Loading Shibe 1024MB after the exploit is already active. It checks /data/linux/boot and /user/data/linux/boot.");
+statusTitle("Loading Shibe Linux ...");
+LoadedMSG="Shibe Linux Loaded";
+stagePayloadAndLoader(LINUX_SHIBE_1024MB_SRC, "Linux payload (Shibe internal 1024 MB)");
+}
+
+function load_linux_userdata(){
+return load_linux_shibe();
 }
 
 function load_linux_arabpixel(){
