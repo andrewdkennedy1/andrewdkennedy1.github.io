@@ -183,6 +183,16 @@ button:disabled {
   border-color: #ffe08a;
   color: #171000;
 }
+.handoff-select {
+  width: 100%;
+  min-height: 46px;
+  margin-bottom: 10px;
+  padding: 0 12px;
+  background: #101827;
+  border-color: rgba(131,230,207,0.55);
+  color: #ffffff;
+  font-size: 16px;
+}
 .vram-note {
   margin: 12px 0 0;
   color: #c8d4e5;
@@ -764,11 +774,17 @@ if (window.applicationCache) {
 
   <div class="panel launch-panel">
     <h2>One-Button Boot</h2>
-    <p class="panel-lede">This uses the hosted PS4Boot Pro Linux payload from GitHub Pages <span class="good">/672/</span>. It does not need the desktop helper server to send the next payload.</p>
+    <p class="panel-lede">Choose a static GitHub-hosted Linux handoff, then press Boot Linux. None of these options need the desktop helper server to send the next payload.</p>
     <div class="launch-actions">
       <div class="action">
+        <select class="handoff-select" id="linuxHandoffSelect">
+          <option value="linux-pro">PS4Boot Pro 1GB</option>
+          <option value="linux-pro-512">PS4Boot Pro 512MB</option>
+          <option value="linux-arabpixel">ArabPixel 1024MB</option>
+          <option value="linux-browser">Legacy Browser Linux</option>
+        </select>
         <button class="launch-button linux" onclick="load_boot_linux_oneclick(); return false">Boot Linux</button>
-        <p>Runs the exploit and loads the hosted PS4 Pro 1 GB Linux payload. Keep the prepared Linux USB inserted and wait for the rescue shell.</p>
+        <p>Runs the exploit and loads the selected hosted Linux payload. Keep the prepared Linux USB inserted and wait for the rescue shell.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
@@ -1072,6 +1088,11 @@ setTimeout(jailbreak,500);
 }
 
 function load_boot_linux_oneclick(){
+var select = document.getElementById("linuxHandoffSelect");
+var mode = select ? select.value : "linux-pro";
+if (mode === "linux-pro-512") { return load_exploit_linux_ps4boot_pro_512mb(); }
+if (mode === "linux-arabpixel") { return load_exploit_linux_arabpixel(); }
+if (mode === "linux-browser") { return load_exploit_linux_browser(); }
 return load_exploit_linux();
 }
 

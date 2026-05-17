@@ -9,7 +9,9 @@ Preferred hosted URL:
 - Cached/offline: `https://andrewdkennedy1.github.io/672/`
 
 The host uses AppCache so the PS4 can keep using it offline after the first
-successful load. The visible PS4 page is intentionally one button: `Boot Linux`.
+successful load. The visible PS4 page has a Linux handoff dropdown next to the
+main `Boot Linux` button so static GitHub-hosted payload variants can be tested
+without the desktop helper server.
 
 ## Self-Host On Your LAN
 
