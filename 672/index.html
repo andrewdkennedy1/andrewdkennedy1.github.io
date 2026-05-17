@@ -798,27 +798,24 @@ if (window.applicationCache) {
   </div>
 
   <div class="panel launch-panel">
-    <h2>One-Button Boot</h2>
-    <p class="panel-lede">Choose a static GitHub-hosted Linux handoff, then press Boot Linux. None of these options need the desktop helper server to send the next payload.</p>
+    <h2>One-Button Launch</h2>
+    <p class="panel-lede">Choose a recovery or static GitHub-hosted Linux handoff, then press Launch Selected. None of these options need the desktop helper server to send the next payload.</p>
     <div class="launch-actions">
       <div class="action">
-        <button class="launch-button goldhen" onclick="load_recovery_goldhen(); return false">GoldHEN Recovery</button>
-        <p>Runs only the exploit and GoldHEN, then stays in Orbis for FTP, payload server, or manual boot-file recovery. No Linux payload is loaded.</p>
-      </div>
-      <div class="action">
         <select class="handoff-select" id="linuxHandoffSelect">
+          <option value="goldhen-recovery">GoldHEN Recovery</option>
           <option value="linux-shibe" selected>Shibe 1024MB</option>
           <option value="linux-arabpixel">ArabPixel 1024MB</option>
           <option value="linux-pro">PS4Boot Pro 1GB</option>
           <option value="linux-pro-512">PS4Boot Pro 512MB</option>
           <option value="linux-browser">Legacy Browser Linux</option>
         </select>
-        <button class="launch-button linux" onclick="load_boot_linux_oneclick(); return false">Boot Linux</button>
-        <p>Runs the exploit and loads the selected hosted Linux payload. Shibe is the no-USB handoff; ArabPixel remains the USB-proven fallback.</p>
+        <button class="launch-button linux" onclick="load_boot_linux_oneclick(); return false">Launch Selected</button>
+        <p>GoldHEN Recovery stays in Orbis with no Linux handoff. Linux choices run the exploit and load the selected hosted payload.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
-        <p>Runs the 6.72 exploit, then GoldHEN v2.4b18.9. GoldHEN is fetched from the hosted <span class="good">/672/</span> assets.</p>
+        <p>Runs the 6.72 exploit, then GoldHEN from the hosted embedded JS payload. This avoids the separate .bin fetch.</p>
       </div>
       <div class="action">
         <button class="launch-button linux" onclick="load_exploit_linux_ps4boot_pro_512mb(); return false">Linux 512MB Fallback</button>
@@ -1087,9 +1084,9 @@ function load_exploit_goldhen(){
 if (!beginChain("Exploit + GoldHEN")) { return; }
 rememberExploit();
 rememberPayload("GoldHEN");
-startProgress("Exploit + GoldHEN", "Running the 6.72 exploit, then loading GoldHEN. The page may pause while memory is prepared.");
+startProgress("Exploit + GoldHEN", "Running the 6.72 exploit, then loading the embedded GoldHEN JS payload. The page may pause while memory is prepared.");
 statusTitle("Loading Exploit + GoldHEN ...");
-LoadedMSG="GoldHEN v2.4b18.9 Loaded - Press Circle To Exit";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_BIN_SRC;
+LoadedMSG="GoldHEN Loaded - Press Circle To Exit";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_LEGACY_SRC;
 setTimeout(jailbreak,500);
 }
 
@@ -1098,9 +1095,9 @@ clearSessionGuardsForOrbisRecovery();
 if (!beginChain("GoldHEN Recovery")) { return; }
 rememberExploit();
 rememberPayload("GoldHEN Recovery");
-startProgress("GoldHEN Recovery", "Running only the 6.72 exploit and GoldHEN. This stays in Orbis so FTP, payload server, or manual boot-file recovery can be used.");
+startProgress("GoldHEN Recovery", "Running only the 6.72 exploit and embedded GoldHEN JS payload. This stays in Orbis so FTP, payload server, or manual boot-file recovery can be used.");
 statusTitle("Loading GoldHEN Recovery ...");
-LoadedMSG="GoldHEN Recovery Loaded - Stay In Orbis";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_BIN_SRC;
+LoadedMSG="GoldHEN Recovery Loaded - Stay In Orbis";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_LEGACY_SRC;
 setTimeout(jailbreak,500);
 }
 
@@ -1149,6 +1146,7 @@ setTimeout(jailbreak,500);
 function load_boot_linux_oneclick(){
 var select = document.getElementById("linuxHandoffSelect");
 var mode = select ? select.value : "linux-shibe";
+if (mode === "goldhen-recovery") { return load_recovery_goldhen(); }
 if (mode === "linux-pro-512") { return load_exploit_linux_ps4boot_pro_512mb(); }
 if (mode === "linux-shibe" || mode === "linux-userdata") { return load_exploit_linux_shibe(); }
 if (mode === "linux-arabpixel") { return load_exploit_linux_arabpixel(); }
@@ -1276,8 +1274,8 @@ if (!beginChain("GoldHEN Only")) { return; }
 rememberPayload("GoldHEN");
 startProgress("GoldHEN Only", "Loading GoldHEN after the exploit is already active.");
 statusTitle("Loading GoldHEN ...");
-LoadedMSG="GoldHEN v2.4b18.9 Loaded - Press Circle To Exit";
-stageGoldHENPayload(GOLDHEN_BIN_SRC, "GoldHEN v2.4b18.9 payload");
+LoadedMSG="GoldHEN Loaded - Press Circle To Exit";
+stageGoldHENPayload(GOLDHEN_LEGACY_SRC, "GoldHEN payload");
 }
 
 function load_mira(){
