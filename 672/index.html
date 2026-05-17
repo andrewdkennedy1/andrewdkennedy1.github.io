@@ -481,6 +481,7 @@ var LINUX_PS4BOOT_PRO_1GB_SRC = HOSTED_672_BASE + "pl_linux_ps4boot_pro_1gb.js";
 var LINUX_PS4BOOT_PRO_512MB_SRC = HOSTED_672_BASE + "pl_linux_ps4boot_pro_512mb.js";
 var LINUX_BROWSER_SRC = HOSTED_672_BASE + "pl_linux.js";
 var LINUX_ARABPIXEL_1024MB_SRC = HOSTED_672_BASE + "pl_linux_arabpixel_1024mb.js";
+var LINUX_USERDATA_1024MB_SRC = HOSTED_672_BASE + "pl_linux_userdata_1024mb.js";
 var USB_TO_INTERNAL_HDD_SRC = HOSTED_672_BASE + "pl_usb_to_internal_hdd.js";
 function stageGoldHENPayload(src, label){
   clearPayloadBlobs();
@@ -705,8 +706,8 @@ function runAutoMode(){
   autoModeStarted = true;
   if (mode === "linux" || mode === "boot-linux" || mode === "boot" || mode === "oneclick" || mode === "goldhen-linux") {
     startProgress("Auto Boot Linux", "Auto URL requested the hosted /672 Linux payload flow. No local helper server is required.");
-    appendLog("Auto mode: Boot Linux. Loading the hosted ArabPixel 1024MB Linux payload from /672.");
-    setTimeout(load_exploit_linux_arabpixel, 1200);
+    appendLog("Auto mode: Boot Linux. Loading the internal /user/data 1024MB Linux payload from /672.");
+    setTimeout(load_exploit_linux_userdata, 1200);
   } else if (mode === "binloader-linux" || mode === "linux-binloader" || mode === "netboot-linux") {
     startProgress("Auto Bin Loader Linux", "Auto URL requested the direct Bin Loader Linux debug flow.");
     appendLog("Auto mode: direct Bin Loader debug. Queueing local helper for port 9021, then starting Bin Loader shortly.");
@@ -727,6 +728,10 @@ function runAutoMode(){
     startProgress("Auto Legacy Browser Linux", "Auto URL requested the old browser-native Linux payload. Use this only as a comparison path after a fresh reboot.");
     appendLog("Auto mode: Legacy Browser Linux. Starting Exploit + Legacy Browser Linux shortly.");
     setTimeout(load_exploit_linux_browser, 1200);
+  } else if (mode === "linux-userdata" || mode === "linux-internal" || mode === "internal-linux" || mode === "linux-usbless") {
+    startProgress("Auto Linux Internal", "Auto URL requested the 6.72 Linux wrapper that checks /data and /user/data internal boot files.");
+    appendLog("Auto mode: Linux Internal. Starting Exploit + Linux Internal shortly.");
+    setTimeout(load_exploit_linux_userdata, 1200);
   } else if (mode === "linux-arabpixel" || mode === "arabpixel-linux" || mode === "linux-v24b1") {
     startProgress("Auto Linux ArabPixel", "Auto URL requested the ArabPixel v24b.1 Linux wrapper. This is the default static GitHub handoff after a fresh reboot.");
     appendLog("Auto mode: Linux ArabPixel. Starting Exploit + Linux ArabPixel shortly.");
@@ -783,13 +788,14 @@ if (window.applicationCache) {
     <div class="launch-actions">
       <div class="action">
         <select class="handoff-select" id="linuxHandoffSelect">
-          <option value="linux-arabpixel" selected>ArabPixel 1024MB</option>
+          <option value="linux-userdata" selected>Internal /user/data 1024MB</option>
+          <option value="linux-arabpixel">ArabPixel 1024MB</option>
           <option value="linux-pro">PS4Boot Pro 1GB</option>
           <option value="linux-pro-512">PS4Boot Pro 512MB</option>
           <option value="linux-browser">Legacy Browser Linux</option>
         </select>
         <button class="launch-button linux" onclick="load_boot_linux_oneclick(); return false">Boot Linux</button>
-        <p>Runs the exploit and loads the selected hosted Linux payload. ArabPixel is the default static handoff that reached rescue on CUH-7015B.</p>
+        <p>Runs the exploit and loads the selected hosted Linux payload. Internal /user/data is the no-USB handoff; ArabPixel remains the USB-proven fallback.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
@@ -804,7 +810,7 @@ if (window.applicationCache) {
         <p>Copies only the USB boot files into <span class="good">/data/linux/boot</span> from Orbis. Full Linux still needs a Linux-readable root filesystem.</p>
       </div>
     </div>
-    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or <span class="good">?auto=linux-arabpixel</span> for the default ArabPixel handoff, <span class="good">?auto=linux-pro</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=usb-to-internal</span>, or <span class="good">?auto=goldhen</span>.</p>
+    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or <span class="good">?auto=linux-internal</span> for the no-USB internal handoff, <span class="good">?auto=linux-arabpixel</span> for ArabPixel, <span class="good">?auto=linux-pro</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=usb-to-internal</span>, or <span class="good">?auto=goldhen</span>.</p>
   </div>
 
   <div class="panel">
@@ -887,8 +893,12 @@ if (window.applicationCache) {
         <p>Old browser-native payload that currently powers off this console. Kept only for comparison after a fresh reboot.</p>
       </div>
       <div class="action">
+        <button class="linux" onclick="load_exploit_linux_userdata(); return false">Exploit + Linux Internal</button>
+        <p>No-USB path using /data/linux/boot and /user/data/linux/boot on the internal drive.</p>
+      </div>
+      <div class="action">
         <button class="linux" onclick="load_exploit_linux_arabpixel(); return false">Exploit + Linux ArabPixel</button>
-        <p>Comparison path using ArabPixel v24b.1 1024 MB. Use from a fresh reboot only if the default Linux button fails.</p>
+        <p>USB-proven ArabPixel v24b.1 1024 MB comparison path.</p>
       </div>
       <div class="action">
         <button onclick="load_exploit_mira(); return false">Exploit + Mira</button>
@@ -926,7 +936,7 @@ if (window.applicationCache) {
 
   <div class="panel">
     <h2>Linux & Payloads</h2>
-    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. ArabPixel is the main static handoff; PS4Boot Pro 1 GB, 512 MB, and legacy browser-native paths remain available for comparison.</p>
+    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux install. Internal /user/data is the no-USB handoff; ArabPixel, PS4Boot Pro 1 GB, 512 MB, and legacy browser-native paths remain available for comparison.</p>
     <div class="button-grid">
       <div class="action">
         <button class="linux" onclick="load_linux(); return false">Linux Pro 1GB</button>
@@ -939,6 +949,10 @@ if (window.applicationCache) {
       <div class="action">
         <button class="linux" onclick="load_linux_browser(); return false">Legacy Browser Linux</button>
         <p>Loads the old browser-native Linux payload after Exploit Only. Use only as a comparison path.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_linux_userdata(); return false">Linux Internal</button>
+        <p>Loads the internal /user/data 1024 MB Linux wrapper after Exploit Only.</p>
       </div>
       <div class="action">
         <button class="linux" onclick="load_linux_arabpixel(); return false">Linux ArabPixel</button>
@@ -1103,8 +1117,9 @@ setTimeout(jailbreak,500);
 
 function load_boot_linux_oneclick(){
 var select = document.getElementById("linuxHandoffSelect");
-var mode = select ? select.value : "linux-arabpixel";
+var mode = select ? select.value : "linux-userdata";
 if (mode === "linux-pro-512") { return load_exploit_linux_ps4boot_pro_512mb(); }
+if (mode === "linux-userdata") { return load_exploit_linux_userdata(); }
 if (mode === "linux-arabpixel") { return load_exploit_linux_arabpixel(); }
 if (mode === "linux-browser") { return load_exploit_linux_browser(); }
 return load_exploit_linux();
@@ -1149,6 +1164,17 @@ setTimeout(jailbreak,500);
 
 function load_exploit_linux_legacy(){
 return load_exploit_linux_browser();
+}
+
+function load_exploit_linux_userdata(){
+if (!guardFreshLinuxLaunch()) { return; }
+if (!beginChain("Exploit + Linux Internal")) { return; }
+rememberExploit();
+setPayloadMode("Linux");
+startProgress("Exploit + Linux Internal", "Running the 6.72 exploit, then loading the 1024 MB Linux payload that checks /data/linux/boot and /user/data/linux/boot.");
+statusTitle("Loading Exploit + Linux Internal ...");
+LoadedMSG="Exploit + Linux Internal Payload Loaded";ExploitMira="Linux";MiraSRC=LINUX_USERDATA_1024MB_SRC;
+setTimeout(jailbreak,500);
 }
 
 function load_exploit_linux_arabpixel(){
@@ -1291,6 +1317,16 @@ stagePayloadAndLoader(LINUX_BROWSER_SRC, "Linux payload (legacy browser-native)"
 
 function load_linux_legacy(){
 return load_linux_browser();
+}
+
+function load_linux_userdata(){
+if (!guardLinuxOnly()) { return; }
+if (!beginChain("Linux Internal")) { return; }
+rememberPayload("Linux");
+startProgress("Linux Internal", "Loading the 1024 MB Linux payload that checks /data/linux/boot and /user/data/linux/boot after the exploit is already active.");
+statusTitle("Loading Linux Internal ...");
+LoadedMSG="Linux Internal Loaded";
+stagePayloadAndLoader(LINUX_USERDATA_1024MB_SRC, "Linux payload (internal /user/data 1024 MB)");
 }
 
 function load_linux_arabpixel(){
