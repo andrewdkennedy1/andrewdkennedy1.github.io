@@ -333,6 +333,17 @@ function clearSessionGuardsForGoldHENLinuxRetry(){
   } catch(e) {}
   appendLog("Cleared page retry guards for the one-button GoldHEN Linux path.");
 }
+function clearSessionGuardsForOrbisRecovery(){
+  activePayload = "";
+  nonLinuxPayloadStarted = false;
+  exploitAttempted = false;
+  releaseChain();
+  try {
+    sessionStorage.removeItem("ps4host_non_linux_payload");
+    sessionStorage.removeItem("ps4host_exploit_attempted");
+  } catch(e) {}
+  appendLog("Cleared page guards for GoldHEN Orbis recovery.");
+}
 function rememberPayload(name){
   activePayload = name || "";
   if (name && name !== "Linux") {
@@ -704,7 +715,11 @@ function runAutoMode(){
   var mode = (queryValue("auto") || queryValue("run") || "").toLowerCase();
   if (!mode) { return; }
   autoModeStarted = true;
-  if (mode === "linux" || mode === "boot-linux" || mode === "boot" || mode === "oneclick" || mode === "goldhen-linux") {
+  if (mode === "recovery" || mode === "orbis-recovery" || mode === "goldhen-recovery" || mode === "recover-goldhen" || mode === "safe-goldhen") {
+    startProgress("Auto GoldHEN Recovery", "Auto URL requested Orbis recovery. This runs GoldHEN only and does not start Linux.");
+    appendLog("Auto mode: GoldHEN recovery. Starting Exploit + GoldHEN shortly.");
+    setTimeout(load_recovery_goldhen, 1200);
+  } else if (mode === "linux" || mode === "boot-linux" || mode === "boot" || mode === "oneclick" || mode === "goldhen-linux") {
     startProgress("Auto Boot Linux", "Auto URL requested the hosted /672 Linux payload flow. No local helper server is required.");
     appendLog("Auto mode: Boot Linux. Loading Shibe 1024MB from /672.");
     setTimeout(load_exploit_linux_shibe, 1200);
@@ -787,6 +802,10 @@ if (window.applicationCache) {
     <p class="panel-lede">Choose a static GitHub-hosted Linux handoff, then press Boot Linux. None of these options need the desktop helper server to send the next payload.</p>
     <div class="launch-actions">
       <div class="action">
+        <button class="launch-button goldhen" onclick="load_recovery_goldhen(); return false">GoldHEN Recovery</button>
+        <p>Runs only the exploit and GoldHEN, then stays in Orbis for FTP, payload server, or manual boot-file recovery. No Linux payload is loaded.</p>
+      </div>
+      <div class="action">
         <select class="handoff-select" id="linuxHandoffSelect">
           <option value="linux-shibe" selected>Shibe 1024MB</option>
           <option value="linux-arabpixel">ArabPixel 1024MB</option>
@@ -810,7 +829,7 @@ if (window.applicationCache) {
         <p>Copies only the USB boot files into <span class="good">/data/linux/boot</span> from Orbis. Full Linux still needs a Linux-readable root filesystem.</p>
       </div>
     </div>
-    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or <span class="good">?auto=linux-internal</span> for the no-USB internal handoff, <span class="good">?auto=linux-arabpixel</span> for ArabPixel, <span class="good">?auto=linux-pro</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=usb-to-internal</span>, or <span class="good">?auto=goldhen</span>.</p>
+    <p class="vram-note">Direct test links can use <span class="good">?auto=recovery</span> for GoldHEN-only Orbis recovery, <span class="good">?auto=linux</span> or <span class="good">?auto=linux-internal</span> for the no-USB internal handoff, <span class="good">?auto=linux-arabpixel</span> for ArabPixel, <span class="good">?auto=linux-pro</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=usb-to-internal</span>, or <span class="good">?auto=goldhen</span>.</p>
   </div>
 
   <div class="panel">
@@ -818,6 +837,7 @@ if (window.applicationCache) {
     <ol class="steps">
       <li>Use this page only on firmware 6.72.</li>
       <li>Wait for the offline cache message if this is the first visit.</li>
+      <li>If Linux hangs at a white LED, power-cycle back to Orbis and use <span class="good">GoldHEN Recovery</span>. It does not load Linux.</li>
       <li>For a quick jailbreak test, press <span class="good">Launch GoldHEN</span>.</li>
       <li>To prepare internal boot-file fallback, keep the prepared Linux USB inserted, press <span class="good">Move USB to Internal HDD</span>, and wait for the PS4 notification. This does not move the Linux root filesystem.</li>
       <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Boot Linux</span>. The button jailbreaks and loads the hosted Linux payload from GitHub Pages.</li>
@@ -1070,6 +1090,17 @@ rememberPayload("GoldHEN");
 startProgress("Exploit + GoldHEN", "Running the 6.72 exploit, then loading GoldHEN. The page may pause while memory is prepared.");
 statusTitle("Loading Exploit + GoldHEN ...");
 LoadedMSG="GoldHEN v2.4b18.9 Loaded - Press Circle To Exit";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_BIN_SRC;
+setTimeout(jailbreak,500);
+}
+
+function load_recovery_goldhen(){
+clearSessionGuardsForOrbisRecovery();
+if (!beginChain("GoldHEN Recovery")) { return; }
+rememberExploit();
+rememberPayload("GoldHEN Recovery");
+startProgress("GoldHEN Recovery", "Running only the 6.72 exploit and GoldHEN. This stays in Orbis so FTP, payload server, or manual boot-file recovery can be used.");
+statusTitle("Loading GoldHEN Recovery ...");
+LoadedMSG="GoldHEN Recovery Loaded - Stay In Orbis";ExploitMira="GoldHEN";MiraSRC=GOLDHEN_BIN_SRC;
 setTimeout(jailbreak,500);
 }
 
