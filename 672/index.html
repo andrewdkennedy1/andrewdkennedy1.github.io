@@ -481,6 +481,7 @@ var LINUX_PS4BOOT_PRO_1GB_SRC = HOSTED_672_BASE + "pl_linux_ps4boot_pro_1gb.js";
 var LINUX_PS4BOOT_PRO_512MB_SRC = HOSTED_672_BASE + "pl_linux_ps4boot_pro_512mb.js";
 var LINUX_BROWSER_SRC = HOSTED_672_BASE + "pl_linux.js";
 var LINUX_ARABPIXEL_1024MB_SRC = HOSTED_672_BASE + "pl_linux_arabpixel_1024mb.js";
+var USB_TO_INTERNAL_HDD_SRC = HOSTED_672_BASE + "pl_usb_to_internal_hdd.js";
 function stageGoldHENPayload(src, label){
   clearPayloadBlobs();
   if (/\.bin(?:$|[?#])/i.test(src || "")) {
@@ -704,8 +705,8 @@ function runAutoMode(){
   autoModeStarted = true;
   if (mode === "linux" || mode === "boot-linux" || mode === "boot" || mode === "oneclick" || mode === "goldhen-linux") {
     startProgress("Auto Boot Linux", "Auto URL requested the hosted /672 Linux payload flow. No local helper server is required.");
-    appendLog("Auto mode: Boot Linux. Loading the hosted PS4Boot Pro 1GB Linux payload from /672.");
-    setTimeout(load_boot_linux_oneclick, 1200);
+    appendLog("Auto mode: Boot Linux. Loading the hosted ArabPixel 1024MB Linux payload from /672.");
+    setTimeout(load_exploit_linux_arabpixel, 1200);
   } else if (mode === "binloader-linux" || mode === "linux-binloader" || mode === "netboot-linux") {
     startProgress("Auto Bin Loader Linux", "Auto URL requested the direct Bin Loader Linux debug flow.");
     appendLog("Auto mode: direct Bin Loader debug. Queueing local helper for port 9021, then starting Bin Loader shortly.");
@@ -727,9 +728,13 @@ function runAutoMode(){
     appendLog("Auto mode: Legacy Browser Linux. Starting Exploit + Legacy Browser Linux shortly.");
     setTimeout(load_exploit_linux_browser, 1200);
   } else if (mode === "linux-arabpixel" || mode === "arabpixel-linux" || mode === "linux-v24b1") {
-    startProgress("Auto Linux ArabPixel", "Auto URL requested the ArabPixel v24b.1 Linux wrapper. Use this only as a comparison path after a fresh reboot.");
+    startProgress("Auto Linux ArabPixel", "Auto URL requested the ArabPixel v24b.1 Linux wrapper. This is the default static GitHub handoff after a fresh reboot.");
     appendLog("Auto mode: Linux ArabPixel. Starting Exploit + Linux ArabPixel shortly.");
     setTimeout(load_exploit_linux_arabpixel, 1200);
+  } else if (mode === "usb-to-internal" || mode === "move-usb" || mode === "internal-copy" || mode === "usb-internal") {
+    startProgress("Auto Move USB to Internal HDD", "Auto URL requested the USB boot-file copy payload. Keep the prepared Linux USB inserted and wait for the PS4 notification.");
+    appendLog("Auto mode: Move USB to Internal HDD. Starting exploit and copy payload shortly.");
+    setTimeout(load_exploit_usb_to_internal_hdd, 1200);
   } else if (mode === "goldhen" || mode === "goldhen-only") {
     startProgress("Auto GoldHEN", "Auto URL requested GoldHEN. Boot Linux is a separate hosted /672 Linux payload path after a fresh reboot.");
     appendLog("Auto mode: GoldHEN. Starting Exploit + GoldHEN shortly.");
@@ -778,13 +783,13 @@ if (window.applicationCache) {
     <div class="launch-actions">
       <div class="action">
         <select class="handoff-select" id="linuxHandoffSelect">
+          <option value="linux-arabpixel" selected>ArabPixel 1024MB</option>
           <option value="linux-pro">PS4Boot Pro 1GB</option>
           <option value="linux-pro-512">PS4Boot Pro 512MB</option>
-          <option value="linux-arabpixel">ArabPixel 1024MB</option>
           <option value="linux-browser">Legacy Browser Linux</option>
         </select>
         <button class="launch-button linux" onclick="load_boot_linux_oneclick(); return false">Boot Linux</button>
-        <p>Runs the exploit and loads the selected hosted Linux payload. Keep the prepared Linux USB inserted and wait for the rescue shell.</p>
+        <p>Runs the exploit and loads the selected hosted Linux payload. ArabPixel is the default static handoff that reached rescue on CUH-7015B.</p>
       </div>
       <div class="action">
         <button class="launch-button goldhen" onclick="load_exploit_goldhen(); return false">Launch GoldHEN</button>
@@ -794,8 +799,12 @@ if (window.applicationCache) {
         <button class="launch-button linux" onclick="load_exploit_linux_ps4boot_pro_512mb(); return false">Linux 512MB Fallback</button>
         <p>Hosted fallback payload for the same USB boot path if the 1 GB payload hangs or powers off.</p>
       </div>
+      <div class="action">
+        <button class="launch-button linux" onclick="load_exploit_usb_to_internal_hdd(); return false">Move USB to Internal HDD</button>
+        <p>Copies the USB boot files into <span class="good">/data/linux/boot</span> from Orbis. Wait for the PS4 notification, then reboot and remove the USB.</p>
+      </div>
     </div>
-    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or the old <span class="good">?auto=goldhen-linux</span> alias for the hosted Linux Pro 1 GB payload, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=linux-arabpixel</span>, or <span class="good">?auto=goldhen</span>.</p>
+    <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or <span class="good">?auto=linux-arabpixel</span> for the default ArabPixel handoff, <span class="good">?auto=linux-pro</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=usb-to-internal</span>, or <span class="good">?auto=goldhen</span>.</p>
   </div>
 
   <div class="panel">
@@ -804,6 +813,7 @@ if (window.applicationCache) {
       <li>Use this page only on firmware 6.72.</li>
       <li>Wait for the offline cache message if this is the first visit.</li>
       <li>For a quick jailbreak test, press <span class="good">Launch GoldHEN</span>.</li>
+      <li>To boot without USB later, keep the prepared Linux USB inserted, press <span class="good">Move USB to Internal HDD</span>, wait for the PS4 notification, then reboot and remove the USB.</li>
       <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Boot Linux</span>. The button jailbreaks and loads the hosted Linux payload from GitHub Pages.</li>
       <li>If a payload fails, close the browser, reopen this page, and try again.</li>
     </ol>
@@ -916,7 +926,7 @@ if (window.applicationCache) {
 
   <div class="panel">
     <h2>Linux & Payloads</h2>
-    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. The default is PS4Boot's PS4 Pro 1 GB payload; 512 MB, legacy browser-native, and ArabPixel paths remain available for comparison.</p>
+    <p class="panel-lede">Linux is the button you want for the prepared PS4 Linux USB. ArabPixel is the main static handoff; PS4Boot Pro 1 GB, 512 MB, and legacy browser-native paths remain available for comparison.</p>
     <div class="button-grid">
       <div class="action">
         <button class="linux" onclick="load_linux(); return false">Linux Pro 1GB</button>
@@ -933,6 +943,10 @@ if (window.applicationCache) {
       <div class="action">
         <button class="linux" onclick="load_linux_arabpixel(); return false">Linux ArabPixel</button>
         <p>Loads the ArabPixel v24b.1 1024 MB Linux wrapper after Exploit Only for comparison testing.</p>
+      </div>
+      <div class="action">
+        <button class="linux" onclick="load_usb_to_internal_hdd(); return false">Move USB to Internal HDD</button>
+        <p>Payload-only copy path after Exploit Only. Copies <span class="good">bzImage</span>, <span class="good">initramfs.cpio.gz</span>, <span class="good">bootargs.txt</span>, and <span class="good">vram.txt</span> into internal boot storage.</p>
       </div>
       <div class="action">
         <button onclick="load_binloader(); return false">Bin Loader</button>
@@ -1089,7 +1103,7 @@ setTimeout(jailbreak,500);
 
 function load_boot_linux_oneclick(){
 var select = document.getElementById("linuxHandoffSelect");
-var mode = select ? select.value : "linux-pro";
+var mode = select ? select.value : "linux-arabpixel";
 if (mode === "linux-pro-512") { return load_exploit_linux_ps4boot_pro_512mb(); }
 if (mode === "linux-arabpixel") { return load_exploit_linux_arabpixel(); }
 if (mode === "linux-browser") { return load_exploit_linux_browser(); }
@@ -1142,9 +1156,19 @@ if (!guardFreshLinuxLaunch()) { return; }
 if (!beginChain("Exploit + Linux ArabPixel")) { return; }
 rememberExploit();
 rememberPayload("Linux");
-startProgress("Exploit + Linux ArabPixel", "Running the 6.72 exploit, then loading ArabPixel v24b.1 1024 MB Linux. Use this only as a comparison path.");
+startProgress("Exploit + Linux ArabPixel", "Running the 6.72 exploit, then loading ArabPixel v24b.1 1024 MB Linux from the hosted /672 assets.");
 statusTitle("Loading Exploit + Linux ArabPixel ...");
 LoadedMSG="Exploit + Linux ArabPixel Payload Loaded";ExploitMira="Linux";MiraSRC=LINUX_ARABPIXEL_1024MB_SRC;
+setTimeout(jailbreak,500);
+}
+
+function load_exploit_usb_to_internal_hdd(){
+if (!beginChain("Exploit + Move USB to Internal HDD")) { return; }
+rememberExploit();
+rememberPayload("USB to Internal HDD");
+startProgress("Exploit + Move USB to Internal HDD", "Running the 6.72 exploit, then copying the inserted USB boot files into /data/linux/boot. Wait for the PS4 notification before removing the USB.");
+statusTitle("Loading Exploit + Move USB to Internal HDD ...");
+LoadedMSG="USB to Internal HDD Payload Loaded - wait for PS4 notification";ExploitMira="USBToInternalHDD";MiraSRC=USB_TO_INTERNAL_HDD_SRC;
 setTimeout(jailbreak,500);
 }
 
@@ -1277,6 +1301,15 @@ startProgress("Linux ArabPixel", "Loading the ArabPixel v24b.1 1024 MB Linux wra
 statusTitle("Loading Linux ArabPixel ...");
 LoadedMSG="Linux ArabPixel Loaded";
 stagePayloadAndLoader(LINUX_ARABPIXEL_1024MB_SRC, "Linux payload (ArabPixel v24b.1 1024 MB)");
+}
+
+function load_usb_to_internal_hdd(){
+if (!beginChain("Move USB to Internal HDD")) { return; }
+rememberPayload("USB to Internal HDD");
+startProgress("Move USB to Internal HDD", "Copying the inserted USB boot files into /data/linux/boot after the exploit is already active. Wait for the PS4 notification before removing the USB.");
+statusTitle("Loading Move USB to Internal HDD ...");
+LoadedMSG="USB to Internal HDD Payload Loaded - wait for PS4 notification";
+stagePayloadAndLoader(USB_TO_INTERNAL_HDD_SRC, "USB to internal HDD payload");
 }
 
 function load_app2usb(){
