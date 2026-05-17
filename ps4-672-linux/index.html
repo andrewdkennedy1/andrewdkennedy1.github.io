@@ -732,7 +732,7 @@ function runAutoMode(){
     appendLog("Auto mode: Linux ArabPixel. Starting Exploit + Linux ArabPixel shortly.");
     setTimeout(load_exploit_linux_arabpixel, 1200);
   } else if (mode === "usb-to-internal" || mode === "move-usb" || mode === "internal-copy" || mode === "usb-internal") {
-    startProgress("Auto Move USB to Internal HDD", "Auto URL requested the USB boot-file copy payload. Keep the prepared Linux USB inserted and wait for the PS4 notification.");
+    startProgress("Auto Move USB to Internal HDD", "Auto URL requested the USB boot-file copy payload. This copies boot files only; full Linux still needs a Linux-readable root filesystem.");
     appendLog("Auto mode: Move USB to Internal HDD. Starting exploit and copy payload shortly.");
     setTimeout(load_exploit_usb_to_internal_hdd, 1200);
   } else if (mode === "goldhen" || mode === "goldhen-only") {
@@ -801,7 +801,7 @@ if (window.applicationCache) {
       </div>
       <div class="action">
         <button class="launch-button linux" onclick="load_exploit_usb_to_internal_hdd(); return false">Move USB to Internal HDD</button>
-        <p>Copies the USB boot files into <span class="good">/data/linux/boot</span> from Orbis. Wait for the PS4 notification, then reboot and remove the USB.</p>
+        <p>Copies only the USB boot files into <span class="good">/data/linux/boot</span> from Orbis. Full Linux still needs a Linux-readable root filesystem.</p>
       </div>
     </div>
     <p class="vram-note">Direct test links can use <span class="good">?auto=linux</span> or <span class="good">?auto=linux-arabpixel</span> for the default ArabPixel handoff, <span class="good">?auto=linux-pro</span> for PS4Boot Pro 1 GB, <span class="good">?auto=linux-pro-512</span> for PS4Boot Pro 512 MB, <span class="good">?auto=linux-browser</span> for the old browser-native payload, <span class="good">?auto=usb-to-internal</span>, or <span class="good">?auto=goldhen</span>.</p>
@@ -813,7 +813,7 @@ if (window.applicationCache) {
       <li>Use this page only on firmware 6.72.</li>
       <li>Wait for the offline cache message if this is the first visit.</li>
       <li>For a quick jailbreak test, press <span class="good">Launch GoldHEN</span>.</li>
-      <li>To boot without USB later, keep the prepared Linux USB inserted, press <span class="good">Move USB to Internal HDD</span>, wait for the PS4 notification, then reboot and remove the USB.</li>
+      <li>To prepare internal boot-file fallback, keep the prepared Linux USB inserted, press <span class="good">Move USB to Internal HDD</span>, and wait for the PS4 notification. This does not move the Linux root filesystem.</li>
       <li>For PS4 Linux, reboot first, insert the prepared Linux USB, then press <span class="good">Boot Linux</span>. The button jailbreaks and loads the hosted Linux payload from GitHub Pages.</li>
       <li>If a payload fails, close the browser, reopen this page, and try again.</li>
     </ol>
@@ -1166,7 +1166,7 @@ function load_exploit_usb_to_internal_hdd(){
 if (!beginChain("Exploit + Move USB to Internal HDD")) { return; }
 rememberExploit();
 rememberPayload("USB to Internal HDD");
-startProgress("Exploit + Move USB to Internal HDD", "Running the 6.72 exploit, then copying the inserted USB boot files into /data/linux/boot. Wait for the PS4 notification before removing the USB.");
+startProgress("Exploit + Move USB to Internal HDD", "Running the 6.72 exploit, then copying boot files into /data/linux/boot. This does not move the Linux root filesystem.");
 statusTitle("Loading Exploit + Move USB to Internal HDD ...");
 LoadedMSG="USB to Internal HDD Payload Loaded - wait for PS4 notification";ExploitMira="USBToInternalHDD";MiraSRC=USB_TO_INTERNAL_HDD_SRC;
 setTimeout(jailbreak,500);
@@ -1306,7 +1306,7 @@ stagePayloadAndLoader(LINUX_ARABPIXEL_1024MB_SRC, "Linux payload (ArabPixel v24b
 function load_usb_to_internal_hdd(){
 if (!beginChain("Move USB to Internal HDD")) { return; }
 rememberPayload("USB to Internal HDD");
-startProgress("Move USB to Internal HDD", "Copying the inserted USB boot files into /data/linux/boot after the exploit is already active. Wait for the PS4 notification before removing the USB.");
+startProgress("Move USB to Internal HDD", "Copying boot files into /data/linux/boot after the exploit is already active. This does not move the Linux root filesystem.");
 statusTitle("Loading Move USB to Internal HDD ...");
 LoadedMSG="USB to Internal HDD Payload Loaded - wait for PS4 notification";
 stagePayloadAndLoader(USB_TO_INTERNAL_HDD_SRC, "USB to internal HDD payload");
